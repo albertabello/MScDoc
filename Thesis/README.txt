@@ -1,3 +1,6 @@
+This thesis collects the work realized at Comnet deparment around WebRTC technology. 
+Some packages contain extra libraries for the composition of this thesis.
+
 aaltologo.sty -- A LaTeX package for creating Aalto University logos
 
 See the accompanying documentation in aaltologo.pdf for a user manual. Read the file

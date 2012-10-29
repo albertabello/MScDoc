@@ -1,4 +1,4 @@
 MScDoc
 ======
 
-MSc Thesis LaTex files
+Albert Abelló Lozano MSc thesis written in LaTex.
