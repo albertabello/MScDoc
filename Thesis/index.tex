@@ -1,0 +1,240 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Albert Abell— Lozano MSc Thesis document                                                               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Käytä toinen näistä, jos kirjoitat suomeksi:
+%% ensimmäinen, jos käytät pdflatexia (kuvat on oltava pdf-tiedostoina)
+%% toinen, jos haluat tuottaa ps-tiedostoa (käytä eps-formaattia kuville).
+%%
+%% Use one of these you write in Finnish:
+%% the 1st when using pdflatex (use pdf figures) or
+%% the 2nd when producing a ps file (use eps figures).
+%\documentclass[finnish,12pt,a4paper,pdftex]{article}
+%\documentclass[finnish,12pt,a4paper,dvips]{article}
+
+
+%% Käytä näitä, jos kirjoitat englanniksi
+%%
+%% Uncomment one of these if you write in English
+\documentclass[english,12pt,a4paper,pdftex]{article}
+%\documentclass[english,12pt,a4paper,dvips]{article}
+
+%% Tämä paketti on pakollinen
+%% Valitse korkeakoulusi näistä: arts, biz, chem, elec, eng, sci.
+%%
+%% This package is required
+%% Choose your school from arts, biz, chem, elec, eng, sci.
+\usepackage[elec]{aaltothesis}
+
+%% Jos käytät latex-komentoa käännettäessä (oletusarvo) 
+%% kuvat kannattaa tehdä eps-muotoon. Älä käytä ps-muotoisia kuvia!
+%% Käytä seuraavaa latex-komennon ja eps-kuvien kanssa 
+%%
+%% Jos tääs käytät pdflatex-komentoa, joka kääntää tekstin suoraan
+%% pdf-tiedostoksi, kuvasi on oltava jpg-formaatissa tai pdf-formaatissa.
+%%
+%% Use this if you run pdflatex and use jpg/pdf-format pictures.
+%%
+\usepackage{graphicx} 
+\graphicspath{{../figures/}}
+\DeclareGraphicsExtensions{.pdf}
+\usepackage[small, bf]{caption}
+\usepackage[font=small]{subfig}
+%% Saat pdf-tiedoston viittaukset ja linkit kuntoon seuraavalla paketilla.
+%% Paketti toimii erityisen hyvin pdflatexin kanssa. 
+%%
+%% Use this if you want to get links and nice output with pdflatex
+%\usepackage[pdfpagemode=None,colorlinks=true,urlcolor=red,%
+%linkcolor=blue,citecolor=black,pdfstartview=FitH]{hyperref}
+
+%% Jos et jostain syystä tykkää käyttää
+%% edellistä hyperref pakettia, voit käyttää myös seuraavaa pakettia
+%% (tarvitaan lähinnä url-komennon määrittämiseen ja formatoimiseen)
+%%
+%% Use this if you do not like hyperref package - this
+%% defines url environment and formats it correctly
+\usepackage{url}
+
+%% Matematiikan fontteja, symboleja ja muotoiluja lisää, näitä tarvitaan usein 
+%%
+%% Use this if you write hard core mathematics, these are usually needed
+\usepackage{amsfonts,amssymb,amsbsy}  
+
+%% Vaakasuunnan mitat, ÄLÄ KOSKE!
+\setlength{\hoffset}{-1in}
+\setlength{\oddsidemargin}{35mm}
+\setlength{\evensidemargin}{25mm}
+\setlength{\textwidth}{15cm}
+%% Pystysuunnan mitat, ÄLÄ KOSKE!
+\setlength{\voffset}{-1in}
+\setlength{\headsep}{7mm}
+\setlength{\headheight}{1em}
+\setlength{\topmargin}{25mm-\headheight-\headsep}
+\setlength{\textheight}{23cm}
+
+
+%% Kaikki mikä paperille tulostuu, on tämän jälkeen
+%%
+%% Output starts here
+\begin{document}
+
+%% Korjaa vastaamaan korkeakouluasi, jos automaattisesti asetettu nimi on 
+%% virheellinen 
+%%
+%% Change the school field to describe your school if the autimatically 
+%% set name is wrong
+% \university{aalto University}{aalto-Yliopisto}
+% \school{School of Electrical Engineering}{SähköTekniikan korkeakoulu}
+
+%% Vain kandityölle: Korjaa seuraavat vastaamaan koulutusohjelmaasi
+%%
+%% Only for B.Sc. thesis: Choose your degree programme. 
+\degreeprogram{Electronics and electrical engineering}%
+{Elektroniikka ja sähkötekniikka}
+%%
+
+%% Vain DI/M.Sc.- ja lisensiaatintyölle: valitse laitos, 
+%% professuuri ja sen professuurikoodi. 
+%%
+%% Only for M.Sc. and Licentiate thesis: Choose your department,
+%% professorship and professorship code. 
+\department{Department of Communication and Networking}%
+{Radiotieteen ja -tekniikan laitos}
+\professorship{Networking Technology}{Piiriteoria}
+\code{S-55}
+%%
+
+%% Valitse yksi näistä kolmesta
+%%
+%% Choose one of these:
+%\univdegree{BSc}
+\univdegree{MSc}
+%\univdegree{Lic}
+
+%% Oma nimi
+%%
+%% Should be self explanatory...
+\author{Albert Abell\'o Lozano}
+
+%% Opinnäytteen otsikko tulee vain tähän. Älä tavuta otsikkoa ja
+%% vältä liian pitkää otsikkotekstiä. Jos latex ryhmittelee otsikon
+%% huonosti, voit joutua pakottamaan rivinvaihdon \\ kontrollimerkillä.
+%% Muista että otsikkoja ei tavuteta! 
+%% Jos otsikossa on ja-sana, se ei jää rivin viimeiseksi sanaksi 
+%% vaan aloittaa uuden rivin.
+%% 
+%% Your thesis title. If the title is very long and the latex 
+%% does unsatisfactory job of breaking the lines, you will have to
+%% break the lines yourself with \\ control character. 
+%% Do not hyphenate titles.
+\thesistitle{Performance analysis of WebRTC}{Opinnäyteohje}
+
+\place{Espoo}
+%% Kandidaatintyön päivämäärä on sen esityspäivämäärä! 
+%% 
+%% For B.Sc. thesis use the date when you present your thesis. 
+\date{20.3.2012}
+
+%% Kandidaattiseminaarin vastuuopettaja tai diplomityön valvoja.
+%% Huomaa tittelissä "\" -merkki pisteen jälkeen, 
+%% ennen välilyöntiä ja seuraavaa merkkijonoa. 
+%% Näin tehdään, koska kyseessä ei ole lauseen loppu, jonka jälkeen tulee 
+%% hieman pidempi väli vaan halutaan tavallinen väli.
+%%
+%% B.Sc. or M.Sc. thesis supervisor 
+%% Note the "\" after the comma. This forces the following space to be 
+%% a normal interword space, not the space that starts a new sentence. 
+\supervisor{Prof.\ J\"org Ott}{Prof.\ J\"org Ott}
+
+%% Kandidaatintyön ohjaaja(t) tai diplomityön ohjaaja(t)
+%% 
+%% B.Sc. or M.Sc. thesis advisors(s). 
+%%
+%% Note that there has been a change in the official EN translation
+%% of the Finnish title ``ohjaaja'' which in the previous version (1.5) 
+%% of this document was called ``instructor''. The recommended
+%% translation is now ``advisor''.  
+%% However, the LaTeX internal variable remains \instructor
+%% as there is little point to change the variable name. 
+%%
+%\instructor{Prof. Pirjo Professori}{Prof. Pirjo Professori}
+\instructor{M.Sc.\ (Tech.) Varun Singh}{TkT Varun Singh}
+%\instructor{M.Sc.\ (Tech.) Polli Pohjaaja}{DI Polli Pohjaaja}
+
+%% Aaltologo: syntaksi:
+%% \uselogo{aaltoRed|aaltoBlue|aaltoYellow|aaltoGray|aaltoGrayScale}{?|!|''}
+%% Logon kieli on sama kuin dokumentin kieli
+%%
+%% Aalto logo: syntax:
+% \uselogo{aaltoRed|aaltoBlue|aaltoYellow|aaltoGray|aaltoGrayScale}{?|!|''}
+%% Logo language is set to be the same as the document language.
+\uselogo{aaltoRed}{''}
+
+%% Tehdään kansilehti
+%%
+%% Create the coverpage
+\makecoverpage
+
+%% Pakotetaan uusi sivu varmuuden vuoksi, jotta 
+%% mahdollinen suomenkielinen ja englanninkielinen tiivistelmä
+%% eivät tule vahingossakaan samalle sivulle
+%%
+%% Force new page so that English abstract starts from a new page
+\newpage
+%
+%% English abstract, uncomment if you need one. 
+%% 
+%% Abstract keywords
+\keywords{Resistor, Resistance,\\ Temperature}
+%% Abstract text
+\begin{abstractpage}[english]
+ Your abstract in English. Try to keep the abstract short, approximately 
+ 100 words should be enough. Abstract explains your research topic, 
+ the methods you have used, and the results you obtained.  
+\end{abstractpage}
+%% Note that 
+%% if you are writting your master's thesis in English place the English
+%% abstract first followed by the possible Finnish abstract
+
+
+%% Preface
+\mysection{Preface}
+Thank you everybody.\\
+
+\vspace{5cm}
+Otaniemi, 9.3.2012
+
+\vspace{5mm}
+{\hfill Albert Abell\'o Lozano \hspace{1cm}}
+
+%% Pakotetaan varmuuden vuoksi esipuheen jälkeinen osa
+%% alkamaan uudelta sivulta
+%%
+%% Force new page after preface
+\newpage
+
+
+%% Sisällysluettelo
+%% addcontentsline tekee pdf-tiedostoon viitteen sisällysluetteloa varten
+%% 
+%% Table of contents. 
+\addcontentsline{toc}{section}{Contents}
+%% Tehdään sisällysluettelo
+%%
+%% Create it. 
+\tableofcontents
+
+%% 
+%% Corrects the page numbering, there is no need to change these
+\cleardoublepage
+\storeinipagenumber
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\include{section1}
+
+\end{document}
+
+
