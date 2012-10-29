@@ -42,17 +42,7 @@
 \DeclareGraphicsExtensions{.pdf}
 \usepackage[small, bf]{caption}
 \usepackage[font=small]{subfig}
-%% Saat pdf-tiedoston viittaukset ja linkit kuntoon seuraavalla paketilla.
-%% Paketti toimii erityisen hyvin pdflatexin kanssa. 
-%%
-%% Use this if you want to get links and nice output with pdflatex
-%\usepackage[pdfpagemode=None,colorlinks=true,urlcolor=red,%
-%linkcolor=blue,citecolor=black,pdfstartview=FitH]{hyperref}
 
-%% Jos et jostain syyst‰ tykk‰‰ k‰ytt‰‰
-%% edellist‰ hyperref pakettia, voit k‰ytt‰‰ myˆs seuraavaa pakettia
-%% (tarvitaan l‰hinn‰ url-komennon m‰‰ritt‰miseen ja formatoimiseen)
-%%
 %% Use this if you do not like hyperref package - this
 %% defines url environment and formats it correctly
 \usepackage{url}
@@ -233,7 +223,24 @@ Otaniemi, 9.3.2012
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
-\include{section1}
+%%
+%%Definitions and abreviations
+\section*{Definitions and abreviations}
+\addcontentsline{toc}{section}{Definitions and abreviations}
+
+%% 
+%% Leave first page empty
+\thispagestyle{empty}
+
+
+
+%%introduction chapter
+\include{./chapters/introduction}
+%%introduction chapter
+\include{./chapters/conclusion}
+%%introduction chapter
+\include{./chapters/references}
+
 
 \end{document}
 
