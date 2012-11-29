@@ -55,3 +55,29 @@ Mozilla Firefox started working on the getUserMedia implementation early 2012 de
 Some announcements have been done from Microsoft as they are also still working in some implementation into Internet Explorer by using CU-RTC-Web as the default standard, at the moment only the Media API information has been published \cite{microsoftcapture}.
 
 In the mobile environment there has been less efforts than in the desktop browsers. In October 2012 Ericsson announced the world's first WebRTC-enabled browser for mobile devices called "Bowser" with support for iOS and Android, this browser is able to handle WebRTC calls using RTCWeb Offer/Answer Protocol (ROAP) which is an old discontinued version of the WebRTC API that has moved to Javascript Session Establishment Protocol (JSEP). This browser also differs from the previous desktop alternatives on the codec side, it is carrying H.264 for video and G.711 for audio \cite{ericssonbowser}. The provided API for Bowser is not fully W3C compliant yet.
+
+\subsection{Issues in WebRTC}
+
+WebRTC uses a mixture of different technologies to perform peer-to-peer communication between clients, those technologies range from SRTP, RTP, RTCP (in the future) and multiple codecs that are being discussed. This scenario makes performance the key point for success in developing stable WebRTC applications in the near future. 
+%%Shouldn't be here!!!
+%During the peer negotiation of the clients SDP is used to understand and set the conditions to transmit the media, this scenario only focuses in media transport between peers, this SDP should be RFC 4566 compliant once the standaritzation process of WebRTC ends and products are finally delivered. The decision to use SDP for the media negotiations is oriented to make WebRTC capable of SIP/ICE negotiations at the same time of using an understandable and widely used format \cite{alvestrandOverview2012}.  At the same time, SDP make codec negotiation to be standard even using different codec engines, having this a wide usage in environments that require private or licensed codecs.
+%%
+Performance is manly related to computer capabilities and the ability to encode/decode at the same time as transferring and monitoring multiple peer connections. All those tasks are now run over the browser not directly on the OS, this is good for interoperability between platforms but bad in the performance aspect. 
+
+Media applications are delay sensitive and require a low packet loss for its proper function, WebRTC is working on this trying to implement congestion control over the connection stablished between peers, this work has not been completed yet and will arise as a problem in the near future. Packet loss due to system capacity and bandwidth should be measurable and adaptive in an infrastructure such as WebRTC.
+
+Constraints and bandwidth statistics will make a big difference in how media is performed in WebRTC. Browsers and web applications have been always able to tolerate some amount of delay and packet losses but this is not possible in media infrastructures for real time conversations, a change of scope is needed to be able to handle Quality of Service (QoS) in WebRTC.
+
+\subsection{Contribution}
+
+Investigate how WebRTC performs in an application environment trying to evaluate the best way to set multiple peer connections that are able to transfer media in a mesh network. Measure the congestion and statistics of WebRTC in a real environment trying to identify bottlenecks related to encoding/decoding, media establishment or connection maintenance. All this should be able to be performed in real-time over a browser by using the already existing tools or delivering new proposals to the workgroups to increase the QoS in WebRTC.
+
+Using metrics related to RTT, latency, packet loss and bandwidth usage we expect to improve the way WebRTC performs when handling multiple connections.
+
+\subsection{Goals}
+
+Not sure about here
+
+\subsection{Structure}
+
+Not sure about here
