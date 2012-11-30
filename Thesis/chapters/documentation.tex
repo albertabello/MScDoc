@@ -3,3 +3,20 @@
 %% 
 %% Leave first page empty
 \thispagestyle{empty}
+
+Blah blah blah talk about the sdtrz process and APIs maybe? JSEP vs ROAP? CU-RTC-Web vs WebRTC? VP8 vs H.264 vs Optus? possible stuff to talk that might be interesting to introduce. Short and fast.
+
+\subsection{CU-RTC-Web vs WebRTC}
+In August 2012 Microsoft introduced his vision of a real-time communication between browser trying to cover all the WebRTC use cases with a different design \cite{curtcweb}, this draft collided directly with the ongoing WebRTC proposal done by the W3C working group \cite{webrtcW3cgroup}. W3C working group decided to attach to the already existing draft some aspects from the Microsoft proposal should be analyzed in comparison with WebRTC. Three main aspects differ from WebRTC:
+\begin{itemize}
+	\item No PeerConnection object
+	\item No SDP description or JSEP
+	\item No mantatory codec to be implemented
+\end{itemize}
+The ongoing WebRTC proposal identifies a Javascript object called RTCPeerConnection that handles and maintain all the peer connection data transfer, this object handles all the ICE, SDP creation, negotiation and transfer. In the CU-RTC-Web this concept is replaced with a proposal called RealtimeTransport interface that relies in a RemoteRealtimePort interface \cite{realtimemedia}. This design is a low-level API that forces web developers to build their own application-specific JavaScript code so it can be adapted to every different use case required. No API defined object like in WebRTC, more flexible but much more complicated to implement for application developers.
+
+From the codec perspective CU-RTC-Web approach could be more sensitive to the codec war taking part on the workgroups, one of the key issues in the WebRTC standaritzation, not setting any codec to be mandatory makes sense considering that after long time there is no consensus about this position yet. On the other hand, it makes sense to set a mandatory codec for a media standard as it will force all the providers to set the same codec and avoid compatibility issues. Codecs being proposed are: VP8, H.264, Optus and G.711.
+
+WebRTC draft RTCPeerConnection relies on a new Javascript spec called Javascript Session Establishment Protcol (JSEP) which help developers to handle the low-layer communication and negotiation tasks \cite{jsepIETF}. JSEP relies directly on the Session Description Protocol (SDP) \cite{sdpIETF}. CU-RTC-Web leaves freedom to developers to implement their own communication tasks for their specific application.
+
+The conclusion shows that meanwhile WebRTC moves a lot of work to be done by the browser itself CU-RTC-Web leaves complete freedom to developers to adapt the use case to the proposal instead of adapting the application to the API such as in WebRTC. Both approaches can be valid, but WebRTC makes more sense form the developer point-of-view and it makes it easier to build applications on top of it.
