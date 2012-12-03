@@ -59,9 +59,7 @@ In the mobile environment there has been less efforts than in the desktop browse
 \subsection{Issues in WebRTC}
 
 WebRTC uses a mixture of different technologies to perform peer-to-peer communication between clients, those technologies range from SRTP, RTP, RTCP (in the future) and multiple codecs that are being discussed. This scenario makes performance the key point for success in developing stable WebRTC applications in the near future. 
-%%Shouldn't be here!!!
-%During the peer negotiation of the clients SDP is used to understand and set the conditions to transmit the media, this scenario only focuses in media transport between peers, this SDP should be RFC 4566 compliant once the standaritzation process of WebRTC ends and products are finally delivered. The decision to use SDP for the media negotiations is oriented to make WebRTC capable of SIP/ICE negotiations at the same time of using an understandable and widely used format \cite{alvestrandOverview2012}.  At the same time, SDP make codec negotiation to be standard even using different codec engines, having this a wide usage in environments that require private or licensed codecs.
-%%
+
 Performance is manly related to computer capabilities and the ability to encode/decode at the same time as transferring and monitoring multiple peer connections. All those tasks are now run over the browser not directly on the OS, this is good for interoperability between platforms but bad in the performance aspect. 
 
 Media applications are delay sensitive and require a low packet loss for its proper function, WebRTC is working on this trying to implement congestion control over the connection stablished between peers, this work has not been completed yet and will arise as a problem in the near future. Packet loss due to system capacity and bandwidth should be measurable and adaptive in an infrastructure such as WebRTC.

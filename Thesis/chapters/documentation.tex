@@ -6,6 +6,25 @@
 
 Blah blah blah talk about the sdtrz process and APIs maybe? JSEP vs ROAP? CU-RTC-Web vs WebRTC? VP8 vs H.264 vs Optus? possible stuff to talk that might be interesting to introduce. Short and fast.
 
+\subsection{ROAP and JSEP}
+Since the beginning of WebRTC many proposals have been drafted to accomplish a flexible and usable API for developers. Two different approaches have been designed, in October 2011 RTCWeb Offer/Answer Protocol (ROAP) \cite{roapIETF} was introduced being replaced lately by the Javascript Session Establishment Protocol (JSEP) in march 2012 \cite{jsepIETF}. Both designs are meant to handle the signaling process in the browser simplifying the work for the applications developer, at the same time they should be able to be flexible and adaptable for all the use cases of WebRTC. 
+
+During the peer negotiation of the clients SDP is used to understand and set the conditions to transmit the media, this scenario only focuses in media transport between peers, this SDP should be RFC 4566 compliant once the standaritzation process of WebRTC ends and products are finally delivered. The decision to use SDP for the media negotiations is oriented to make WebRTC capable of SIP/ICE negotiations at the same time of using an understandable and widely used format \cite{alvestrandOverview2012}.  
+
+At the same time, SDP makes codec negotiation to be standard even using different codec engines, having this a wide usage in environments that require private or licensed codecs.
+
+\subsubsection{ROAP}
+ROAP was initially designed to allow WebRTC browsers to handle the information received form the other peer. This information contains the SDP messages with the agreed information that allows media to be sent.
+
+In ROAP the implementation effort is minimal, this is done by building complex SDP messages that carry all the information, this means that the ICE candidates for the NAT transversal are also packed in the SDP in a JSON format. Considering an example, if a browser A is wishing to establish a media session with browser B, there is some information that must be forwarded from A to B at high level. First, A is willing to start a new session not update an already existing one, it also sends an SDP OFFER that includes media and ICE candidates. If B accepts those parameters and is willing to start the media session it will send back an ANSWER message containing similar information. To confirm that the information is correct A sends an OK message to B, then RTP flow starts. All those messages are related by using a sequence field on the SDP, this helps the browser to maintain and relate all messages when handling more than one peer connection \cite{roapIETF}.
+
+Even being fully capable to handle media flows this design is not flexible and cannot be adapted to all use cases this reason led to the actual API called JSEP.
+
+\subsubsection{JSEP}
+JSEP arises as a much more complex design that even being high level is more flexible that ROAP. 
+
+\subsection{The codec war}
+
 \subsection{CU-RTC-Web vs WebRTC}
 In August 2012 Microsoft introduced his vision of a real-time communication between browser trying to cover all the WebRTC use cases with a different design \cite{curtcweb}, this draft collided directly with the ongoing WebRTC proposal done by the W3C working group \cite{webrtcW3cgroup}. W3C working group decided to attach to the already existing draft some aspects from the Microsoft proposal should be analyzed in comparison with WebRTC. Three main aspects differ from WebRTC:
 \begin{itemize}
@@ -20,3 +39,4 @@ From the codec perspective CU-RTC-Web approach could be more sensitive to the co
 WebRTC draft RTCPeerConnection relies on a new Javascript spec called Javascript Session Establishment Protcol (JSEP) which help developers to handle the low-layer communication and negotiation tasks \cite{jsepIETF}. JSEP relies directly on the Session Description Protocol (SDP) \cite{sdpIETF}. CU-RTC-Web leaves freedom to developers to implement their own communication tasks for their specific application.
 
 The conclusion shows that meanwhile WebRTC moves a lot of work to be done by the browser itself CU-RTC-Web leaves complete freedom to developers to adapt the use case to the proposal instead of adapting the application to the API such as in WebRTC. Both approaches can be valid, but WebRTC makes more sense form the developer point-of-view and it makes it easier to build applications on top of it.
+
