@@ -207,12 +207,13 @@ Otaniemi, 9.3.2012
 %% Force new page after preface
 \newpage
 
-
 %% Sis‰llysluettelo
 %% addcontentsline tekee pdf-tiedostoon viitteen sis‰llysluetteloa varten
 %% 
 %% Table of contents. 
 \addcontentsline{toc}{section}{Contents}
+
+
 %% Tehd‰‰n sis‰llysluettelo
 %%
 %% Create it. 
@@ -224,13 +225,15 @@ Otaniemi, 9.3.2012
 %% Corrects the page numbering, there is no need to change these
 \cleardoublepage
 \storeinipagenumber
-\pagenumbering{arabic}
-\setcounter{page}{1}
-
 %%
 %%Definitions and abreviations
-\section*{Definitions and abreviations}
-\addcontentsline{toc}{section}{Definitions and abreviations}
+\mysection{Definitions and abreviations}
+%\addcontentsline{toc}{section}{Definitions and abreviations}
+
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 %% 
 %% Leave first page empty
@@ -242,7 +245,7 @@ Otaniemi, 9.3.2012
 \include{./chapters/introduction}
 
 %documentation and drafts
-\include{./chapters/documentation}
+%\include{./chapters/documentation}
 
 %%conclusion chapter
 \include{./chapters/conclusion}
