@@ -51,9 +51,24 @@ Both SIP and RTMFP are protocols to allow communication between two different us
 
 SIP architecture relies in a trapezoid form where the Domain Name System (DNS) is used to locate the other peers of the system, once that peer is located and session is negotiated, media flows peer-to-peer directly to the endpoint. In order to build this system different agents are needed, SIP Proxies, SIP Redirect and SIP Registrar. SIP Proxies transmit the SDP and SIP messages from one peer to the other to establish communication (Figure ~\ref{fig:SIParchitecture}). SIP Registrar are the machines that collect and save all the user information from the end points.
 
-DNS provides the IP address for both proxy servers and allow the messages to be exchanged between both peers, when SIP is used the following messages are exchanged: INVITE, RINGING and 200OK. Those messages carry the SDP data inside in an object format, when ray@upc.cat receives the INVITE message from bob@aalto.fi builds the 200OK response carrying the SDP object that providing compatibility check between both peers and which options and codecs to use. SIP provides some more messages to update the already existing session or to close them. The media transport is done using RTP and RTCP that rely over User Datagram Protocol (UDP), for Network Address Translation (NAT) SIP uses other protocols such as Session Traversal Utilities for NAT (STUN) \cite{sipRFC}.
+DNS provides the IP address for both proxy servers and allow the messages to be exchanged between both peers, when SIP is used the following messages are exchanged: INVITE, RINGING and 200OK. Those messages carry the SDP data inside in an object format, when ray@upc.cat receives the INVITE message from bob@aalto.fi builds the 200OK response carrying the SDP object that providing compatibility check between both peers and which options and codecs to use. SIP provides some more messages to update the already existing session or to close them. The media transport is done using RTP and RTCP that rely over User Datagram Protocol (UDP) \cite{sipRFC}.
 
+\subsubsection{RTMFP}
 
+RTMFP is a proprietary transport protocol provided by Adobe, this protocol works in a peer-to-peer scheme to provide media and data transfer between two end points. This system usually works over UDP \cite{rtmfpSIP}. Differing from SIP, this protocol is a full suite for media/data transfer in a P2P environment and carries its own signaling method and codecs. It also handles congestion control on the packets and NAT transversal issues. One of the biggest differences is that, similar to WebRTC, is not a full communication infrastructure and both peers must be in the same working domain to be able to communicate, is not a PSTN style of communication but a point to point messaging system. This protocol is implemented in Flash Player, Adobe Integrated Runtime (AIR) and Adobe Media Server (AMS)  \cite{rtmfpSIP}, it is used for P2P communication between all those services. 
+
+This protocol is secured and encrypted, comparing with WebRTC, this issue has been addresses clearly in RTMFP by using proprietary algorithm and different methods. The RTMFP architecture is similar to WebRTC concept, it also allows reconnection in case of connectivity issues and works by multiplexing different media streams over the same media channel when handling conferences or multiple streams. For the signaling part Adobe uses a service called Cirrus (Figure ), this service allows architectures such as: end-to-end, many-to-many and multicast \cite{cirrusFAQ}.
+ 
+ \begin{figure}[h]
+  \centering
+    \includegraphics[scale=0.6]{./figures/cirrusAdobe.jpg}
+      \caption[RTMFP architecture using Cirrus (source: Adobe)]{RTMFP architecture using Cirrus (source: Adobe).}
+	\label{fig:SIParchitecture}
+\end{figure}
+ 
+Some of the most valuable features is the possibility to easy integrate P2P multicast topologies where one source sends a video to a group of receivers. This is something that none of the other protocols has implemented yet.
+
+\subsubsection{WebRTC}
 Talk about SIP, RTMFP and WebRTC.
 
 
