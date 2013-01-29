@@ -28,11 +28,7 @@ Mozilla Firefox started working on the getUserMedia implementation early 2012 de
 
 Some announcements done from Microsoft point out that they are also working in some implementation into Internet Explorer by using CU-RTC-Web as the default standard, at the moment only the Media API information is publicly available \cite{microsoftcapture}.
 
-Some mobile platform important moments should be pointed out. In October 2012 Ericsson announced the world's first WebRTC-enabled browser for mobile devices called "Bowser" with support for iOS and Android, this browser is able to handle WebRTC calls using RTCWeb Offer/Answer Protocol (ROAP) which is an old discontinued version of the WebRTC API that has moved to Javascript Session Establishment Protocol (JSEP). This browser also differs from the previous desktop alternatives on the codec side, it is carrying H.264 for video and G.711 for audio \cite{ericssonbowser}. The API provided by Bowser is not fully W3C compliant.
-
-\subsection{WebRTC architecture}
-
-How WebRTC works, simple topology and key points.
+In October 2012 Ericsson announced the world's first WebRTC-enabled browser for mobile devices called "Bowser" with support for iOS and Android, this browser is able to handle WebRTC calls using RTCWeb Offer/Answer Protocol (ROAP) which is an old discontinued version of the WebRTC API that has moved to Javascript Session Establishment Protocol (JSEP). This browser also differs from the previous desktop alternatives on the codec side, it is carrying H.264 for video and G.711 for audio \cite{ericssonbowser}. The API provided by Bowser is not fully W3C compliant.
 
 \subsection{Alternatives}
 
@@ -53,25 +49,53 @@ SIP architecture relies in a trapezoid form where the Domain Name System (DNS) i
 
 DNS provides the IP address for both proxy servers and allow the messages to be exchanged between both peers, when SIP is used the following messages are exchanged: INVITE, RINGING and 200OK. Those messages carry the SDP data inside in an object format, when ray@upc.cat receives the INVITE message from bob@aalto.fi builds the 200OK response carrying the SDP object that providing compatibility check between both peers and which options and codecs to use. SIP provides some more messages to update the already existing session or to close them. The media transport is done using RTP and RTCP that rely over User Datagram Protocol (UDP) \cite{sipRFC}.
 
-\subsubsection{RTMFP}
+SIP is a pure Voice Over IP (VoIP) confederated technology that helped the community to learn about real-time P2P communication,we have used all the concepts and technologies embedded in SIP to build WebRTC.
 
-RTMFP is a proprietary transport protocol provided by Adobe, this protocol works in a peer-to-peer scheme to provide media and data transfer between two end points. This system usually works over UDP \cite{rtmfpSIP}. Differing from SIP, this protocol is a full suite for media/data transfer in a P2P environment and carries its own signaling method and codecs. It also handles congestion control on the packets and NAT transversal issues. One of the biggest differences is that, similar to WebRTC, is not a full communication infrastructure and both peers must be in the same working domain to be able to communicate, is not a PSTN style of communication but a point to point messaging system. This protocol is implemented in Flash Player, Adobe Integrated Runtime (AIR) and Adobe Media Server (AMS)  \cite{rtmfpSIP}, it is used for P2P communication between all those services. 
+\subsubsection{RTMFP and Adobe Flash}
 
-This protocol is secured and encrypted, comparing with WebRTC, this issue has been addresses clearly in RTMFP by using proprietary algorithm and different methods. The RTMFP architecture is similar to WebRTC concept, it also allows reconnection in case of connectivity issues and works by multiplexing different media streams over the same media channel when handling conferences or multiple streams. For the signaling part Adobe uses a service called Cirrus (Figure ), this service allows architectures such as: end-to-end, many-to-many and multicast \cite{cirrusFAQ}.
+RTMFP and Adobe Flash are proprietary technologies provided by Adobe, both services work together to provide multimedia and real-time communication between users.
+
+Adobe Flash is a multimedia software that uses a plugin to work over the browser, it is used to build multimedia experiences for end users such as graphics, animation, games and Rich Internet Applications (RIAs). It is widely used to stream video or audio over webpages, in order to reproduce this content we need to install Adobe Flash plugin in our computer. It also carries different programming languages that drops from the standards called JavaScript Flash Language (JSFL) and ActionStript. Due to the need of using a plugin his extension to tablets and mobile devices is more complicated than using standards. Adobe Flash Player is available in most platforms except iOS devices and reaches about 98 of all internet-enabled desktop devices. This plugin allows developers to access media streams from external devices such as cameras and microphones to be used along with RTMFP.
+
+RTMFP uses Adobe Flash to provide media and data transfer between two end points. This system usually works over UDP \cite{rtmfpSIP}. Differing from SIP, this protocol is a full suite for media/data transfer in a P2P constraint environment and carries its own signaling methods and codecs. It also handles congestion control on the packets and NAT transversal issues. One of the biggest differences is that, similar to WebRTC, is not a full communication infrastructure and both peers must be in the same working domain to be able to communicate, is not a PSTN style of communication but a point to point messaging system. This protocol is implemented in Flash Player, Adobe Integrated Runtime (AIR) and Adobe Media Server (AMS)  \cite{rtmfpSIP}, it is used for P2P communication between all those services. 
+
+This protocol is secured and encrypted, comparing with WebRTC, this issue has been addresses clearly in RTMFP by using proprietary algorithm and different methods. The RTMFP architecture is similar to WebRTC concept, it also allows reconnection in case of connectivity issues and works by multiplexing different media streams over the same media channel when handling conferences or multiple streams. For the signaling part Adobe uses a service called Cirrus (Figure ~\ref{fig:RTMFParchitecture}), this service allows architectures such as: end-to-end, many-to-many and multicast \cite{cirrusFAQ}.
  
  \begin{figure}[h]
   \centering
     \includegraphics[scale=0.6]{./figures/cirrusAdobe.jpg}
       \caption[RTMFP architecture using Cirrus (source: Adobe)]{RTMFP architecture using Cirrus (source: Adobe).}
-	\label{fig:SIParchitecture}
+	\label{fig:RTMFParchitecture}
 \end{figure}
  
 Some of the most valuable features is the possibility to easy integrate P2P multicast topologies where one source sends a video to a group of receivers. This is something that none of the other protocols has implemented yet.
 
+\subsection{WebRTC and HTML5}
+
+WebRTC is part of the HTML5 package, both combined are an open cross-platform standard that aims to replace the Adobe proprietary proposal for P2P Real-Time Communication (RTC).
+
+\subsubsection{HTML5}
+
+HTML5 proposal will replace the existing need to use plugins when having multimedia features in web browsers. This new version carries different API that will be built into the browser and avoid the usage of external software to execute them, this scenario helps to build cross-platform standard applications in JavaScript instead of using plugins. 
+
+Compared with the existing Adobe Flash, APIs such as Web Graphics Library (WebGL) enables developer to build HTML5 3D and 2D games that will work in any browser natively without needing any especial software but with the rendering capabilities of Flash. Mobile browsers have been more likely to adopt this new technology for rendering \cite{webglDraft}. The first final version of the API has been already published and browsers like Chrome and Firefox carry it.
+
+Alongside with WebGL and many other APIs, this new HTML5 also carries the new Media Capture and Streams, also known as GetUserMedia API. This JavaScript API allows developers to access local media such as video/audio from webcams and insert them in a web application by using the new video DOM element \cite{getusermediaDraft}.
+
+This proposal was first attached directly to the WebRTC group but has been published in a different draft, the usage of this API removes the need of using Adobe Flash to access the media device and also the plugin requirement. Developers can capture media streams from cameras and build them into Blob objects to be transmitted to other peers or reproduced locally.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[scale=1]{./figures/mediastreamAPI.png}
+      \caption[Media Stream API (source: W3C)]{Media Stream API (source: W3C)).}
+	\label{fig:mediastreamAPI}
+\end{figure}
+
+Figure ~\ref{fig:mediastreamAPI} illustrates how the browser access that media and the outputs delivered to the developer. We will use this function to build WebRTC enabled applications for RTC video conferencing. The video tag is an HTML5 DOM element that reproduces local and remote streams.
+
 \subsubsection{WebRTC}
-Talk about SIP, RTMFP and WebRTC.
 
-
+Stuff about webrtc.
 
 \subsection{Issues in WebRTC}
 
