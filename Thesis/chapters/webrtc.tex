@@ -32,7 +32,27 @@ Some mobile platform important moments should be pointed out. In October 2012 Er
 
 \subsection{WebRTC architecture}
 
+How WebRTC works, simple topology and key points.
+
 \subsection{Alternatives}
+
+Some alternatives are available to the WebRTC concept, considering the global architecture of WebRTC, Session Initiation Protocol (SIP) and Secure Real-Time Media Flow Protocol (RTMFP) are similar approaches to the same solution.
+
+\subsubsection{SIP}
+
+Both SIP and RTMFP are protocols to allow communication between two different users with audio/video support. SIP is an open standard and RTMFP is a proprietary protocol by Adobe, both systems are widely used for real-time communication. SIP final Request for Comments (RFC) was published in June 2004 \cite{sipRFC}, this document describes the methods and behaviors of SIP. From an overview perspective, SIP is an application-layer control protocol for multimedia sessions, can establish, maintain and terminate them, during the development of the standard different new functionalities were added to the drafts such as conferencing and the possibility of adding/removing media from existing sessions. SIP differentiates from RTMFP/WebRTC by locating the end user to be used for communication, this feature allows SIP to be closely related to traditional PSTN networks as it allow cross-domain communication which is not possible when using RTMFP/WebRTC. SIP is not a complete toolkit for communications, it works alongside with other existing protocols such as Real-time Transport Protocol (RTP), Real-Time Streaming Protocol (RSTP), Session Description Protocol (SDP) and Media Gateway Control Protocol (MEGACO). Using SDP for the session negotiation between the end-points and RTP/RSTP for the media transport, all those protocols usage is widely extended in the network and provides legacy for older technologies. Meanwhile SIP can locate and deliver a message to a user, SDP can provide the required information for the session establishment and RTP can transport the media specified in the SDP body.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/SIParchitecture.png}
+      \caption[SIP architecture for end-to-end signaling]{SIP architecture for end-to-end signaling.}
+	\label{fig:SIParchitecture}
+\end{figure}
+
+SIP architecture relies in a trapezoid form where the Domain Name System (DNS) is used to locate the other peers of the system, once that peer is located and session is negotiated, media flows peer-to-peer directly to the endpoint. In order to build this system different agents are needed, SIP Proxies, SIP Redirect and SIP Registrar. SIP Proxies transmit the SDP and SIP messages from one peer to the other to establish communication (Figure ~\ref{fig:SIParchitecture}). SIP Registrar are the machines that collect and save all the user information from the end points.
+
+DNS provides the IP address for both proxy servers and allow the messages to be exchanged between both peers, when SIP is used the following messages are exchanged: INVITE, RINGING and 200OK. Those messages carry the SDP data inside in an object format, when ray@upc.cat receives the INVITE message from bob@aalto.fi builds the 200OK response carrying the SDP object that providing compatibility check between both peers and which options and codecs to use. SIP provides some more messages to update the already existing session or to close them. The media transport is done using RTP and RTCP that rely over User Datagram Protocol (UDP), for Network Address Translation (NAT) SIP uses other protocols such as Session Traversal Utilities for NAT (STUN) \cite{sipRFC}.
+
 
 Talk about SIP, RTMFP and WebRTC.
 
