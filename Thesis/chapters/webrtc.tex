@@ -4,13 +4,13 @@
 %% Leave first page empty
 \thispagestyle{empty}
 
-Web Real-Time Communication is an standard that will help to build P2P applications in the developer layer relying in a defined API. The first announcement went public in a working group of the World Wide Web Consortium (W3C) in May 2011 \cite{webrtcW3cgroup} and started the official mailing list in April 2011 \cite{welcomeW3C}. During the first stage of discussion, the main goal was to define a public draft for the API implementation and a route timeline with the goal to standardize the protocol by ends of 2012. The first public draft of W3C came public the 27th of October 2011 \cite{originalW3Cdraft}. During this first W3C draft, only media (audio and video) could be sent over the network to other peers, they focused in the way browsers will be able to access the media devices without using any plugin or external software.
+Web Real-Time Communication that builds P2P applications by using a defined API. The first announcement went public in a WG of the World Wide Web Consortium (W3C) in May 2011 \cite{webrtcW3cgroup} and started the official mailing list in April 2011 \cite{welcomeW3C}. During the first stage of discussion, the main goal was to define a public draft for the version 1 API implementation and a route timeline with the goal to publish the first version by March 2013. The first public draft of W3C came public the 27th of October 2011 \cite{originalW3Cdraft}. During this first W3C draft, only media (audio and video) could be sent over the network to other peers, it is focused in the way browsers are able to access the media devices without using any plugin or external software.
 
-Alongside to the W3C working group, the WebRTC concept also joined the IETF with a Working Group (WG) in May 2011 \cite{webrtcIETFgroup} with the first public announcement charter done the 3th of May 2011 \cite{webrtcIETFcharter}. The milestones of the WG initially marked December of 2011 as deadline to provide the information and elements required to the W3C for the API design input. On the other side, the main goals of the WG covered the definition of the communication model, session management, security, NAT traversal solution, media formats, codec agreement and transport of the data \cite{webrtcIETFcharter}. All goals have evolved during the standardization process with the work done along with the W3C WG.
+Alongside to the W3C working group, the WebRTC project also joined the IETF with a WG in May 2011 \cite{webrtcIETFgroup} with the first public announcement charter done the 3th of May 2011 \cite{webrtcIETFcharter}. Milestones of the WG initially marked December 2011 as deadline to provide the information and elements required to the W3C for the API design input. On the other side, the main goals of the WG covered the definition of the communication model, session management, security, NAT traversal solution, media formats, codec agreement and data transport \cite{webrtcIETFcharter}.
 
 One  of the most important steps during the process of standardization came the 1st of June 2011 when Google publicly released the source code of their API implementation \cite{haraldpublicWebRTC}. 
 
-During all this period both WGs have been working alongside to provide a reliable solution to enable applications to perform media and data peer-to-peer transfer in a plugin-free environment. The first final version of the WebRTC API is to be published during March 2013.
+During all this period both WGs have been working alongside to provide a reliable solution to enable cross-platform applications to perform media and data P2P transfer over the browser in a plugin-free environment. The first final version of the WebRTC API is to be published during March 2013.
 
 \subsection{Support}
 
@@ -36,7 +36,7 @@ Some alternatives are available to the WebRTC concept, considering the global ar
 
 \subsubsection{SIP}
 
-Both SIP and RTMFP are protocols to allow communication between two different users with audio/video support. SIP is an open standard and RTMFP is a proprietary protocol by Adobe, both systems are widely used for real-time communication. SIP final Request for Comments (RFC) was published in June 2004 \cite{sipRFC}, this document describes the methods and behaviors of SIP. From an overview perspective, SIP is an application-layer control protocol for multimedia sessions, can establish, maintain and terminate them, during the development of the standard different new functionalities were added to the drafts such as conferencing and the possibility of adding/removing media from existing sessions. SIP differentiates from RTMFP/WebRTC by locating the end user to be used for communication, this feature allows SIP to be closely related to traditional PSTN networks as it allow cross-domain communication which is not possible when using RTMFP/WebRTC. SIP is not a complete toolkit for communications, it works alongside with other existing protocols such as Real-time Transport Protocol (RTP), Real-Time Streaming Protocol (RSTP), Session Description Protocol (SDP) and Media Gateway Control Protocol (MEGACO). Using SDP for the session negotiation between the end-points and RTP/RSTP for the media transport, all those protocols usage is widely extended in the network and provides legacy for older technologies. Meanwhile SIP can locate and deliver a message to a user, SDP can provide the required information for the session establishment and RTP can transport the media specified in the SDP body.
+Both SIP and RTMFP are protocols to allow communication between two different users with audio/video support. SIP is an open standard and RTMFP is a proprietary protocol by Adobe, both systems are widely used for real-time communication. SIP final Request for Comments (RFC) was published in June 2004 \cite{sipRFC}, this chapter describes the methods and behaviors of SIP. From an overview perspective, SIP is an application-layer control protocol for multimedia sessions, can establish, maintain and terminate them, during the development of the standard different new functionalities were added to the drafts such as conferencing and the possibility of adding/removing media from existing sessions. SIP differentiates from RTMFP/WebRTC by locating the end user to be used for communication, this feature allows SIP to be closely related to traditional PSTN networks as it allow cross-domain communication which is not possible when using RTMFP/WebRTC. SIP is not a complete toolkit for communications, it works alongside with other existing protocols such as Real-time Transport Protocol (RTP), Real-Time Streaming Protocol (RSTP), Session Description Protocol (SDP) and Media Gateway Control Protocol (MEGACO). Using SDP for the session negotiation between the end-points and RTP/RSTP for the media transport, all those protocols usage is widely extended in the network and provides legacy for older technologies. Meanwhile SIP can locate and deliver a message to a user, SDP can provide the required information for the session establishment and RTP can transport the type of media specified in the SDP body.
 
 \begin{figure}[h]
   \centering
@@ -87,7 +87,7 @@ This proposal was first attached directly to the WebRTC group but has been publi
  \begin{figure}[h]
   \centering
     \includegraphics[scale=1]{./figures/mediastreamAPI.png}
-      \caption[Media Stream API (source: W3C)]{Media Stream API (source: W3C)).}
+      \caption[Media Stream API (source: W3C)]{Media Stream API (source: W3C).}
 	\label{fig:mediastreamAPI}
 \end{figure}
 
@@ -95,7 +95,18 @@ Figure ~\ref{fig:mediastreamAPI} illustrates how the browser access that media a
 
 \subsubsection{WebRTC}
 
-Stuff about webrtc.
+WebRTC is a working API part of the HTML5 proposal, it is defined in a W3C draft \cite{webrtcW3cgroup}. This API replaces the need of a RTMFP plugin for P2P communications for browsers, WebRTC uses already existing technologies, learned from SIP, bundled into an API. It is able to solve NAT transversal environments by using a mixtures of ICE, TURN and STUN technologies. For the session description it uses a modified bundled version of SDP. The format used for packet transport is RTP and SRTP, modified WebSockets are in use for P2P DataChannel implementation to provide data transport multiplexed over the same stream. All the traffic is sent over UDP or TCP \cite{alvestrandOverview2012}.
+
+This P2P session establishment system works in a constrained environment similar to RTMFP but it has been designed to provide legacy for other SDP based protocols such as SIP. It is a browser side API and does not provide any centralized service for signaling. Figure ~\ref{fig:webrtcExample} shows how a WebRTC simple P2P scenario works, the server used for signaling is based in node.js.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/webrtcExample.png}
+      \caption[WebRTC simple topology for P2P communication]{WebRTC simple topology for P2P communication.}
+	\label{fig:webrtcExample}
+\end{figure}
+
+Figure ~\ref{fig:webrtcExample} does not show relay machines that provide NAT transversal solutions, those rely in other technologies that are applied to the API. In this simple example we consider both peers are in the same network without any Firewall or NAT restriction.
 
 \subsection{Issues in WebRTC}
 
