@@ -70,11 +70,13 @@ This protocol is secured and encrypted, comparing with WebRTC, this issue has be
  
 Some of the most valuable features is the possibility to easy integrate P2P multicast topologies where one source sends a video to a group of receivers. This is something that none of the other protocols has implemented yet.
 
-\subsection{WebRTC and HTML5}
+\subsection{HTML5}
 
 WebRTC is part of the HTML5 package, both combined are an open cross-platform standard that aims to replace the Adobe proprietary proposal for P2P Real-Time Communication (RTC).
 
-\subsubsection{HTML5}
+By using HTML5 features we avoid the need of installing any extra software to be able to use real-time multimedia applications on the browser.
+
+\subsubsection{Media Capture and Streams}
 
 HTML5 proposal will replace the existing need to use plugins when having multimedia features in web browsers. This new version carries different API that will be built into the browser and avoid the usage of external software to execute them, this scenario helps to build cross-platform standard applications in JavaScript instead of using plugins. 
 
@@ -112,9 +114,9 @@ Figure ~\ref{fig:webrtcExample} does not show relay machines that provide NAT tr
 
 WebRTC uses a mixture of different technologies to perform peer-to-peer communication between clients, those technologies range from SRTP, RTP, RTCP and multiple codecs that are being discussed. This scenario makes performance the key point for success in developing stable WebRTC applications. 
 
-Performance is manly related to computer capabilities and the ability to encode/decode at the same time as transferring and monitoring multiple peer connections. All those tasks are run over the browser and not directly on the OS, this is good for interoperability between platforms but bad in the performance aspect. 
+Performance is manly related to computer capabilities and the ability to encode/decode at the same time as transferring and monitoring multiple peer connections. All those tasks are run over the browser and not directly on the OS, this is good for interoperability between platforms but bad in the performance aspect. Compared to Adobe technologies which uses a plugin, the performance they can deliver should be higher as they do not use as many application layers.
 
-Media applications are delay sensitive and require a low packet loss for its proper function, WebRTC is working on this aspect by trying to implement congestion control over the connection stablished between peers, this work has not been completed yet and will arise as a problem in the near future. Packet loss due to system capacity and bandwidth are measurable in WebRTC using the Stats API, this API provides information about the PeerConnection performance and is accessible by JavaScript.
+Media applications are delay sensitive and require a low packet loss for its proper function, WebRTC is working on this aspect by trying to implement congestion control over the connection stablished between peers, this work is not completed yet and will arise as a problem in the near future. Packet loss due to system capacity and bandwidth are measurable in WebRTC using the Stats API, this API provides information about the PeerConnection performance and is accessible by JavaScript.
 
-Constraints and bandwidth statistics will make a big difference in how media is acquired in WebRTC. Browsers and web applications have always tolerate some amount of delay and packet losses but this is not possible in media infrastructures for real time conversations, a change of scope is needed to handle Quality of Service (QoS) in WebRTC.
+Media constraints and bandwidth statistics will make a big difference in how media is acquired in WebRTC. Browsers and web applications have always tolerate some amount of delay and packet losses but this is not possible in media infrastructures for real time applications, an effort is needed to handle Quality of Service (QoS) in WebRTC if we want to compete with RTMFP.
 
