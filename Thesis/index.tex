@@ -1,12 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%  Albert Abell— Lozano MSc Thesis document                                                               %%
+%%  Albert AbellÃ³ Lozano MSc Thesis document                                                               %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Käytä toinen näistä, jos kirjoitat suomeksi:
-%% ensimmäinen, jos käytät pdflatexia (kuvat on oltava pdf-tiedostoina)
-%% toinen, jos haluat tuottaa ps-tiedostoa (käytä eps-formaattia kuville).
+%% Kâ€°ytâ€° toinen nâ€°istâ€°, jos kirjoitat suomeksi:
+%% ensimmâ€°inen, jos kâ€°ytâ€°t pdflatexia (kuvat on oltava pdf-tiedostoina)
+%% toinen, jos haluat tuottaa ps-tiedostoa (kâ€°ytâ€° eps-formaattia kuville).
 %%
 %% Use one of these you write in Finnish:
 %% the 1st when using pdflatex (use pdf figures) or
@@ -15,51 +15,51 @@
 %\documentclass[finnish,12pt,a4paper,dvips]{article}
 
 
-%% Käytä näitä, jos kirjoitat englanniksi
+%% Kâ€°ytâ€° nâ€°itâ€°, jos kirjoitat englanniksi
 %%
 %% Uncomment one of these if you write in English
 \documentclass[english,12pt,a4paper,pdftex]{article}
 %\documentclass[english,12pt,a4paper,dvips]{article}
 
-%% Tämä paketti on pakollinen
-%% Valitse korkeakoulusi näistä: arts, biz, chem, elec, eng, sci.
+%% Tâ€°mâ€° paketti on pakollinen
+%% Valitse korkeakoulusi nâ€°istâ€°: arts, biz, chem, elec, eng, sci.
 %%
 %% This package is required
 %% Choose your school from arts, biz, chem, elec, eng, sci.
 \usepackage[elec]{aaltothesis}
 
-%% Jos käytät latex-komentoa käännettäessä (oletusarvo) 
-%% kuvat kannattaa tehdä eps-muotoon. Älä käytä ps-muotoisia kuvia!
-%% Käytä seuraavaa latex-komennon ja eps-kuvien kanssa 
+%% Jos kâ€°ytâ€°t latex-komentoa kâ€°â€°nnettâ€°essâ€° (oletusarvo) 
+%% kuvat kannattaa tehdâ€° eps-muotoon. Æ’lâ€° kâ€°ytâ€° ps-muotoisia kuvia!
+%% Kâ€°ytâ€° seuraavaa latex-komennon ja eps-kuvien kanssa 
 %%
-%% Jos tääs käytät pdflatex-komentoa, joka kääntää tekstin suoraan
+%% Jos tâ€°â€°s kâ€°ytâ€°t pdflatex-komentoa, joka kâ€°â€°ntâ€°â€° tekstin suoraan
 %% pdf-tiedostoksi, kuvasi on oltava jpg-formaatissa tai pdf-formaatissa.
 %%
 %% Use this if you run pdflatex and use jpg/pdf-format pictures.
 %%
 \usepackage{graphicx} 
 \graphicspath{{../figures/}}
+%%\DeclareGraphicsExtensions{.pdf}{png}{.png}{.jpg}{jpg}{.jpeg}{jpeg}
 \DeclareGraphicsExtensions{.pdf}
+\usepackage{url}
 \usepackage[small, bf]{caption}
 \usepackage[font=small]{subfig}
 \usepackage{ucs} % Soporte Unicode
-\usepackage[latin1]{inputenc} % Ficheros de entrada en latin1
-
+\usepackage[utf8x]{inputenc} % Ficheros de entrada en latin1
 %% Use this if you do not like hyperref package - this
 %% defines url environment and formats it correctly
-\usepackage{url}
 
-%% Matematiikan fontteja, symboleja ja muotoiluja lisää, näitä tarvitaan usein 
+%% Matematiikan fontteja, symboleja ja muotoiluja lisâ€°â€°, nâ€°itâ€° tarvitaan usein 
 %%
 %% Use this if you write hard core mathematics, these are usually needed
 \usepackage{amsfonts,amssymb,amsbsy}  
 
-%% Vaakasuunnan mitat, ÄLÄ KOSKE!
+%% Vaakasuunnan mitat, Æ’LÆ’ KOSKE!
 \setlength{\hoffset}{-1in}
 \setlength{\oddsidemargin}{35mm}
 \setlength{\evensidemargin}{25mm}
 \setlength{\textwidth}{15cm}
-%% Pystysuunnan mitat, ÄLÄ KOSKE!
+%% Pystysuunnan mitat, Æ’LÆ’ KOSKE!
 \setlength{\voffset}{-1in}
 \setlength{\headsep}{7mm}
 \setlength{\headheight}{1em}
@@ -67,7 +67,7 @@
 \setlength{\textheight}{23cm}
 
 
-%% Kaikki mikä paperille tulostuu, on tämän jälkeen
+%% Kaikki mikâ€° paperille tulostuu, on tâ€°mâ€°n jâ€°lkeen
 %%
 %% Output starts here
 \begin{document}
@@ -78,16 +78,16 @@
 %% Change the school field to describe your school if the autimatically 
 %% set name is wrong
 % \university{aalto University}{aalto-Yliopisto}
-% \school{School of Electrical Engineering}{SähköTekniikan korkeakoulu}
+% \school{School of Electrical Engineering}{Sâ€°hkË†Tekniikan korkeakoulu}
 
-%% Vain kandityölle: Korjaa seuraavat vastaamaan koulutusohjelmaasi
+%% Vain kandityË†lle: Korjaa seuraavat vastaamaan koulutusohjelmaasi
 %%
 %% Only for B.Sc. thesis: Choose your degree programme. 
 \degreeprogram{Electronics and electrical engineering}%
-{Elektroniikka ja sähkötekniikka}
+{Elektroniikka ja sâ€°hkË†tekniikka}
 %%
 
-%% Vain DI/M.Sc.- ja lisensiaatintyölle: valitse laitos, 
+%% Vain DI/M.Sc.- ja lisensiaatintyË†lle: valitse laitos, 
 %% professuuri ja sen professuurikoodi. 
 %%
 %% Only for M.Sc. and Licentiate thesis: Choose your department,
@@ -98,7 +98,7 @@
 \code{S-55}
 %%
 
-%% Valitse yksi näistä kolmesta
+%% Valitse yksi nâ€°istâ€° kolmesta
 %%
 %% Choose one of these:
 %\univdegree{BSc}
@@ -110,37 +110,37 @@
 %% Should be self explanatory...
 \author{Albert Abell\'o Lozano}
 
-%% Opinnäytteen otsikko tulee vain tähän. Älä tavuta otsikkoa ja
-%% vältä liian pitkää otsikkotekstiä. Jos latex ryhmittelee otsikon
-%% huonosti, voit joutua pakottamaan rivinvaihdon \\ kontrollimerkillä.
-%% Muista että otsikkoja ei tavuteta! 
-%% Jos otsikossa on ja-sana, se ei jää rivin viimeiseksi sanaksi 
+%% Opinnâ€°ytteen otsikko tulee vain tâ€°hâ€°n. Æ’lâ€° tavuta otsikkoa ja
+%% vâ€°ltâ€° liian pitkâ€°â€° otsikkotekstiâ€°. Jos latex ryhmittelee otsikon
+%% huonosti, voit joutua pakottamaan rivinvaihdon \\ kontrollimerkillâ€°.
+%% Muista ettâ€° otsikkoja ei tavuteta! 
+%% Jos otsikossa on ja-sana, se ei jâ€°â€° rivin viimeiseksi sanaksi 
 %% vaan aloittaa uuden rivin.
 %% 
 %% Your thesis title. If the title is very long and the latex 
 %% does unsatisfactory job of breaking the lines, you will have to
 %% break the lines yourself with \\ control character. 
 %% Do not hyphenate titles.
-\thesistitle{Performance analysis of WebRTC}{Opinnäyteohje}
+\thesistitle{Performance analysis of WebRTC}{Opinnâ€°yteohje}
 
 \place{Espoo}
-%% Kandidaatintyön päivämäärä on sen esityspäivämäärä! 
+%% KandidaatintyË†n pâ€°ivâ€°mâ€°â€°râ€° on sen esityspâ€°ivâ€°mâ€°â€°râ€°! 
 %% 
 %% For B.Sc. thesis use the date when you present your thesis. 
 \date{20.3.2012}
 
-%% Kandidaattiseminaarin vastuuopettaja tai diplomityön valvoja.
-%% Huomaa tittelissä "\" -merkki pisteen jälkeen, 
-%% ennen välilyöntiä ja seuraavaa merkkijonoa. 
-%% Näin tehdään, koska kyseessä ei ole lauseen loppu, jonka jälkeen tulee 
-%% hieman pidempi väli vaan halutaan tavallinen väli.
+%% Kandidaattiseminaarin vastuuopettaja tai diplomityË†n valvoja.
+%% Huomaa tittelissâ€° "\" -merkki pisteen jâ€°lkeen, 
+%% ennen vâ€°lilyË†ntiâ€° ja seuraavaa merkkijonoa. 
+%% Nâ€°in tehdâ€°â€°n, koska kyseessâ€° ei ole lauseen loppu, jonka jâ€°lkeen tulee 
+%% hieman pidempi vâ€°li vaan halutaan tavallinen vâ€°li.
 %%
 %% B.Sc. or M.Sc. thesis supervisor 
 %% Note the "\" after the comma. This forces the following space to be 
 %% a normal interword space, not the space that starts a new sentence. 
 \supervisor{Prof.\ J\"org Ott}{Prof.\ J\"org Ott}
 
-%% Kandidaatintyön ohjaaja(t) tai diplomityön ohjaaja(t)
+%% KandidaatintyË†n ohjaaja(t) tai diplomityË†n ohjaaja(t)
 %% 
 %% B.Sc. or M.Sc. thesis advisors(s). 
 %%
@@ -164,14 +164,14 @@
 %% Logo language is set to be the same as the document language.
 \uselogo{aaltoRed}{''}
 
-%% Tehdään kansilehti
+%% Tehdâ€°â€°n kansilehti
 %%
 %% Create the coverpage
 \makecoverpage
 
 %% Pakotetaan uusi sivu varmuuden vuoksi, jotta 
-%% mahdollinen suomenkielinen ja englanninkielinen tiivistelmä
-%% eivät tule vahingossakaan samalle sivulle
+%% mahdollinen suomenkielinen ja englanninkielinen tiivistelmâ€°
+%% eivâ€°t tule vahingossakaan samalle sivulle
 %%
 %% Force new page so that English abstract starts from a new page
 \newpage
@@ -201,20 +201,20 @@ Otaniemi, 9.3.2012
 \vspace{5mm}
 {\hfill Albert Abell\'o Lozano \hspace{1cm}}
 
-%% Pakotetaan varmuuden vuoksi esipuheen jälkeinen osa
+%% Pakotetaan varmuuden vuoksi esipuheen jâ€°lkeinen osa
 %% alkamaan uudelta sivulta
 %%
 %% Force new page after preface
 \newpage
 
-%% Sisällysluettelo
-%% addcontentsline tekee pdf-tiedostoon viitteen sisällysluetteloa varten
+%% Sisâ€°llysluettelo
+%% addcontentsline tekee pdf-tiedostoon viitteen sisâ€°llysluetteloa varten
 %% 
 %% Table of contents. 
 \addcontentsline{toc}{section}{Contents}
 
 
-%% Tehdään sisällysluettelo
+%% Tehdâ€°â€°n sisâ€°llysluettelo
 %%
 %% Create it. 
 \tableofcontents
