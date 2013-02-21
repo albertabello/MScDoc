@@ -1,0 +1,35 @@
+\section{Key Performance Indicators in Real-Time Environment}
+
+
+%% 
+%% Leave first page empty
+\thispagestyle{empty}
+
+This section will define the way we measure the performance in WebRTC environments, this real-time media environment will require an specific approach and some metrics to define how the protocol behaves in different topologies and scenarios. 
+
+Different issues might affect directly how the WebRTC media performs, these range from the hardware of the clients to the state of the link. In the following chapters we will describe some of them that will be used in our study cases.
+
+\subsection{Losses}
+
+Loss rate indicates packet losses during the transmission or processing. Usually packet losses affect directly the performance of a call and can indicate how the link is behaving between the different peers, in our case, packet loss will be a direct indicator of the quality of the ongoing WebRTC transmission. However, the packet loss indicate that some packets are not arriving, another strong indicator that goes attached is delay as packets will arrive later prior to getting lost in the link. This indicator will show up when the link is carrying big congestion of failures. 
+
+Some delayed packets should also be considered as losses as they won't be useful anymore for the ongoing connection, those packets won't show up in the stats as losses. In WebRTC loss rate will affect directly to the ongoing transmission as the delay range that we can tolerate is very low before the quality of the call deteriorates, some data-driven WebRTC connections will tolerate some more delay. In general case Loss Rate will be considered as a main point for recalculating the path by using faster routes. This indicator is manly attached to link quality.
+
+Losses will be calculated in a certain period of time so we will be able to see how much loss rate we have in a certain range of time.
+
+\subsection{Round-Trip Time (RTT)}
+
+The delay in a link can be measured form different perspectives, one-way delay indicates the time it takes for a packet to move from one peer to the other peer, this time includes different delays that are given in the link. This one-way delay is calculated form the time taken to process it in both sides (building and decoding), the lower layer delay in the client (interface and intra-layering delay), queuing delay (from the multiple buffers in the path) and propagation delay (speed of light). The sum of all those delays compose the total one-way delay.
+
+Considering the structure of WebRTC, one of the most important delays that we will have to consider and study is the processing delay as our applications will rely in a multiple layer structure, running over the browser will affect the performance compared to other technologies that run directly over the OS. Delays in our case will be symmetric as we will be sending and receiving media, the delay will be important in order to reproduce the streams in the best quality possible and avoid decoding artifacts in the media. 
+
+RTT will be an early indicator of congestion in a WebRTC connection, this RTT must be monitored and most important, the adequate RTT have to be defined for every connection as the clients won't be aware of the appropriate amount for good performance.
+
+\subsection{Throughput}
+
+Throughput will be a key metric for testing the performance of WebRTC environments, this value will show how much capacity of the link is taking each PC and stream. It is complex though as there is still no QoS implemented in WebRTC. The throughput metric is going to provide bandwidth for video/audio in each direction, we can then use this value to provide some quality metric averaging all the previous mentioned measures in order to monitor the overall quality of the call. A sudden drop of the throughput will mean that the bandwidth available for that PC has been drastically reduced, this will lead to artifacts, or in the word case, loose of communication between peers. In this specific situation ICE candidates will try to be renegotiated in order to obtain a different solution for the connection and reestablish the media with the best throughput possible.
+
+\subsubsection{Audio streams}
+
+When using real time media environments for bidirectional communication the user experience is a key indicator of success. One of the factors that have to be considered is the Noise Reduction (NR) and Acoustic Echo Canceler (AEC). Those mechanisms allow the call to be smooth and avoid extra noises and echoes from the speaker voice to be transmitted, in WebRTC will provide a strange behavior when measuring the throughput, when the is no speech the bytes transferred will be approximately zero, being the throughput negligible. This helps to reduce the bandwidth usage and provides a more comfortable conversation when having a call.
+
