@@ -1,5 +1,5 @@
 \section{Testing Environment}
-
+\label{sec:testingEnv}
 
 %% 
 %% Leave first page empty
@@ -37,6 +37,17 @@ The previous Figure~\ref{fig:onetooneWifiRTC} considers the global bandwidth of 
 
 Figure~\ref{fig:onetooneWifiRTCVideoStreams} shows the two video streams captured from the same machine, one is outgoing the local video stream meanwhile the second stream is the incoming video stream from the other peer. We have built a flexible processing system that allows us to capture and analyze all the possible combinations of streams and metrics. The timing used for the capture is provided by the TimeStamp available on the RTCP. The average bandwidth used in this scenario of point-to-point call in a standard wireless network is around 2000 Kbps per video stream. Both figures are plotted from the same original call.
 
+Our Stats API also provides extra information such as RTT and loss rate, RTT should be provided natively by the WebRTC method but it is possible to calculate it by using the DataChannel provided by the PeerConnection, we are using this channel to send a UNIX TimeStamp object to the other peer and take it back, when the round trip is finished we compare it with the actual millisecond and obtain the total RTT.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/p2prttexample.pdf}
+      \caption[Point-to-point WebRTC RTT measure using Stats API over public WiFi]{Point-to-point WebRTC RTT measure using Stats API over public WiFi.}
+	\label{fig:p2prttexample}
+\end{figure}
+
+Figure~\ref{fig:p2prttexample} represents the capture of a video call between two peers, if we are able to process the JavaScript forwarding function in an optimal way this would led to a precise RTT measurement hack without the need of Stats method.
+
 \subsection{Connection Monitor}
 
 Connection Monitor ({\it ConMon}) is a command line utility that relies on the transport layer and uses TCPDUMP to sniff all the packets that to go a certain interface and port. This application is designed to specifically detect and capture RTP/UDP packets, relies on {\it libcap} for the capture in the network layer. This software detects and saves the header but discards the payload of the packet keeping the information we need for calculating our KPIs.
@@ -54,25 +65,31 @@ Typically we will run the PeerConnections between two devices and start capturin
 
 The capture from {\it ConMon} will be very accurate capturing all the packets that go through the interface, dumping the values into the output file, this data will then be processed and averaged for every second prior plotting. This processing will lead to some fluctuations on the graph that distort the reality.
 
+\subsection{Dummynet}
+
+To check the performance of WebRTC we will need to modify the status of the network link. This is achieved using {\it Dummynet}, a command line network simulator that allow us to add bandwidth limitations, delays, packet losses and other distortions to the ongoing link. This program will be executed on the computers running the PeerConnections adding those different rules to the interface which is used for the network.
+
+{\it Dummynet} is an standard tool for some Linux distributions and OSX~\cite{dummynetTool}.
+
 \subsection{Analysis of tools}
 
 Both tools will be measuring the same metrics but from different OS layers, this provides us some extra data to be considered in order to see how the our Stats API work and if it is possible to implement some extra features relying on that data for the WebRTC API.
 
-Figure~\ref{fig:p2pincommingStatsConmonWifi} and~\ref{fig:p2poutgoingStatsConmonWifi} shows two video streams being captured from Stats API and {\it ConMon}.
+Because of the period needed to measure the results it is possible to have strange behaviors when plotting the results as the information regarding to the next data period can be considered as the previous one. This is an accuracy problem that cannot be approached easily, when looking at the graph is important to see if both peaks (positive and negative) get compensated as this would mean that the data has not been allocated to the current period. This accuracy error is a problem that can be observed when comparing both {\it ConMon} and Stats API capture as the browser will take some time to process the stats and send them to the JavaScript method, this will led to some extra error.
 
- \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/p2pincommingStatsConmonWifi.pdf}
-      \caption[P2P incoming video stream comparison between ConMon and Stats API over public WiFi]{P2P incomming video stream comparison between ConMon and Stats API over public WiFi.}
-	\label{fig:p2pincommingStatsConmonWifi}
-\end{figure}
+Figure~\ref{fig:p2pincommingStatsConmonWifi} and~\ref{fig:p2poutgoingStatsConmonWifi} plot two video streams being captured from Stats API and {\it ConMon}.
 
 \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/p2poutgoingStatsConmonWifi.pdf}
-      \caption[P2P outgoing video stream comparison between ConMon and Stats API over public WiFi]{P2P outgoing video stream comparison between ConMon and Stats API over public WiFi.}
-	\label{fig:p2poutgoingStatsConmonWifi}
+	\begin{minipage}{.5\textwidth}
+		\includegraphics[width=1\textwidth]{./figures/p2pincommingStatsConmonWifi.pdf}
+			\caption[P2P incoming video stream comparison between ConMon and Stats API over public WiFi]{P2P incoming video stream comparison between ConMon and Stats API over public WiFi.}
+			\label{fig:p2pincommingStatsConmonWifi}
+	 \end{minipage}
+	 \begin{minipage}{.5\textwidth}
+		\includegraphics[width=1\textwidth]{./figures/p2poutgoingStatsConmonWifi.pdf}
+			\caption[P2P outgoing video stream comparison between ConMon and Stats API over public WiFi]{P2P outgoing video stream comparison between ConMon and Stats API over public WiFi.}
+			\label{fig:p2poutgoingStatsConmonWifi}
+	 \end{minipage}
 \end{figure}
 
-Figure~\ref{fig:p2pincommingStatsConmonWifi} represents the incoming media stream from the other peer, this is why the throughput seems to be so unstable in some parts of the call, consider also that this test was performed using wireless connection without any network conditioner. 
-
+Figure~\ref{fig:p2pincommingStatsConmonWifi} represents the incoming media stream from the other peer, this is why the throughput seems to be so unstable in some parts of the call, consider also that this test was performed using wireless connection without any network conditioner. In Figure~\ref{fig:p2poutgoingStatsConmonWifi} local stream is sent from the peer capturing with {\it ConMon} to the remote peer, the throughput captured using Stats API will be much more stable around the 2000 Kbps.

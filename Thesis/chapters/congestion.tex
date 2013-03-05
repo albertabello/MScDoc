@@ -17,6 +17,13 @@ Some delayed packets should also be considered as losses as they won't be useful
 
 Losses will be calculated in a certain period of time so we will be able to see how much loss rate we have in a certain range of time.
 
+\begin{equation}
+	\frac{PKT_{loss}(T) - PKT_{loss}(T-1)}{PKT_{received}(T) - PKT_{received}(T-1) + PKT_{loss}(T) - PKT_{loss}(T-1)}
+	\label{eq:PKTloss}
+\end{equation}
+
+Equation~\ref{eq:PKTloss} calculates the estimated packet loss we might have on the link. This operation will be done every period, we will determine this period when building the testing environment.
+
 \subsection{Round-Trip Time (RTT)}
 
 The delay in a link can be measured form different perspectives, one-way delay indicates the time it takes for a packet to move from one peer to the other peer, this time includes different delays that are given in the link. This one-way delay is calculated form the time taken to process it in both sides (building and decoding), the lower layer delay in the client (interface and intra-layering delay), queuing delay (from the multiple buffers in the path) and propagation delay (speed of light). The sum of all those delays compose the total one-way delay.

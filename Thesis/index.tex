@@ -37,6 +37,8 @@
 %%
 %% Use this if you run pdflatex and use jpg/pdf-format pictures.
 %%
+\usepackage[utf8]{inputenc} % Ficheros de entrada en latin1
+
 \usepackage{graphicx} 
 \graphicspath{{../figures/}}
 %%\DeclareGraphicsExtensions{.pdf}{png}{.png}{.jpg}{jpg}{.jpeg}{jpeg}
@@ -44,9 +46,8 @@
 \usepackage{url}
 \usepackage[small, bf]{caption}
 \usepackage[font=small]{subfig}
-\usepackage{mathptmx}
-\usepackage{ucs} % Soporte Unicode
-\usepackage[utf8x]{inputenc} % Ficheros de entrada en latin1
+\usepackage{amsmath}
+%%\usepackage{ucs} % Soporte Unicode
 %% Use this if you do not like hyperref package - this
 %% defines url environment and formats it correctly
 
@@ -259,6 +260,9 @@ Otaniemi, 9.3.2012
 
 %Simulation environment
 \include{./chapters/simulation}
+
+%Tests
+\include{./chapters/tests}
 
 %Summary of results
 %\include{./chapters/summary}
