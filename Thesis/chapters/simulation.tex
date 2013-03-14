@@ -37,14 +37,14 @@ The previous Figure~\ref{fig:onetooneWifiRTC} considers the global bandwidth of 
 
 Figure~\ref{fig:onetooneWifiRTCVideoStreams} shows the two video streams captured from the same machine, one is outgoing the local video stream meanwhile the second stream is the incoming video stream from the other peer. We have built a flexible processing system that allows us to capture and analyze all the possible combinations of streams and metrics. The timing used for the capture is provided by the TimeStamp available on the RTCP. The average bandwidth used in this scenario of point-to-point call in a standard wireless network is around 2000 Kbps per video stream. Both figures are plotted from the same original call.
 
-Our Stats API also provides extra information such as RTT and loss rate, RTT should be provided natively by the WebRTC method but it is possible to calculate it by using the DataChannel provided by the PeerConnection, we are using this channel to send a UNIX TimeStamp object to the other peer and take it back, when the round trip is finished we compare it with the actual millisecond and obtain the total RTT.
-
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/p2prttexample.pdf}
       \caption[Point-to-point WebRTC RTT measure using Stats API over public WiFi]{Point-to-point WebRTC RTT measure using Stats API over public WiFi.}
 	\label{fig:p2prttexample}
 \end{figure}
+
+Our Stats API also provides extra information such as RTT and loss rate, RTT should be provided natively by the WebRTC method but it is possible to calculate it by using the DataChannel provided by the PeerConnection, we are using this channel to send a UNIX TimeStamp object to the other peer and take it back, when the round trip is finished we compare it with the actual millisecond and obtain the total RTT.
 
 Figure~\ref{fig:p2prttexample} represents the capture of a video call between two peers, if we are able to process the JavaScript forwarding function in an optimal way this would led to a precise RTT measurement hack without the need of Stats method.
 
@@ -59,7 +59,7 @@ Typically we will run the PeerConnections between two devices and start capturin
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/onetooneWiFiConMon.pdf}
-      \caption[Point-to-point WebRTC video stream throughput graph using Stats API over public WiFi]{Point-to-point WebRTC video stream throughput graph using Stats API over public WiFi.}
+      \caption[Point-to-point WebRTC video stream throughput graph using ConMon over public WiFi]{Point-to-point WebRTC video stream throughput graph using ConMon over public WiFi.}
 	\label{fig:onetooneWifiRTCConMon}
 \end{figure}
 
@@ -93,3 +93,48 @@ Figure~\ref{fig:p2pincommingStatsConmonWifi} and~\ref{fig:p2poutgoingStatsConmon
 \end{figure}
 
 Figure~\ref{fig:p2pincommingStatsConmonWifi} represents the incoming media stream from the other peer, this is why the throughput seems to be so unstable in some parts of the call, consider also that this test was performed using wireless connection without any network conditioner. In Figure~\ref{fig:p2poutgoingStatsConmonWifi} local stream is sent from the peer capturing with {\it ConMon} to the remote peer, the throughput captured using Stats API will be much more stable around the 2000 Kbps.
+
+\subsection{Manual and automated testing}
+
+For our testing scenario we consider two options, manual and automated testing. The first test environment does not give as much accuracy due to the impossibility to iterate the test many times in a controlled environment, if the second option is available the results can be compared after running the test for many iterations, this is much more accurate.
+
+When considering both, the media being sent becomes a problem as there should be rich enough to be able to replicate a real call scenario. Google Chrome provides a fake video that can be activated by adding {\it --use-fake-device-for-media-stream} parameter, this video though might be too simple for our purposes.
+
+%\begin{figure}[h]
+%	\begin{minipage}{.5\textwidth}
+%		\includegraphics[width=1\textwidth]{./figures/realVideoChrome.pdf}
+%			\caption[Video stream bandwidth between two peers using webcam]{Video call bandwidth between two peers using webcam.}
+%			\label{fig:realVideoChrome}
+%	 \end{minipage}
+%	 \begin{minipage}{.5\textwidth}
+%		\includegraphics[width=1\textwidth]{./figures/automatedVideoChrome.pdf}
+%			\caption[Video stream bandwidth between two peers using fake video]{Video stream bandwidth between two peers using fake video.}
+%			\label{fig:automatedVideoChrome}
+%	 \end{minipage}
+%\end{figure}
+
+ \begin{figure}[h]
+  \centering
+   \includegraphics[width=1\textwidth]{./figures/realVideoChrome.pdf}
+     \caption[Video stream bandwidth using webcam]{Video stream bandwidth using webcam input.}
+	\label{fig:realVideoChrome}
+%\end{figure}
+ %\begin{figure}[h]
+  \centering
+	\includegraphics[width=1\textwidth]{./figures/automatedVideoChrome.pdf}
+	\caption[Video stream bandwidth using Chrome default fake content]{Video stream bandwidth using Chrome default fake video input.}
+	\label{fig:automatedVideoChrome}
+\end{figure}
+
+Figure~\ref{fig:realVideoChrome} represents the bandwidth that a real video call uses when sending the stream to the other peer, that capture shows the same stream from the origin an remote {\it StatsAPI} perspective. The bandwidth allocated goes up to 2000 Kbps. On the other hand, Figure~\ref{fig:automatedVideoChrome} represents the same call by using the built-in fake video on both clients, the bandwidth in this case drops to an average of 250 Kbps. Those figures represent the same stream identified with the SSRC that corresponds, input from receiver and output from origin, this representation helps us to identify any possible distortion on the link. Google Chrome uses a bitmap system to draw the figures and components to be rendered in the video tag, this means that the amount of encoding and bandwidth used is low compared to a real webcam.
+
+To address this issue in the video streamed from our automated devices we have built a fake input device on the virtual machines that will be fed with a RAW YUV video of different resolutions and quality. This device will be added by a hacked version of the {\it V4L2Loopback} which derives from the {\it V4L} driver for Linux, the modified version of the {\it V4L2Loopback} builds two extra devices as Chrome is unable to read from the same reading/writing device for security reasons, one of them will be used to fed the video and the other one to read it~\cite{chromiumIssue142568}. The file will be fed by a second tool that loops a YUV video using {\it Gstreamer} to a specified device.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/testV4L2niklas.pdf}
+      \caption[Video stream bandwidth using V4L2Loopback fake YUV file]{Video stream bandwidth using V4L2Loopback fake YUV file.}
+	\label{fig:testV4L2niklas}
+\end{figure}
+
+Figure~\ref{fig:testV4L2niklas} shows the bandwidth of a video stream measured by our {\it Stats API} using an YUV video captured from a Logitech HD Pro C910 as source, resolution is 640x480 at a frame-rate of 30 fps. Results show an approximate average bandwidth of 2000 Kbps which is a realistic approach to a real webcam. This setup will allow us to run multiple tests without the need of a webcam.

@@ -1,0 +1,288 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Albert Abelló Lozano MSc Thesis document                                                               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% K‰yt‰ toinen n‰ist‰, jos kirjoitat suomeksi:
+%% ensimm‰inen, jos k‰yt‰t pdflatexia (kuvat on oltava pdf-tiedostoina)
+%% toinen, jos haluat tuottaa ps-tiedostoa (k‰yt‰ eps-formaattia kuville).
+%%
+%% Use one of these you write in Finnish:
+%% the 1st when using pdflatex (use pdf figures) or
+%% the 2nd when producing a ps file (use eps figures).
+%\documentclass[finnish,12pt,a4paper,pdftex]{article}
+%\documentclass[finnish,12pt,a4paper,dvips]{article}
+
+
+%% K‰yt‰ n‰it‰, jos kirjoitat englanniksi
+%%
+%% Uncomment one of these if you write in English
+\documentclass[english,12pt,a4paper,pdftex]{article}
+%\documentclass[english,12pt,a4paper,dvips]{article}
+
+%% T‰m‰ paketti on pakollinen
+%% Valitse korkeakoulusi n‰ist‰: arts, biz, chem, elec, eng, sci.
+%%
+%% This package is required
+%% Choose your school from arts, biz, chem, elec, eng, sci.
+\usepackage[elec]{aaltothesis}
+
+%% Jos k‰yt‰t latex-komentoa k‰‰nnett‰ess‰ (oletusarvo) 
+%% kuvat kannattaa tehd‰ eps-muotoon. ƒl‰ k‰yt‰ ps-muotoisia kuvia!
+%% K‰yt‰ seuraavaa latex-komennon ja eps-kuvien kanssa 
+%%
+%% Jos t‰‰s k‰yt‰t pdflatex-komentoa, joka k‰‰nt‰‰ tekstin suoraan
+%% pdf-tiedostoksi, kuvasi on oltava jpg-formaatissa tai pdf-formaatissa.
+%%
+%% Use this if you run pdflatex and use jpg/pdf-format pictures.
+%%
+\usepackage[utf8]{inputenc} % Ficheros de entrada en latin1
+
+\usepackage{graphicx} 
+\graphicspath{{../figures/}}
+%%\DeclareGraphicsExtensions{.pdf}{png}{.png}{.jpg}{jpg}{.jpeg}{jpeg}
+\DeclareGraphicsExtensions{.svg,.pdf,.png,.jpeg,.jpg}
+\usepackage{url}
+\usepackage[small, bf]{caption}
+\usepackage[font=small]{subfig}
+\usepackage{amsmath}
+%%\usepackage{ucs} % Soporte Unicode
+%% Use this if you do not like hyperref package - this
+%% defines url environment and formats it correctly
+
+%% Matematiikan fontteja, symboleja ja muotoiluja lis‰‰, n‰it‰ tarvitaan usein 
+%%
+%% Use this if you write hard core mathematics, these are usually needed
+\usepackage{amsfonts,amssymb,amsbsy}  
+
+%% Vaakasuunnan mitat, ƒLƒ KOSKE!
+\setlength{\hoffset}{-1in}
+\setlength{\oddsidemargin}{35mm}
+\setlength{\evensidemargin}{25mm}
+\setlength{\textwidth}{15cm}
+%% Pystysuunnan mitat, ƒLƒ KOSKE!
+\setlength{\voffset}{-1in}
+\setlength{\headsep}{7mm}
+\setlength{\headheight}{1em}
+\setlength{\topmargin}{25mm-\headheight-\headsep}
+\setlength{\textheight}{23cm}
+
+
+%% Kaikki mik‰ paperille tulostuu, on t‰m‰n j‰lkeen
+%%
+%% Output starts here
+\begin{document}
+
+%% Korjaa vastaamaan korkeakouluasi, jos automaattisesti asetettu nimi on 
+%% virheellinen 
+%%
+%% Change the school field to describe your school if the autimatically 
+%% set name is wrong
+% \university{aalto University}{aalto-Yliopisto}
+% \school{School of Electrical Engineering}{S‰hkˆTekniikan korkeakoulu}
+
+%% Vain kandityˆlle: Korjaa seuraavat vastaamaan koulutusohjelmaasi
+%%
+%% Only for B.Sc. thesis: Choose your degree programme. 
+\degreeprogram{Electronics and electrical engineering}%
+{Elektroniikka ja s‰hkˆtekniikka}
+%%
+
+%% Vain DI/M.Sc.- ja lisensiaatintyˆlle: valitse laitos, 
+%% professuuri ja sen professuurikoodi. 
+%%
+%% Only for M.Sc. and Licentiate thesis: Choose your department,
+%% professorship and professorship code. 
+\department{Department of Communication and Networking}%
+{Radiotieteen ja -tekniikan laitos}
+\professorship{Networking Technology}{Piiriteoria}
+\code{S-55}
+%%
+
+%% Valitse yksi n‰ist‰ kolmesta
+%%
+%% Choose one of these:
+%\univdegree{BSc}
+\univdegree{MSc}
+%\univdegree{Lic}
+
+%% Oma nimi
+%%
+%% Should be self explanatory...
+\author{Albert Abell\'o Lozano}
+
+%% Opinn‰ytteen otsikko tulee vain t‰h‰n. ƒl‰ tavuta otsikkoa ja
+%% v‰lt‰ liian pitk‰‰ otsikkoteksti‰. Jos latex ryhmittelee otsikon
+%% huonosti, voit joutua pakottamaan rivinvaihdon \\ kontrollimerkill‰.
+%% Muista ett‰ otsikkoja ei tavuteta! 
+%% Jos otsikossa on ja-sana, se ei j‰‰ rivin viimeiseksi sanaksi 
+%% vaan aloittaa uuden rivin.
+%% 
+%% Your thesis title. If the title is very long and the latex 
+%% does unsatisfactory job of breaking the lines, you will have to
+%% break the lines yourself with \\ control character. 
+%% Do not hyphenate titles.
+\thesistitle{Performance analysis of WebRTC}{Opinn‰yteohje}
+
+\place{Espoo}
+%% Kandidaatintyˆn p‰iv‰m‰‰r‰ on sen esitysp‰iv‰m‰‰r‰! 
+%% 
+%% For B.Sc. thesis use the date when you present your thesis. 
+\date{20.3.2012}
+
+%% Kandidaattiseminaarin vastuuopettaja tai diplomityˆn valvoja.
+%% Huomaa titteliss‰ "\" -merkki pisteen j‰lkeen, 
+%% ennen v‰lilyˆnti‰ ja seuraavaa merkkijonoa. 
+%% N‰in tehd‰‰n, koska kyseess‰ ei ole lauseen loppu, jonka j‰lkeen tulee 
+%% hieman pidempi v‰li vaan halutaan tavallinen v‰li.
+%%
+%% B.Sc. or M.Sc. thesis supervisor 
+%% Note the "\" after the comma. This forces the following space to be 
+%% a normal interword space, not the space that starts a new sentence. 
+\supervisor{Prof.\ J\"org Ott}{Prof.\ J\"org Ott}
+
+%% Kandidaatintyˆn ohjaaja(t) tai diplomityˆn ohjaaja(t)
+%% 
+%% B.Sc. or M.Sc. thesis advisors(s). 
+%%
+%% Note that there has been a change in the official EN translation
+%% of the Finnish title ``ohjaaja'' which in the previous version (1.5) 
+%% of this document was called ``instructor''. The recommended
+%% translation is now ``advisor''.  
+%% However, the LaTeX internal variable remains \instructor
+%% as there is little point to change the variable name. 
+%%
+%\instructor{Prof. Pirjo Professori}{Prof. Pirjo Professori}
+\instructor{M.Sc.\ (Tech.) Varun Singh}{TkT Varun Singh}
+%\instructor{M.Sc.\ (Tech.) Polli Pohjaaja}{DI Polli Pohjaaja}
+
+%% Aaltologo: syntaksi:
+%% \uselogo{aaltoRed|aaltoBlue|aaltoYellow|aaltoGray|aaltoGrayScale}{?|!|''}
+%% Logon kieli on sama kuin dokumentin kieli
+%%
+%% Aalto logo: syntax:
+% \uselogo{aaltoRed|aaltoBlue|aaltoYellow|aaltoGray|aaltoGrayScale}{?|!|''}
+%% Logo language is set to be the same as the document language.
+\uselogo{aaltoRed}{''}
+
+%% Tehd‰‰n kansilehti
+%%
+%% Create the coverpage
+\makecoverpage
+
+%% Pakotetaan uusi sivu varmuuden vuoksi, jotta 
+%% mahdollinen suomenkielinen ja englanninkielinen tiivistelm‰
+%% eiv‰t tule vahingossakaan samalle sivulle
+%%
+%% Force new page so that English abstract starts from a new page
+\newpage
+%
+%% English abstract, uncomment if you need one. 
+%% 
+%% Abstract keywords
+\keywords{Resistor, Resistance,\\ Temperature}
+%% Abstract text
+\begin{abstractpage}[english]
+ Your abstract in English. Try to keep the abstract short, approximately 
+ 100 words should be enough. Abstract explains your research topic, 
+ the methods you have used, and the results you obtained.  
+\end{abstractpage}
+%% Note that 
+%% if you are writting your master's thesis in English place the English
+%% abstract first followed by the possible Finnish abstract
+
+
+%% Preface
+\mysection{Preface}
+Thank you everybody.\\
+
+\vspace{5cm}
+Otaniemi, 9.3.2012
+
+\vspace{5mm}
+{\hfill Albert Abell\'o Lozano \hspace{1cm}}
+
+%% Pakotetaan varmuuden vuoksi esipuheen j‰lkeinen osa
+%% alkamaan uudelta sivulta
+%%
+%% Force new page after preface
+\newpage
+
+%% Sis‰llysluettelo
+%% addcontentsline tekee pdf-tiedostoon viitteen sis‰llysluetteloa varten
+%% 
+%% Table of contents. 
+\addcontentsline{toc}{section}{Contents}
+
+
+%% Tehd‰‰n sis‰llysluettelo
+%%
+%% Create it. 
+\tableofcontents
+\listoffigures
+\listoftables
+
+%% 
+%% Corrects the page numbering, there is no need to change these
+\cleardoublepage
+\storeinipagenumber
+%%
+%%Definitions and abreviations
+\mysection{Definitions and abreviations}
+%\addcontentsline{toc}{section}{Definitions and abreviations}
+
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%% 
+%% Leave first page empty
+\thispagestyle{empty}
+
+
+
+%%introduction chapter
+\include{./chapters/introduction}
+
+%documentation and drafts
+%\include{./chapters/documentation}
+
+%What is webRTC
+\include{./chapters/webrtc}
+
+%Use cases and topologies
+\include{./chapters/topologies}
+
+%Congestion environments
+\include{./chapters/congestion}
+
+%Simulation environment
+\include{./chapters/simulation}
+
+%Tests
+\include{./chapters/tests}
+
+%Summary of results
+%\include{./chapters/summary}
+
+%Discussion
+%\include{./chapters/discussion}
+
+%Real use case (dialogue.io)
+%\include{./chapters/dialogue}
+
+%%conclusion chapter
+\include{./chapters/conclusion}
+
+
+
+
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{unsrt}
+\bibliography{./chapters/allpapers} 
+
+\end{document}
+
+
