@@ -50,7 +50,7 @@ Figure~\ref{fig:p2prttexample} represents the capture of a video call between tw
 
 \subsection{Connection Monitor}
 
-Connection Monitor ({\it ConMon}) is a command line utility that relies on the transport layer and uses TCPDUMP to sniff all the packets that to go a certain interface and port. This application is designed to specifically detect and capture RTP/UDP packets, relies on {\it libcap} for the capture in the network layer. This software detects and saves the header but discards the payload of the packet keeping the information we need for calculating our KPIs.
+Connection Monitor ({\it ConMon}) is a command line utility that relies on the transport layer and uses TCPDUMP to sniff all the packets that to go a certain interface and port~\cite{singhConMon}. This application is designed to specifically detect and capture RTP/UDP packets, relies on {\it libcap} for the capture in the network layer. This software detects and saves the header but discards the payload of the packet keeping the information we need for calculating our KPIs.
 
 Typically we will run the PeerConnections between two devices and start capturing those packets by using {\it ConMon}. The PeerConnection will carry real data so the environment for testing will be a precise approach to a real scenario of WebRTC usage.
 
@@ -67,9 +67,13 @@ The capture from {\it ConMon} will be very accurate capturing all the packets th
 
 \subsection{Dummynet}
 
-To check the performance of WebRTC we will need to modify the status of the network link. This is achieved using {\it Dummynet}, a command line network simulator that allow us to add bandwidth limitations, delays, packet losses and other distortions to the ongoing link. This program will be executed on the computers running the PeerConnections adding those different rules to the interface which is used for the network.
+To check the performance of WebRTC we will need to modify the status of the network link. This is achieved using {\it Dummynet}, a command line network simulator that allow us to add bandwidth limitations, delays, packet losses and other distortions to the ongoing link.
 
 {\it Dummynet} is an standard tool for some Linux distributions and OSX~\cite{dummynetTool}.
+
+In order to get appropriate results with the constraints of the network we will have a machine acting as TURN for some tests, this machine will forward all the WebRTC traffic from one client to the other being transparent for both ends. The real goal of using TURN in WebRTC is to avoid and bypass some restrictive Firewalls that would block the connection, in our case, this works as a way to centralize the traffic flow through one path being able to be modified or tightened. From the performance perspective, when not adding any constraints to the TURN, the traffic and response is normal without the user noticing any difference.
+
+Some problems arise when using {\it Dummynet} in our scenario, we will be using {\it VirtualBox} machines for some testing and to act as TURN, this means that there won't be real physical interfaces where {\it Dummynet} will be working on top. The accuracy of an emulator is given by the level of detail in the model of the system and how closely the hardware and software can reproduce the timing computed by the model~\cite{dummynetRevisited}. Considering that we are using standard Ubuntu images for our virtual machines we will need to modify the internal timer resolution of the kernel in order to get a closer approximation to reality, the default timer in a Linux kernel greater than 2.6.13 is 250Hz~\cite{linuxKernelTime}, this value must be changed to 1000Hz in all machines that we intend to run {\it Dummynet}. The change of timing for the kernel requires a full recompile of itself. This change will reduce the timing error from 4ms (default) to 1ms. We could use even higher timer values leading to smaller errors but Ubuntu allows a maximum kernel timer of 1KHz.
 
 \subsection{Analysis of tools}
 
