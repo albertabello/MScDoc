@@ -1,0 +1,38 @@
+\section{Setting up fake devices in Google Chrome}
+\label{sec:fakeVideo}
+
+%% 
+%% Leave first page empty
+\thispagestyle{empty}
+
+To address the issue in the video that is transferred from our automated devices we have built a fake input device on the virtual machines that will be fed with a RAW YUV video of different resolutions and quality. This device will be added by using a hacked version of the {\it V4L2Loopback} which derives from the {\it V4L} driver for Linux, the modified version of the {\it V4L2Loopback} builds two extra devices as Chrome is unable to read from the same reading/writing device for security reasons, one of them will be used to fed the video and the other one to read it~\cite{chromiumIssue142568}. 
+
+Differences between standard driver and hacked version:
+
+\begin{itemize}
+	\item Need to write a non-null value into the the bus information of the device, this is required as Chrome input needs to be named as a real device. When using Firefox this is not required but works as well.
+		\begin{verbatim}
+			strlcpy(cap->bus_info, "virtual", sizeof(cap->bus_info));
+		\end{verbatim}
+	\item Our driver will pair devices when they are generated, this will create one read device and one capture device. Everything written into {\it /dev/video0} will be read from {\it /dev/video1}. 
+		\begin{verbatim}
+			cap->capabilities |= V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_VIDEO_CAPTURE;
+		\end{verbatim}
+\end{itemize}
+
+We used the code provided by Patrik Hšglund~\cite{chromiumIssue142568} for the {\it V4L2Loopback} hacked version. 
+
+\begin{verbatim}
+# make && sudo make install
+# sudo modprobe v4l2loopback devices=2
+\end{verbatim}
+
+Now we should be able to see both devices in our system, next step is feeding the {\it /dev/video1} with a YUV file. In order to do this we will use the {\it V4l2 File Player}~\cite{v4l2fileplayer}, this player executes on top of {\it Gstreamer} but adds a loop functionality to the file allowing long calls to succeed. Sample videos can be obtained from a Network Systems Lab.\footnote{http://nsl.cs.sfu.ca/wiki/index.php/Video\_Library\_and\_Tools}
+
+\begin{verbatim}
+# sudo apt-get install gstreamer0.10-plugins-bad libgstreamer0.10-dev
+# make
+# v4l2_file_player foreman_cif_short.yuv 352 288 /dev/video1 >& /dev/null
+\end{verbatim}
+
+We can now open Google Chrome and check if the fake device is correctly working in any application that uses GetUserMedia API.
