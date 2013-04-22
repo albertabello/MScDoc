@@ -1,4 +1,4 @@
-\section{Key Performance Indicators in Real-Time Environment}
+\section{Performance Metrics for WebRTC}
 
 
 %% 
@@ -40,3 +40,12 @@ Throughput will be a key metric for testing the performance of WebRTC environmen
 
 When using real time media environments for bidirectional communication the user experience is a key indicator of success. One of the factors that have to be considered is the Noise Reduction (NR) and Acoustic Echo Canceler (AEC). Those mechanisms allow the call to be smooth and avoid extra noises and echoes from the speaker voice to be transmitted, in WebRTC will provide a strange behavior when measuring the throughput, when the is no speech the bytes transferred will be approximately zero, being the throughput negligible. This helps to reduce the bandwidth usage and provides a more comfortable conversation when having a call.
 
+\subsection{Other metrics}
+
+Besides the metrics explained in the previous sections we are keeping other important values that affect WebRTC.
+
+CPU/RAM usages are logged in order to determine how an average system performs when running the different scenarios as some of them will be more demanding than others, this will give an approximate approach to the required resources needed.
+
+Also call setup time and frequency of call drops will be saved, it might be important to determine an approximate call setup time since the start of the negotiation until the media arrives. By doing this, we are measuring a parameter that directly affects the user experience in WebRTC. From the other side, call drops will be counted to see the call success ratio in every scenario.
+
+We will also calculate and pay attention to the delay variation, this is important as it affects how the user interacts with the other peer during a call. Having high delay variations led to an uncomfortable call and distortion. We will measure this variation and the amount of delay that different topologies produce.

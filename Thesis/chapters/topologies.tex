@@ -40,13 +40,17 @@ From the client perspective, the PeerConnection stablished will be easy to handl
 
 Many-to-many topologies are used for conferencing environment, this topology is used in systems such as Skype or VoIP. Conferences are used in enterprises for long-distance communication between employees and working groups, by this, the need of having those calls working smoothly for all participants is very important.
 
-Due to the compatibility with HTML5 and the DataChannel spec that is shipped with WebRTC many-to-many environment could be also used for data transmission between different peers in a torrent scenario. Combining it with WebGL it could even be used for gaming experiences.
+Due to the compatibility with HTML5 and the DataChannel spec that is shipped with WebRTC many-to-many environment could be also used for data transmission between different peers in a torrent scenario. Combining it with WebGL it could even be used for gaming experiences or file sharing.
+
+\subsubsection{MCU}
+
+MCU usage will surely be an option when designing WebRTC infrastructures, the ability to multiplex different streams into the same channel will directly affect on how the client performs when reproducing the video reducing the amount of used resources. 
 
 \subsubsection{Challenges}
 
-In an environment that uses many-to-many topology the problem that arise in the NAT/FW management is important, all different peers won't be in the same network so multiple Firewall restrictions will apply. As most of the use cases will rely on video and audio transmission the delay on the mesh we will build should be low, a true challenge in this scenario.
+When running multiple peer connections browsers on the client side will be obliged to handle multiple incoming streams and keep up all the connections stablished, this will be a problem regarding to the resources on the client side. 
 
-Browsers will need to handle multiple PeerConnection and MediaStreams in this topology as they will send and receive RTP from all participants, no MCU is used in WebRTC from standard point of view. 
+So, alongside with other problems mentioned in previous topologies, resources will directly affect on how this scenario performs in different users. 
 
-When handling data only the problem with coding/decoding the media disappears, being this easier from the browser perspective.
+On the other side, even considering that NAT and Firewall connectivity issues are solved, we should be careful when guaranteeing all peer connections to be correctly stablished. TURN/STUN failures might directly affect to the success ratio in this topology.
 
