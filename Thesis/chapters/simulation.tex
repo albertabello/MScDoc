@@ -1,4 +1,4 @@
-\section{Testing Environment}
+\section{Evaluation Environment}
 \label{sec:testingEnv}
 
 %% 
@@ -6,6 +6,16 @@
 \thispagestyle{empty}
 
 This chapter will describe which tools will be used to run the performance tests in WebRTC, different tools will be used.
+
+\subsection{Dummynet}
+
+To check the performance of WebRTC we will need to modify the status of the network link. This is achieved using {\it Dummynet}, a command line network simulator that allow us to add bandwidth limitations, delays, packet losses and other distortions to the ongoing link.
+
+{\it Dummynet} is an standard tool for some Linux distributions and OSX~\cite{dummynetTool}.
+
+In order to get appropriate results with the constraints of the network we will have a machine acting as TURN for some tests, this machine will forward all the WebRTC traffic from one client to the other being transparent for both ends. The real goal of using TURN in WebRTC is to avoid and bypass some restrictive Firewalls that would block the connection, in our case, this works as a way to centralize the traffic flow through one path being able to be modified or tightened. From the performance perspective, when not adding any constraints to the TURN, the traffic and response is normal without the user noticing any difference.
+
+Some problems arise when using {\it Dummynet} in our scenario, we will be using {\it VirtualBox} machines for some testing and to act as TURN, read Appendix~\ref{sec:dummynet} for more information about {\it Dummynet} configuration.
 
 \subsection{Stats API}
 
@@ -64,16 +74,6 @@ Typically we will run the PeerConnections between two devices and start capturin
 \end{figure}
 
 The capture from {\it ConMon} will be very accurate capturing all the packets that go through the interface, dumping the values into the output file, this data will then be processed and averaged for every second prior plotting. This processing will lead to some fluctuations on the graph that distort the reality.
-
-\subsection{Dummynet}
-
-To check the performance of WebRTC we will need to modify the status of the network link. This is achieved using {\it Dummynet}, a command line network simulator that allow us to add bandwidth limitations, delays, packet losses and other distortions to the ongoing link.
-
-{\it Dummynet} is an standard tool for some Linux distributions and OSX~\cite{dummynetTool}.
-
-In order to get appropriate results with the constraints of the network we will have a machine acting as TURN for some tests, this machine will forward all the WebRTC traffic from one client to the other being transparent for both ends. The real goal of using TURN in WebRTC is to avoid and bypass some restrictive Firewalls that would block the connection, in our case, this works as a way to centralize the traffic flow through one path being able to be modified or tightened. From the performance perspective, when not adding any constraints to the TURN, the traffic and response is normal without the user noticing any difference.
-
-Some problems arise when using {\it Dummynet} in our scenario, we will be using {\it VirtualBox} machines for some testing and to act as TURN, this means that there won't be real physical interfaces where {\it Dummynet} will be working on top. The accuracy of an emulator is given by the level of detail in the model of the system and how closely the hardware and software can reproduce the timing computed by the model~\cite{dummynetRevisited}. Considering that we are using standard Ubuntu images for our virtual machines we will need to modify the internal timer resolution of the kernel in order to get a closer approximation to reality, the default timer in a Linux kernel greater than 2.6.13 is 250Hz~\cite{linuxKernelTime}, this value must be changed to 1000Hz in all machines that we intend to run {\it Dummynet}. The change of timing for the kernel requires a full recompile of itself. This change will reduce the timing error from 4ms (default) to 1ms.
 
 \subsection{Analysis of tools}
 
