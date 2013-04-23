@@ -6,7 +6,7 @@ name=system("echo $1")
 set terminal pdf color enhanced rounded size 12,4 fsize 14 rounded dash
 #fname '/Library/Fonts/Arial.ttf' 
 #Verdana, Helvetica, Arial, sans-serif
-set output name.".pdf"
+set output name."-delay.pdf"
 set origin 0,0
 set size ratio 0.25
 set key right top inside
@@ -31,6 +31,7 @@ set grid back ls 12
 # color definitions
 set style line 1 lc rgb '#8b1a0e' pt 1 ps 1 lt 1 lw 2 # --- red
 set style line 2 lc rgb '#5e9c36' pt 6 ps 1 lt 1 lw 2 # --- green
+set title "Average delay" font ",14"
 
 set xtics border out scale 0,0 mirror offset character 0, 0, 0
 

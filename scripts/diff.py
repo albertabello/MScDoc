@@ -1,8 +1,10 @@
+#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 import sys
 import os
 import csv
 import getopt
+import sys, urllib, time
 
 from os import listdir
 from os.path import isfile, join
@@ -12,6 +14,42 @@ import operator
 
 add_path1="/machine1/rtp/"
 add_path2="/machine2/rtp/"
+packet_count=0
+delay_array=[0]*100
+delay_gaps=[0]*100
+
+def delay_distribution(counter,delay,name):
+    x=10
+    global packet_count
+    global delay_array
+    global delay_gaps
+    packet_count+=1
+    #Classifies in gaps of 10 ms 100 times, that is a total of 1s delay max
+    for i in range(0,100):
+        delay_gaps.pop(i)
+        delay_gaps.insert(i,x)
+        if (delay<x) and (delay>(x-10)):
+            z=delay_array[i]+1
+            delay_array.pop(i)
+            delay_array.insert(i,z)
+        x=x+10
+
+def build_output_distribution(iteration,path):
+    newList=[]
+    z=0
+    delayPlot = open(path+"/output/output_delay/distribution_delay_inc_"+iteration+".txt", 'wb')
+    logWriter = csv.writer(delayPlot, delimiter='\t')
+    logWriter.writerow([0, 0]);
+    global delay_array
+    global delay_gaps
+    global packet_count
+    for x in delay_array:
+        y=(float(x)/packet_count)
+        z=z+y
+        newList.append(z)
+    for i in range(0,100):
+        logWriter.writerow([delay_gaps[i], newList[i]]);
+    delayPlot.close
 
 def readLog(filename):
     packet = {}
@@ -30,9 +68,13 @@ def sortDict(d):
     return map(d.get, keys)
     
 def main(argv): 
-    path =argv[0]
-    base_path1 = path+add_path1
-    base_path2 = path+add_path2
+    #path =argv[0]
+    base_path1 = argv[0]
+    base_path2 = argv[1]
+    iteration = argv[2]
+    path_global = argv[3]
+    global delay_array
+    global delay_gaps
     #base_path1 = argv[0]
     #base_path2 = argv[1]
     # find text files in the two two directories
@@ -63,23 +105,26 @@ def main(argv):
             x = m1 if (len(m1) > len(m2)) else m2
             y = m2 if (len(m1) > len(m2)) else m1
 
-            fname="delay_"+ptssrc
-
-            delayLog = open(fname, 'wb')
+            fname="delay_"+iteration+"_"+ptssrc
+            os.system("mkdir -p "+path_global+"/output/output_delay")
+            delayLog = open(path_global+"/output/output_delay/"+fname, 'wb')
             logWriter = csv.writer(delayLog, delimiter='\t')
             for key, value in x.iteritems():
                 #print key
                 if (key in y):
+                    d=0
                     if (value>y[key]):
                         d = value - y[key]
                         logWriter.writerow([y[key], key, d])
                     else:
                         d = y[key] - value
                         logWriter.writerow([value, key, d])
-                #print d
-            os.system("./conmon-rtp-delay.sh "+fname.split (".")[0])
+                    delay_distribution(key,d*1000,ptssrc)
+                #print a
+                #print b
+            os.system("./conmon-rtp-delay.sh "+path_global+"/output/output_delay/"+fname.split (".")[0])
             delayLog.close
-    
+    build_output_distribution(iteration,path_global)
         
 if __name__ == "__main__":
     main(sys.argv[1:])

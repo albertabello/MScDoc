@@ -11,7 +11,7 @@ rm $1_bitrate.tmp
 # We are using bitrate.txt for the data
 gnuplot << EOF
 reset
-set terminal pdf color enhanced rounded size 12,4 fsize 10
+set terminal pdf color enhanced rounded size 12,4 fsize 12
 #unset key # Removes legend of the plot
 
 set timefmt "%s"
@@ -43,8 +43,8 @@ set xdata time
 stddev_y = sqrt(FIT_WSSR / (FIT_NDF + 1 ))
 
 # Plotting the range of standard deviation with a shaded background
-set label 1 gprintf("Mean = %g kbps", mean_y) at (min_x+max_x)/2, max_y+200
-set label 2 gprintf("Standard deviation = %g kbps", stddev_y) at (min_x+max_x)/2, max_y+100
+set label 1 gprintf("Mean = %g kbps", mean_y) at (min_x+max_x)/2, max_y+100
+set label 2 gprintf("Standard deviation = %g kbps", stddev_y) at (min_x+max_x)/2, max_y+50
 plot mean_y-stddev_y with filledcurves y1=mean_y lt 1 lc rgb "#bbbbdd", \
 mean_y+stddev_y with filledcurves y1=mean_y lt 1 lc rgb "#bbbbdd", \
 mean_y w l lt 3, '$1_bitrate.txt' u 1:2 title "Stream" w p pt 7 lt 1 ps 1

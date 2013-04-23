@@ -19,7 +19,8 @@ set format x "%H:%M:%S"
 set xdata time
 name=system("echo $1") 
 time=system("date +%Y%m%d_%H%M%S")
-set output name."-".time."-minmaxmean.pdf"
+set output name."-".time."-opt-deviation.pdf"
+unset key
 
 # Retrieve statistical properties
 plot '$1_bitrate.txt' u 1:2 title "Stream" 
@@ -38,13 +39,13 @@ set ylabel "Observed rate [kbps]"
 set timefmt "%s"
 set format x "%H:%M:%S"
 set xdata time
-# Plotting the minimum and maximum ranges with a shaded background
-#set label 1 gprintf("Minimum = %g", min_y) at (min_x+max_x)/2, max_y+200
-set label 2 gprintf("Maximum = %g kbps", max_y) at (min_x+max_x)/2, max_y+200
-set label 3 gprintf("Mean = %g kbps", mean_y) at (min_x+max_x)/2, max_y+100
-#set title "ab -n 8000 -c 100"
-plot min_y with filledcurves y1=mean_y title "Min" lt 1 lc rgb "#bbbbdd", \
-max_y with filledcurves y1=mean_y title "Mean" lt 1 lc rgb "#bbddbb", \
-'$1_bitrate.txt' u 1:2 title "Stream" w p pt 7 lt 1 ps 1
+
+stddev_y = sqrt(FIT_WSSR / (FIT_NDF + 1 ))
+
+# Removing points based on the standard deviation
+set label 1 gprintf("Mean = %g kbps", mean_y) at (min_x+max_x)/2, mean_y-150
+set label 2 gprintf("Sigma = %g kbps", stddev_y) at (min_x+max_x)/2, mean_y-300
+plot mean_y w l lt 3, mean_y+stddev_y w l lt 3, mean_y-stddev_y w l lt 3, \
+'$1_bitrate.txt' u 1:(abs(column(2)-mean_y) < stddev_y ? column(2) : 1/0) w p pt 7 lt 1 ps 1
 EOF
 rm $1_bitrate.txt
