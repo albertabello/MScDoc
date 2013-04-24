@@ -11,14 +11,16 @@ Differences between standard driver and hacked version:
 
 \begin{itemize}
 	\item Need to write a non-null value into the the bus information of the device, this is required as Chrome input needs to be named as a real device. When using Firefox this is not required but works as well.
-		\begin{verbatim}
-			strlcpy(cap->bus_info, "virtual", sizeof(cap->bus_info));
-		\end{verbatim}
-	\item Our driver will pair devices when they are generated, this will create one read device and one capture device. Everything written into {\it /dev/video0} will be read from {\it /dev/video1}. 
-		\begin{verbatim}
-			cap->capabilities |= V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_VIDEO_CAPTURE;
-		\end{verbatim}
 \end{itemize}
+\begin{lstlisting}
+strlcpy(cap->bus_info, "virtual", sizeof(cap->bus_info));
+\end{lstlisting}
+\begin{itemize}
+	\item Our driver will pair devices when they are generated, this will create one read device and one capture device. Everything written into {\it /dev/video0} will be read from {\it /dev/video1}. 
+\end{itemize}
+\begin{lstlisting}
+cap->capabilities |= V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_VIDEO_CAPTURE;
+\end{lstlisting}
 
 We used the code provided by Patrik Hšglund~\cite{chromiumIssue142568} for the {\it V4L2Loopback} hacked version. 
 

@@ -18,7 +18,7 @@ We have set up a testing environment to help us run tests for WebRTC. Figure~\re
 
 WebRTC clients are virtual machines that run a lightweight version of Ubuntu (Lubuntu) with 2GB of RAM and one CPU. This light version avoids the usage of 3D acceleration helping us to get better results in performance than compared with other distributions. 
 
-Clients will be running Chrome Unstable version as WebRTC capable browser.
+Clients will be running Chrome Dev version 27.01453.12 as WebRTC capable browser. To avoid modified results due to a bug in the {\it Pulse Audio} module of Ubuntu that controls audio input in WebRTC calls will be done with only video, the amount of audio transferred due to the echo cancelation systems can be neglicted.
 
 \subsubsection{Connection Monitor}
 
