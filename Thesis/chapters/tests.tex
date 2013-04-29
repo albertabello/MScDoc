@@ -34,7 +34,7 @@ When we try to measure the quality of the call one important indicator is the de
 
 Figure~\ref{fig:delay_116_646227} represents the delay of the stream plotted in~\ref{fig:onetooneWifistatsconmon}. We can see that the quality of the call is affected by the network distortion at the end of Figure~\ref{fig:onetooneWifistatsconmon}, this variation of the throughput delivers a high delay of more than 4 seconds during some period of time between 13:15:30 and 13:16:30, the media received at that time will not render correctly and the user experience of the call is going to be worst than at the beginning of the call. A bursty WiFi network will led to delay even the bandwidth seems to be stable.
 
-\subsection{Non-constrained link test}
+\subsubsection{Non-constrained link test}
 
 After seeing how WebRTC performs in WiFi  we are going to proceed with all tests in a controlled wired scenario adding different constraints to the link. This tests will be automated running ten iterations every time in order to get as much accurate results as possible.
  
@@ -46,7 +46,7 @@ After seeing how WebRTC performs in WiFi  we are going to proceed with all tests
 \end{figure}
 
 Figure~\ref{fig:no_ipfw} plots the average bandwidth of every call in a wired network without any link condition, the average bandwidth obtained in the test is 1949.7 Kbit/s with 233 Kbit/s of deviation which gives the conclusion of having approximately 2 Mbit/s standard bandwidth in a video stream for a non-conditioned link in WebRTC. Delay result in 5.1 ms with 1.5 ms deviation and RTT about 9.5 ms. Those results can be taken as standard for a non-conditioned WebRTC with high bandwidth resources. A summary of results is shown in Table~\ref{fig:p2p_no_ipfw}. Some interesting results to track is the amount of calls failed in every test, considering all those calls go through a TURN server we might be able to approximate the success rate when establishing calls. All results go along with the deviation being this an important factor, in this test without any link conditioner we might have small deviation values such as milliseconds, but when adding conditions to the link those values will grow carrying less accuracy.
-Setup time is stablished as the time it take since the start of the PeerConnection object until the media stream from the other peer arrives, this value directly affects the time it takes for a user to be able to start talking, in the optimal environment it takes about 1.5 seconds to start the call.
+Setup time is stablished as the time it take since the start of the PeerConnection object until the media stream from the other peer arrives, this value directly affects the time it takes for a user to be able to start talking, in the optimal environment it takes about 1.5 seconds to start the call. We also had zero packet losses and two calls that failed to succeed using TURN in the standard environment.
 
 \begin{table}
 \begin{center}
@@ -63,9 +63,6 @@ Setup time is stablished as the time it take since the start of the PeerConnecti
 	\textbf{Setup time (ms)} & 1436.33 ,25 & 1447.44 ,22.71 & 1441.88 ,24.04\\
 	\textbf{RTT (ms)} & 9.49 ,2.11 & 9.64 ,2.71 & 9.57 ,2.41\\
 	\textbf{Delay (ms)} & 4.84 ,1.5 & 5.4 ,1.53 & 5.12 ,1.52\\
-	\textbf{Losses (packets)} & 0 & 2 & 0.33\\
-	\hline
-	\textbf{Failed call} & & 2 &\\
 	\bottomrule
     \end{tabular}
     \caption[P2P test with no link conditions]{P2P test with no link conditions.}
@@ -73,7 +70,7 @@ Setup time is stablished as the time it take since the start of the PeerConnecti
 \end{center}
 \end{table}
 
-Delay values in Table~\ref{fig:p2p_no_ipfw} are represented as a mean calculation of all the delay obtained in the link, thus this value is not representative of what happened in the call. Considering the example in Figure~\ref{fig:delay_116_646227} we can see that the delay can variate during the call being the mean not appropriate to measure the response against the conditions of the link. In order to observe the behavior of WebRTC in delay we have two different approaches, the mean delay with deviation and delay distribution of all calls.
+Delay values in Table~\ref{fig:p2p_no_ipfw} are represented as a mean calculation of all the delay obtained in the link, thus this value is not representative of what happened in the call. Considering the example in Figure~\ref{fig:delay_116_646227} we can see that the delay can variate during the call being the mean not appropriate to measure the response against the conditions of the link. In order to observe the behavior of WebRTC in delay we have two different approaches, the mean delay with deviation and delay distribution of all calls. 
 
  \begin{figure}[h]
   \centering
@@ -91,7 +88,7 @@ Delay values in Table~\ref{fig:p2p_no_ipfw} are represented as a mean calculatio
 
 Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the mean and deviation of delay calculated for all iterations, this delay is calculated on basis with the arrival timestamp for each packet with the captures performed in both sides by {\it ConMon}. We run an NTPD daemon to calculate the drift on the time and sync both machines.  There is small amount of drift of maximum 3ms in the worst case and as small as 1ms in the best one. In Figure~\ref{fig:total_delay_distribution_no_ipfw}, the distribution is given by the amount of packets that have some specific amount of delay, they are counted by batches of 10ms with a maximum range of 300ms. Most of the packets run with less than 25ms delay in all the iterations. The user experience with this small amount of delay with no aggressive steps in the plot will be barely negligible. Figures~\ref{fig:mean_deviation_delay_no_ipfw} and~\ref{fig:total_delay_distribution_no_ipfw} differentiate from Figure~\ref{fig:delay_116_646227} in the measurement of a global delay for an specific constraint scenario instead of just plotting a single call case, many aspects may affect the delay and the an optimal way to observe it is to plot the distribution and deviation of each iteration and try to guess a patron that repeats, Figure~\ref{fig:delay_116_646227} is good to observe just one call if we add some conditions to the link meanwhile the call is going on.
 
-\subsection{Behavior in lossy environments}
+\subsubsection{Behavior in lossy environments}
 
 We have performed some tests regarding lossy environments to see how WebRTC behaves in those, lossy situations can be given with some mobile environments with low coverage or just by having a busy link with no resources available.
 
@@ -119,7 +116,11 @@ The algorithm used in WebRTC regarding to packet loss is proven to work fine in 
 \end{center}
 \end{table}
 
-\subsection{Delayed networks}
+The amount of packets lost in every test is slightly lower than the exact percentage of loss because the use of Forward Error Correction in WebRTC in Chrome, this mechanism is used to control errors in data connection with noisy channels that led to packet losses. FEC is not a must feature to implement in WebRTC but Chrome carries it as default.
+
+When using FEC the sender encodes the message in a redundant way, by having this redundancy the receiver is able to detect a limited number of errors and autocorrect those errors without requiring retransmission.
+
+\subsubsection{Delayed networks}
 
 Another interesting situation that are given in mobile environments and queued networks is delay, we have also tested the performance of WebRTC in those conditions. We have benchmarked tests in different one-way delays, 50, 100, 200 and 500ms. In our case, the RTT results should be multiplied by two.
 
@@ -147,4 +148,29 @@ Table~\ref{fig:p2p_delay_bw} represents the bandwidth response to the delay cond
 \end{center}
 \end{table}
 
+We can also observe that every iteration follows a different pattern even having an averaged result, Figure~\ref{fig:mean_deviation_bw_delay200} show the test performed at 200ms and the iterations that fail to keep a constant rate making the amount of artifacts in the video affect the quality of the call. We can certainly confirm that the methods that WebRTC should use to control the congestion in the call are not working as they should.
 
+The problem with WebRTC relies in the usage of RTP over UDP for packet transport as UDP does not carry congestion control mechanisms that TCP does, when having real time media adapting the encoding to accommodate the varying bandwidth is difficult and cannot be done rapidly.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/mean_deviation_bw_delay200.pdf}
+      \caption[Mean and deviation for P2P 200 ms delay test]{Mean and deviation for P2P 200 ms delay test.}
+	\label{fig:mean_deviation_bw_delay200}
+\end{figure}
+
+Low latency networks will play a big role when WebRTC extends to mobile devices and the ability to react properly to delays and packet losses will be crucial for the success of WebRTC in those environments against its competitors.
+
+\subsubsection{Bandwidth and queue variations}
+
+We have also performed a different set of tests modifying the bandwidth and queue length. For this part of the test we have chosen to run 500 Kbit/s, 1, 5 and 10 Mbit/s with different queue sizes ranging from 100 ms, 500 ms, 1s and 10 s. In total we have run 12 different tests with ten iterations each.
+
+The queue size is set in slots to {\it Dummynet} considering each slot as standard ethernet packet of 1500 Bytes, to calculate this number we use Equation~\ref{eq:QueueSize}.
+
+\begin{equation}
+	\frac{Bandwidth (Bits)}{8 \times 1500} \times Queue (seconds)
+	\label{eq:QueueSize}
+\end{equation}
+
+We have seen a good response when having big queue size but larger deviation in bandwidth when reducing this queue size to 100 ms or 500 ms, this produced high delays over 20 ms for every call with different distribution curves. The delay that is given to the duration of the call is not stable and will affect the media flow, this increasing curve of delay distribution is given by the small queue size which produces bursty packets to arrive to the peer having different delay conditions.
+When we tested the 5 Mbit/s case we got a strange high delay output even the bandwidth adapted to the requirements of WebRTC. The delay deviation is also high and will affect the time the packets arrive with large jittering.

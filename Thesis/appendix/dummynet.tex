@@ -13,9 +13,12 @@ The accuracy of an emulator is given by the level of detail in the model of the 
 
 Once the kernel timing is done we will need to compile the {\it Dummynet} code, the version we are using in our tests is 20120812, that can be obtained form the {\it Dummynet} project site~\cite{dummynetTool}.
 
-We should try the code first and check if we are able to set queues to our defined pipes, this part is the one that might crash due to system incompatibilities with FreeBSD and old kernel versions of Linux.  If we are unable we should then modify the following code in the {\it ./ipfw/dummynet.c} file.
+We should try the code first and check if we are able to set queues to our defined pipes, this part is the one that might crash due to system incompatibilities with FreeBSD and old kernel versions of Linux.  If we are unable we should then modify the following code in the {\it ./ipfw/dummynet.c} and {\it ./ipfw/glue.c}.
 
 \begin{lstlisting}
+Index: ipfw/dummynet.c
+===================================================================
+
 if (fs->flags & DN_QSIZE_BYTES) {
 	size_t len;
 	long limit;
@@ -37,6 +40,55 @@ if (fs->flags & DN_QSIZE_BYTES) {
 	if (fs->qsize > limit)
 		errx(EX_DATAERR, "2 <= queue size <= \%ld", limit);
 }
+\end{lstlisting}
+
+The problem arises from a the misassumption of {\it sizeof(long) == 4} in 64-bit architectures which is false. By changing those two files we are modifying the system in order to accept higher values than 100 for the queue length.
+
+\begin{lstlisting}
+Index: ipfw/glue.c
+===================================================================
+
+char filename[256];	/* full filename */
+char *varp;
+int ret = 0;		/* return value */
+long d;
+ 
+if (name == NULL) /* XXX set errno */
+	return -1;
+
+
+	fprintf(stderr, "\%s fopen error reading filename \%s\n", __FUNCTION__, filename);
+	return -1;
+}
+if (fscanf(fp, "\%ld", &d) != 1) {
+	ret = -1;
+} else if (*oldlenp == sizeof(int)) {
+	int dst = d;
+	memcpy(oldp, &dst, *oldlenp);
+} else if (*oldlenp == sizeof(long)) {
+	memcpy(oldp, &d, *oldlenp);
+} else {
+	fprintf(stderr, "unknown paramerer len \%d\n",
+	(int)*oldlenp);
+}
+fclose(fp);
+
+
+	fprintf(stderr, "\%s fopen error writing filename \%s\n", __FUNCTION__, filename);
+ 	return -1;
+ }
+if (newlen == sizeof(int)) {
+	if (fprintf(fp, "\%d", *(int *)newp) < 1)
+		ret = -1;
+} else if (newlen == sizeof(long)) {
+	if (fprintf(fp, "\%ld", *(long *)newp) < 1)
+		ret = -1;
+} else {
+	fprintf(stderr, "unknown paramerer len \%d\n",
+		(int)newlen);
+}
+fclose(fp);
+
 \end{lstlisting}
 
 When doing this we are making the file compatible with systems that have compatibility problems with the {\it sysctlbyname} function, XXX should be the value of the queue maximum length in slots and Bytes. Slots are defined considering a maximum MTU size of 1500 Bytes.
