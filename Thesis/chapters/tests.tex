@@ -45,10 +45,10 @@ After seeing how WebRTC performs in WiFi  we are going to proceed with all tests
 	\label{fig:no_ipfw}
 \end{figure}
 
-Figure~\ref{fig:no_ipfw} plots the average bandwidth of every call in a wired network without any link condition, the average bandwidth obtained in the test is 1949.7 Kbit/s with 233 Kbit/s of deviation which gives the conclusion of having approximately 2 Mbit/s standard bandwidth in a video stream for a non-conditioned link in WebRTC. Delay result in 5.1 ms with 1.5 ms deviation and RTT about 9.5 ms. Those results can be taken as standard for a non-conditioned WebRTC with high bandwidth resources. A summary of results is shown in Table~\ref{fig:p2p_no_ipfw}. Some interesting results to track is the amount of calls failed in every test, considering all those calls go through a TURN server we might be able to approximate the success rate when establishing calls. All results go along with the deviation being this an important factor, in this test without any link conditioner we might have small deviation values such as milliseconds, but when adding conditions to the link those values will grow carrying less accuracy.
+Figure~\ref{fig:no_ipfw} plots the average bandwidth of every call in a wired network without any link condition, the average bandwidth obtained in the test is 1949.7 Kbit/s with 233 Kbit/s of deviation which gives the conclusion of having approximately 1 Mbit/s standard bandwidth in a video stream for a non-conditioned link in WebRTC. Delay result in 5.1 ms with 1.5 ms deviation and RTT about 9.5 ms. Those results can be taken as standard for a non-conditioned WebRTC with high bandwidth resources. A summary of results is shown in Table~\ref{fig:p2p_no_ipfw}. Some interesting results to track is the amount of calls failed in every test, considering all those calls go through a TURN server we might be able to approximate the success rate when establishing calls. All results go along with the deviation being this an important factor, in this test without any link conditioner we might have small deviation values such as milliseconds, but when adding conditions to the link those values will grow carrying less accuracy.
 Setup time is stablished as the time it take since the start of the PeerConnection object until the media stream from the other peer arrives, this value directly affects the time it takes for a user to be able to start talking, in the optimal environment it takes about 1.5 seconds to start the call. We also had zero packet losses and two calls that failed to succeed using TURN in the standard environment.
 
-\begin{table}
+\begin{table}[h]
 \begin{center}
     \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
    	 \toprule
@@ -82,7 +82,7 @@ Delay values in Table~\ref{fig:p2p_no_ipfw} are represented as a mean calculatio
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/mean_deviation_delay_no_ipfw.pdf}
-      \caption[Mean and deviation for delay in each P2P iterations with no link constraints]{Mean and deviation for delay in each P2P iterations with no link constraints.}
+      \caption[Bandwidth mean and deviation for delay in each P2P iterations with no link constraints]{Mean and deviation for delay in each P2P iterations with no link constraints.}
 	\label{fig:mean_deviation_delay_no_ipfw}
 \end{figure}
 
@@ -96,7 +96,7 @@ We have tested the topology with 1, 5, 10 and 20\% of packet loss, according to 
 
 The algorithm used in WebRTC regarding to packet loss is proven to work fine in lossy environments with the results obtained, but there is a big gap of performance in the 10\% loss network compared to the results with 20\%, it is obviously a big amount of packets but the response with 20\% is significantly better than the one with 10\%.
 
-\begin{table}
+\begin{table}[h]
 \begin{center}
     \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
    	 \toprule
@@ -120,15 +120,31 @@ The amount of packets lost in every test is slightly lower than the exact percen
 
 When using FEC the sender encodes the message in a redundant way, by having this redundancy the receiver is able to detect a limited number of errors and autocorrect those errors without requiring retransmission.
 
+On the other side, the sender calculates its rate based on the receive report that arrives from the receiver, if this report is not received within two times the maximum interval WebRTC congestion mechanism will consider that all packets during that period have been lost halving the rate in the sender. In order to improve response in lossy environments we could consider calculating the optimal value for this interval considering all the possible situations. Considering the congestion algorithm in WebRTC~\cite{alvestrandCongestion2012}, the rate should not vary when having between 2-10\% of packet losses. Table~\ref{fig:p2p_packet_bw} proves that this mechanism is not working properly as we are noticing reduction of rate with 5\% of packet losses, the mechanism should start modifying the rate above 10\% of packet lost calculating a new sender available bandwidth (A$_{\textrm{s}}$) using Equation~\ref{eq:RateCalc} being {\it p} the packet loss ratio.
+
+\begin{equation}
+	A_s ( i ) = A_s ( i - 1 ) \times (1 - \frac{p}{2}) 
+	\label{eq:RateCalc}
+\end{equation}
+
+If the packet loss is less than 2\% the increase of bandwidth will be given by Equation~\ref{eq:RateCalc2}.
+
+\begin{equation}
+	A_s ( i ) = 1.05 \times (A_s ( i - 1 ) + 1000) 
+	\label{eq:RateCalc2}
+\end{equation}
+
 \subsubsection{Delayed networks}
 
 Another interesting situation that are given in mobile environments and queued networks is delay, we have also tested the performance of WebRTC in those conditions. We have benchmarked tests in different one-way delays, 50, 100, 200 and 500ms. In our case, the RTT results should be multiplied by two.
+
+Delay modeling for real time applications is difficult and can be done using the timestamp of the incoming packets, the incoming frame will be delayed if the arrival time difference is larger than the timestamp difference compared to its predecessor frame.
 
 We have noticed that the system performs badly when having even small delays up to 100ms. The response of WebRTC is to reduce the bandwidth by discarding packets, this means that the congestion control systems that act in those environments are not working correctly. On the other hand, delay output does behave correctly having a continuous delay of the according time configured in the constraints, there are no sudden increases of delay and the deviation in delay fits in the standard limits.
 
 Table~\ref{fig:p2p_delay_bw} represents the bandwidth response to the delay conditions, it is interesting to see that the deviation with the biggest delay is smaller than expected. Only with 50ms the system will output a good quality call, when increasing delay the performance of the video will decrease. WebRTC uses VP8 codec which degrades gracefully the quality in packet loss and delay conditions but the response in this case should be better if the congestion mechanisms worked properly.
 
-\begin{table}
+\begin{table}[h]
 \begin{center}
     \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
    	 \toprule
@@ -150,16 +166,45 @@ Table~\ref{fig:p2p_delay_bw} represents the bandwidth response to the delay cond
 
 We can also observe that every iteration follows a different pattern even having an averaged result, Figure~\ref{fig:mean_deviation_bw_delay200} show the test performed at 200ms and the iterations that fail to keep a constant rate making the amount of artifacts in the video affect the quality of the call. We can certainly confirm that the methods that WebRTC should use to control the congestion in the call are not working as they should.
 
-The problem with WebRTC relies in the usage of RTP over UDP for packet transport as UDP does not carry congestion control mechanisms that TCP does, when having real time media adapting the encoding to accommodate the varying bandwidth is difficult and cannot be done rapidly.
-
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/mean_deviation_bw_delay200.pdf}
-      \caption[Mean and deviation for P2P 200 ms delay test]{Mean and deviation for P2P 200 ms delay test.}
+      \caption[Bandwidth mean and deviation for P2P 200 ms delay test]{Mean and deviation for P2P 200 ms delay test.}
 	\label{fig:mean_deviation_bw_delay200}
 \end{figure}
 
+The problem with WebRTC relies in the usage of RTP over UDP for packet transport as UDP does not carry congestion control mechanisms that TCP does, when having real time media adapting the encoding to accommodate the varying bandwidth is difficult and cannot be done rapidly.
+
 Low latency networks will play a big role when WebRTC extends to mobile devices and the ability to react properly to delays and packet losses will be crucial for the success of WebRTC in those environments against its competitors.
+
+\subsubsection{Loss and delay}
+
+Regarding P2P scenario we also tested the possibility of having a combined lossy network with delay added to it, this kind of environment could be easily found in mobile applications in low coverage areas. We have set 10\% packet loss with different delays such as 50ms, 100ms and 200ms. In Table~\ref{fig:p2p_packet_bw} we saw an average of over 1 Mbit/s of bandwidth usage in 10\% loss environments, the result when adding delay to the constraint is  an average of barely 60 Kbit/s. Those results differ due to the difficulty of WebRTC to handle congestion in those environments. 
+
+\begin{table}[h]
+\begin{center}
+    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+   	 \toprule
+	\textit{}
+	& \multicolumn{1}{c}{\textit{Machine A}}
+	& \multicolumn{1}{c}{\textit{Machine B}}
+	& \multicolumn{1}{c}{\textit{Overall}}\\
+	\midrule
+	\textbf{50ms (Kbit/s)} & 59.7 ,16.84 & 60.36 ,18 & 60.03 ,17.42\\
+	\textbf{100ms (Kbit/s)} & 63.3 ,19.29 & 64.82 ,20.95 & 64.06 ,20.12\\
+	\textbf{200ms (Kbit/s)} & 66.89 ,20.12 & 65.66 ,19.63 & 66.27 ,19.87\\
+	\bottomrule
+    \end{tabular}
+    \caption[Averaged bandwidth with different delay conditions with 10\% packet loss]{Averaged bandwidth with different delay conditions with 10\% packet loss.}
+    \label{fig:p2p_delay_loss_bw}
+\end{center}
+\end{table}
+
+Table~\ref{fig:p2p_delay_loss_bw} describes the averaged bandwidth result with not much difference in each situation.If we study the way WebRTC calculates the rate in difficult situations we can see that the sender will establish its decision on the RTT, packet loss and available bandwidth that is estimated from the receiving side using Equation~\ref{eq:RateCalc}~\cite{alvestrandCongestion2012}. Obviously the real output differs form the expected by using the formula.
+
+Carrying delay and losses in the same path will not be handled by the congestion mechanisms in WebRTC giving a low rate output for the link.
+
+Another interesting factor around this test is the setup time that increases to up 4.6 seconds with 200ms delay and 3 seconds with 50ms, obviously this increase will also affect mobile developers when establishing calls in delayed environments.
 
 \subsubsection{Bandwidth and queue variations}
 
@@ -172,5 +217,126 @@ The queue size is set in slots to {\it Dummynet} considering each slot as standa
 	\label{eq:QueueSize}
 \end{equation}
 
-We have seen a good response when having big queue size but larger deviation in bandwidth when reducing this queue size to 100 ms or 500 ms, this produced high delays over 20 ms for every call with different distribution curves. The delay that is given to the duration of the call is not stable and will affect the media flow, this increasing curve of delay distribution is given by the small queue size which produces bursty packets to arrive to the peer having different delay conditions.
-When we tested the 5 Mbit/s case we got a strange high delay output even the bandwidth adapted to the requirements of WebRTC. The delay deviation is also high and will affect the time the packets arrive with large jittering.
+We have seen a good response when having big queue sizes but larger deviation in bandwidth when reducing this queue size to 100 ms or 500 ms, this produced high delays over 20 ms for every call with different distribution curves. The delay that is given to the duration of the call is not stable and will affect the media flow, this increasing curve of delay distribution is given by the small queue size which produces bursty packets to arrive to the peer having different delay conditions.
+
+When we tested the 5 Mbit/s case we got a high delay output even the bandwidth response adapted to the constraints, delay deviation is also high and will affect the time the packets arrive with large jittering.
+
+We will deeply study the result of the test performed at 1 Mbit/s limitation as the maximum standard bandwidth for WebRTC is approximately 2 Mbit/s, when having 1 Mbit/s limitation WebRTC will need to adapt the actual encoding rate and bandwidth control to that amount.
+
+Figure~\ref{fig:1mb_mean_deviation_bw} represents the bandwidth and mean plotted for all the different tests performed in the 1 Mbit/s case. We can see that the response varies in small amount of bandwidth but with large deviation, when having 500ms and 1s queue size we have much more deviation in means of packets being buffered in the relay. Otherwise, when the queue size reduces to 100ms the deviation gets smaller but delay response is worst.
+
+We can compare Figure~\ref{fig:1mb_total_delay_distribution} delay distribution results for the best case (10s queue) and worst case (100ms queue). The delay response with large queue is better due to the rapid increase of packets that carry small delay, for the 100ms queue the curve is smoother having packets ranging in all values of delay between 0 and 130ms.
+
+Delay experience with small queue sizes will be worst in the sense of the call flow, we might experience sudden delay situations that WebRTC won't be able to handle, when having larger queue sizes we son't notice the delay variations as much as with the previous example. Having curvy increases in delay distribution figure will result in sudden delay variations in the call. The conclusion is that WebRTC is able to adapt to low capacity networks using its codec mechanism at the same time as it should improve the congestion control systems to adapt to different buffer sizes and queuing conditions. 
+
+Studying the way the sender takes decisions about rate constraints we can observe that the available bandwidth estimates calculated by the receiving side are only reliable when the size of the queues along the channel are large enough~\cite{alvestrandCongestion2012} . When having short queues along the path the maximum usage of the bandwidth cannot be estimated if there is no packet loss in the link, as in this case the packet loss is negligible, the connection is not able to use the maximum amount of bandwidth available in the link.
+
+\begin{figure}[htp]
+        \centering
+        \begin{subfigure}[b]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_10s_mean_deviation_bw.pdf}
+      \caption[1 Mbit/s and 10s queue size]{1 Mbit/s and 10s queue size.}
+	\label{fig:1mb_10s_mean_deviation_bw}
+        \end{subfigure}
+        \qquad
+
+        \begin{subfigure}[b]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_1s_mean_deviation_bw.pdf}
+      \caption[1 Mbit/s and 1s queue size]{1 Mbit/s and 1s queue size.}
+	\label{fig:1mb_1s_mean_deviation_bw}
+        \end{subfigure}
+        
+        \begin{subfigure}[b]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_05s_mean_deviation_bw.pdf}
+      \caption[1 Mbit/s and 500ms queue size]{1 Mbit/s and 500ms queue size.}
+	\label{fig:1mb_500ms_mean_deviation_bw}
+        \end{subfigure}
+        \qquad
+
+        \begin{subfigure}[b]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_01s_mean_deviation_bw.pdf}
+      \caption[1 Mbit/s and 100ms queue size]{1 Mbit/s and 100ms queue size.}
+	\label{fig:1mb_01s_mean_deviation_bw}
+        \end{subfigure}
+        \caption{Bandwidth and mean for 1 Mbit/s with multiple queue sizes}
+        \label{fig:1mb_mean_deviation_bw}
+\end{figure}
+
+\begin{figure}[htp]
+        \centering
+        \begin{subfigure}[h]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_10s_total_delay_distribution.pdf}
+      \caption[1 Mbit/s and 10s queue size]{1 Mbit/s and 10s queue size.}
+	\label{fig:1mb_10s_total_delay_distribution}
+        \end{subfigure}
+        
+        \begin{subfigure}[h]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_1s_total_delay_distribution.pdf}
+      \caption[1 Mbit/s and 1s queue size]{1 Mbit/s and 1s queue size.}
+	\label{fig:1mb_1s_total_delay_distribution}
+        \end{subfigure}
+
+        \begin{subfigure}[h]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_05s_total_delay_distribution.pdf}
+      \caption[1 Mbit/s and 500ms queue size]{1 Mbit/s and 500ms queue size.}
+	\label{fig:1mb_05s_total_delay_distribution}
+        \end{subfigure}%
+        
+        \begin{subfigure}[h]{1\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/1mb_01s_total_delay_distribution.pdf}
+      \caption[1 Mbit/s and 100ms queue size]{1 Mbit/s and 100ms queue size.}
+	\label{fig:1mb_01s_total_delay_distribution}
+        \end{subfigure}
+        \caption{Delay distribution for 1 Mbit/s with multiple queue sizes}
+        \label{fig:1mb_total_delay_distribution}
+\end{figure}
+
+\clearpage
+\clearpage
+\subsection{Loaded network}
+
+Similar to the previous test, in this case we will be measuring the performance of WebRTC in a loaded network using a tool named {\it Iperf}. This tool will allow us to emulate traffic between our two peers loading the network according to our needs with UDP or TCP packets. The configuration we will use is the one shown in Figure~\ref{fig:iperfTest} with the clients running {\it Dummynet} instead of the relay.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{./figures/IPERF.pdf}
+      \caption[Topology for traffic flooded path using {\it Iperf}]{Topology for traffic flooded path using {\it Iperf}.}
+	\label{fig:iperfTest}
+\end{figure}
+
+In this scenario we are interested in measuring also the behavior of real bandwidth setups for different environments, we will be testing the link with 100/10 Mbit/s and 20/4 Mbit/s limitations, the second one could be defined as the standard for HSPA networks. The data that will be sent to the other peer will be either 10 Mbit/s of TCP and UDP traffic or 2 Mbit/s.
+
+First we will run the server as deamon on the recipient of the packets by executing:
+
+\begin{verbatim}
+# iperf -s -D
+\end{verbatim}
+
+The next step will rely on the usage of UDP or TCP, {\it Iperf} sends TCP packets by default, to do so we will run:
+
+\begin{verbatim}
+# iperf -c XXXX -t 300 {-u} -b 10m/2m 
+\end{verbatim}
+
+In the previous command, {\it -t} is the amount of time the test length, {\it -c} is the feature that configures the remote server to send the packets to, {\it -u} is going to be used to sent UDP datagrams instead of TCP and {\it -b} will define the amount of Mbit/s to be sent to the remote server. In this case every test is run three times to assure proper results.
+
+\subsection{Parallel calls}
+
+In this part of the test we will be checking how WebRTC handles multiple parallel calls with different peers, this is not to me mixed with mesh style of topology as it will be running using different tabs or processes through the same TURN path. Figure~\ref{fig:parallelCalls} represents the topology used for the test.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/ParallelCalls.pdf}
+      \caption[Topology for three different parallel calls using the same link]{Topology for three different parallel calls using the same link.}
+	\label{fig:parallelCalls}
+\end{figure}
+
+We will run a combined batch of six tests using 2 and 3 calls without {\it Dummynet} or with 20 Mbit/s and 10 Mbit/s bandwidth limitation for the link. The case without any constraint will run with the standard 100 Mbit/s of the ethernet link capacity.

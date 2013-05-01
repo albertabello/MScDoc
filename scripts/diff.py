@@ -15,17 +15,23 @@ import operator
 add_path1="/machine1/rtp/"
 add_path2="/machine2/rtp/"
 packet_count=0
-delay_array=[0]*100
-delay_gaps=[0]*100
+delay_array=[0]*30
+delay_gaps=[0]*30
+rtt_switch=0
+total=0
 
 def delay_distribution(counter,delay,name):
     x=10
     global packet_count
     global delay_array
     global delay_gaps
+    global total
     packet_count+=1
+    total=30
+    if (rtt_switch==1):
+        total=110
     #Classifies in gaps of 10 ms 100 times, that is a total of 1s delay max
-    for i in range(0,100):
+    for i in range(0,total):
         delay_gaps.pop(i)
         delay_gaps.insert(i,x)
         if (delay<x) and (delay>(x-10)):
@@ -43,11 +49,12 @@ def build_output_distribution(iteration,path):
     global delay_array
     global delay_gaps
     global packet_count
+    global total
     for x in delay_array:
         y=(float(x)/packet_count)
         z=z+y
         newList.append(z)
-    for i in range(0,100):
+    for i in range(0,total):
         logWriter.writerow([delay_gaps[i], newList[i]]);
     delayPlot.close
 
@@ -75,6 +82,7 @@ def main(argv):
     path_global = argv[3]
     global delay_array
     global delay_gaps
+    global rtt_switch
     #base_path1 = argv[0]
     #base_path2 = argv[1]
     # find text files in the two two directories
@@ -90,7 +98,12 @@ def main(argv):
     # match _101_faa6f202
 
     # BUG?: maybe zipping is just a bad idea, the lists may not be of equal lengths
-    
+
+    if "rtt" in base_path1:
+        rtt_switch=1
+        delay_array=[0]*110
+        delay_gaps=[0]*110
+
     for f1, f2 in zip(mac1, mac2):
         # the filenames will not match because the NTP ts will vary 
         # we skip the first two underscores ("_") rtp_NTP_*. 

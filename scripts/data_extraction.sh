@@ -20,6 +20,10 @@ MEMSUM=0
 COUNTER=0
 TOTALSTRD_DEV_MEM=0
 TOTALSTRD_DEV_CPU=0
+TMPDEVMEM=0
+TMPDEVCPU=0
+TMPCPUSUM=0
+TMPMEMSUM=0
 ##FILENAME to save results
 FILENAME=$1/output/$(echo $1 | sed -e 's/\/.*\///g')
 #echo $FILENAME
@@ -53,12 +57,22 @@ do
 
     CPUSUM=$(echo 'scale=3;'$CPUSUM + $NEWCPUAVG|bc)
     MEMSUM=$(echo 'scale=3;'$MEMSUM + $NEWMEMAVG|bc)
+    TMPCPUSUM=$(echo 'scale=3;'$TMPCPUSUM + $NEWCPUAVG|bc)
+    TMPMEMSUM=$(echo 'scale=3;'$TMPMEMSUM + $NEWMEMAVG|bc)
+    TMPDEVMEM=$(echo 'scale=3;'$TMPDEVMEM + $STRD_DEV_MEM|bc)
+    TMPDEVCPU=$(echo 'scale=3;'$TMPDEVCPU + $STRD_DEV_CPU|bc)
     TOTALSTRD_DEV_CPU=$(echo 'scale=3;'$TOTALSTRD_DEV_CPU + $STRD_DEV_CPU|bc)
     TOTALSTRD_DEV_MEM=$(echo 'scale=3;'$TOTALSTRD_DEV_MEM + $STRD_DEV_MEM|bc)
     echo $COUNTER"\t"$NEWCPUAVG"\t"$STRD_DEV_CPU"\t"$NEWMEMAVG"\t"$STRD_DEV_MEM >> "CPU_MEM_DATA.dat"
     echo $COUNTER" | "$NEWCPUAVG" | "$STRD_DEV_CPU" | "$NEWMEMAVG" | "$STRD_DEV_MEM | column -t >> $FILENAME".log"
   done
+  echo "\n" >> $FILENAME".log"
+  echo "Machine $MACHINE_COUNTER | "$(echo 'scale=3;'$TMPCPUSUM/$COUNTER|bc)" | "$(echo 'scale=3;'$TMPDEVCPU/$COUNTER|bc)" | "$(echo 'scale=3;'$TMPMEMSUM/$COUNTER|bc)" | "$(echo 'scale=3;'$TMPDEVMEM/$COUNTER|bc) | column -t >> $FILENAME".log"
   COUNTER=0
+  TMPCPUSUM=0
+  TMPMEMSUM=0
+  TMPDEVMEM=0
+  TMPDEVCPU=0
   echo "\n" >> $FILENAME".log"
 done
 
@@ -70,6 +84,7 @@ PLSUM=0
 COUNTER=0
 MACHINE_COUNTER=0
 COUNTER_TOTAL=0
+TMPPLSUM=0
 echo "Doing packet losses..."
 echo "\n\nPACKET LOSSES\n----------------------------\n" >> $FILENAME".log"
 #$1 contains the directory of all files used for performance
@@ -85,11 +100,15 @@ do
     COUNTER=$((COUNTER+1))
     COUNTER_TOTAL=$((COUNTER_TOTAL+1))
     PLSUM=$(echo 'scale=3;'$PLSUM + $NEWPL|bc)
+    TMPPLSUM=$(echo 'scale=3;'$TMPPLSUM + $NEWPL|bc)
     echo $COUNTER"\t"$NEWPL>> "PL_DATA_$MACHINE_COUNTER.dat"
     echo $COUNTER" | "$NEWPL | column -t >> $FILENAME".log"
   done
   echo "\n" >> $FILENAME".log"
+  echo "Machine $MACHINE_COUNTER | "$(echo 'scale=3;'$TMPPLSUM/$COUNTER|bc) | column -t >> $FILENAME".log"
+  echo "\n" >> $FILENAME".log"
   COUNTER=0
+  TMPPLSUM=0
 done
 
 echo "Overall | "$(echo 'scale=3;'$PLSUM/$COUNTER_TOTAL|bc) | column -t >> $FILENAME".log"
@@ -102,6 +121,7 @@ TIMESUM=0
 COUNTER=0
 MACHINE_COUNTER=0 
 COUNTER_TOTAL=0
+TMPSTSUM=0
 echo "Doing call stablishment time..."
 echo "\n\nSETUP TIME\n--------------" >> $FILENAME".log"
 #$1 contains the directory of all files used for performance
@@ -120,6 +140,7 @@ do
     #echo $STRD_DEV_BW
     NEWTIME=`echo $NEWTIME | tr ',' '.'`
     echo $NEWTIME >> time_tmp_log
+    echo $NEWTIME >> time_tmp_log_individual
     #STRD_DEV_BW=`echo $STRD_DEV_BW | tr ',' '.'`
     # NEWCPUAVG=`echo $NEWCPUAVG | tr ',' '.'`
     # NEWMEMAVG=`echo $NEWMEMAVG | tr ',' '.'`
@@ -130,13 +151,19 @@ do
 
     # CPUSUM=$(echo 'scale=3;'$CPUSUM + $NEWCPUAVG|bc)
     TIMESUM=$(echo 'scale=3;'$TIMESUM + $NEWTIME|bc)
+    TMPSTSUM=$(echo 'scale=3;'$TMPSTSUM + $NEWTIME|bc)
     #TOTALSTRD_DEV_BW=$(echo 'scale=3;'$TOTALSTRD_DEV_BW + $STRD_DEV_BW|bc)
     # TOTALSTRD_DEV_MEM=$(echo 'scale=3;'$TOTALSTRD_DEV_MEM + $STRD_DEV_MEM|bc)
     echo $COUNTER"\t"$NEWTIME >> "SETUP_TIME.dat"
     echo $COUNTER" | "$NEWTIME | column -t >> $FILENAME".log"
   done
+  TMP_STRD_DEV_TIME=$(cat time_tmp_log_individual|awk '{sum+=$1; sumsq+=$1*$1} END {print (sqrt(sumsq/NR - (sum/NR)**2)/2)}')
   echo "\n" >> $FILENAME".log"
+  echo "Machine $MACHINE_COUNTER | "$(echo 'scale=3;'$TMPSTSUM/$COUNTER|bc)" | "$TMP_STRD_DEV_TIME" (deviation ms)" | column -t >> $FILENAME".log"
+  echo "\n" >> $FILENAME".log"  
   COUNTER=0
+  TMPSTSUM=0
+  rm time_tmp_log_individual
 done
 
 STRD_DEV_TIME=$(cat time_tmp_log|awk '{sum+=$1; sumsq+=$1*$1} END {print (sqrt(sumsq/NR - (sum/NR)**2)/2)}')
@@ -152,6 +179,8 @@ COUNTER=0
 TOTALSTRD_DEV_RTT=0
 COUNTER_TOTAL=0
 MACHINE_COUNTER=0
+TMPTRTTSUM=0
+TMP_DEV_RTT=0
 echo "Doing RTT..."
 echo "\n\nRTT\n--------------" >> $FILENAME".log"
 #$1 contains the directory of all files used for performance
@@ -172,13 +201,19 @@ do
     COUNTER=$((COUNTER+1))
     COUNTER_TOTAL=$((COUNTER_TOTAL+1))
 
+    TMPTRTTSUM=$(echo 'scale=3;'$TMPTRTTSUM + $NEWRTTAVG|bc)
+    TMP_DEV_RTT=$(echo 'scale=3;'$TMP_DEV_RTT + $STRD_DEV_RTT|bc)
     RTTSUM=$(echo 'scale=3;'$RTTSUM + $NEWRTTAVG|bc)
     TOTALSTRD_DEV_RTT=$(echo 'scale=3;'$TOTALSTRD_DEV_RTT + $STRD_DEV_RTT|bc)
     echo $COUNTER"\t"$NEWRTTAVG"\t"$STRD_DEV_RTT >> "RTT.dat"
     echo $COUNTER" | "$NEWRTTAVG" | "$STRD_DEV_RTT | column -t >> $FILENAME".log"
   done
   echo "\n" >> $FILENAME".log"
+  echo "Machine $MACHINE_COUNTER | "$(echo 'scale=3;'$TMPTRTTSUM/$COUNTER|bc)" | "$(echo 'scale=3;'$TMP_DEV_RTT/$COUNTER|bc)" (deviation ms)" | column -t >> $FILENAME".log"
+  echo "\n" >> $FILENAME".log"  
   COUNTER=0
+  TMP_DEV_RTT=0
+  TMPTRTTSUM=0
 done
 
 echo "Overall | "$(echo 'scale=3;'$RTTSUM/$COUNTER_TOTAL|bc)" | "$(echo 'scale=3;'$TOTALSTRD_DEV_RTT/$COUNTER_TOTAL|bc) | column -t >> $FILENAME".log"
@@ -192,6 +227,8 @@ BWSUM=0
 COUNTER=0
 MACHINE_COUNTER=0
 COUNTER_TOTAL=0
+TMPBWSUM=0
+TMPBWDEV=0
 echo "Doing Bandwidth..."
 echo "\n\nBANDWIDTH\n----------------------------\n" >> $FILENAME".log"
 #$1 contains the directory of all files used for performance
@@ -220,6 +257,9 @@ do
       STRD_DEV_BW=`echo $STRD_DEV_BW | tr ',' '.'`
       COUNTER=$((COUNTER+1))
       COUNTER_TOTAL=$((COUNTER_TOTAL+1))
+
+      TMPBWSUM=$(echo 'scale=3;'$TMPBWSUM + $NEWBWAVG|bc)
+      TMPBWDEV=$(echo 'scale=3;'$TMPBWDEV + $STRD_DEV_BW|bc)
       BWSUM=$(echo 'scale=3;'$BWSUM + $NEWBWAVG|bc)
       TOTALSTRD_DEV_BW=$(echo 'scale=3;'$TOTALSTRD_DEV_BW + $STRD_DEV_BW|bc)
       echo $COUNTER"\t"$NEWBWAVG"\t"$STRD_DEV_BW >> "BW_DATA_$MACHINE_COUNTER.dat"
@@ -228,7 +268,11 @@ do
     done
   done
   echo "\n" >> $FILENAME".log"
+  echo "Machine $MACHINE_COUNTER | "$(echo 'scale=3;'$TMPBWSUM/$COUNTER|bc)" | "$(echo 'scale=3;'$TMPBWDEV/$COUNTER|bc) | column -t >> $FILENAME".log"
+  echo "\n" >> $FILENAME".log"  
   COUNTER=0
+  TMPBWSUM=0
+  TMPBWDEV=0
 done
 
 echo "Overall | "$(echo 'scale=3;'$BWSUM/$COUNTER_TOTAL|bc)" | "$(echo 'scale=3;'$TOTALSTRD_DEV_BW/$COUNTER_TOTAL|bc) | column -t >> $FILENAME".log"
@@ -255,7 +299,7 @@ set yrange [ 0 : 2500 ]
 
 set grid
 
-set title "Mean and deviation for bandwidth" font ",14"
+#set title "Mean and deviation for bandwidth" font ",14"
 set xlabel "Iterations"
 plot "BW_DATA_1.dat" u (column(1)-0.1):2:3 with yerrorbars lt -1 pi -6 pt 7 lc 7 lw 5 ps 1.5 title "Machine A", \
 "BW_DATA_2.dat" u (column(1)+0.1):2:3 with yerrorbars lt -1 pi -6 pt 7 lc 8 lw 5 ps 1.5 title "Machine B"
@@ -305,11 +349,11 @@ unset key
 set xlabel "Delay [ms]"
 set ylabel "Packets"
 set yrange [0:1]
-set xrange [0:1000]
+#set xrange [0:500]
 set grid
 set style fill pattern 5
 set xtics border out scale 0,0 mirror offset character 0, 0, 0
-set title "Delay distribution for all iterations" font ",14"
+#set title "Delay distribution for all iterations" font ",14"
 
 plot "$1/output/output_delay/distribution_delay_inc_1.txt" using 1:2 with linespoints lw 3 lt -1 pt 6 ps 1.5 lc -1, \
 "$1/output/output_delay/distribution_delay_inc_2.txt" using 1:2 with linespoints lw 3 lt -1 pt 6 ps 1.5 lc 1, \
@@ -332,6 +376,10 @@ COUNTER2=0
 AVGDELAY=0
 TOTALSTRD_DEV_DELAY=0
 MACHINE_COUNT=1
+TMPMACHINE1DELAY=0
+TMPMACHINE1DELAYDEV=0
+TMPMACHINE2DELAY=0
+TMPMACHINE2DELAYDEV=0
 echo "\n\nDELAY\n----------------------------\n" >> $FILENAME".log"
 for FILE in $(find $1/output/output_delay  -name "delay_*.txt" | sort -n -t _ -k 3)
 do
@@ -348,24 +396,30 @@ do
   AVGDELAY=$(echo "scale=3;$AVGDELAY + $NEWAVGDELAY" | bc)
   if [ $MACHINE_COUNT -eq "1" ]
   then
-  COUNTER1=$((COUNTER1+1))
-  echo $COUNTER1"\t"$NEWAVGDELAY"\t"$STRD_DEV_DELAY >> "machine1.dat"
+    COUNTER1=$((COUNTER1+1))
+    echo $COUNTER1"\t"$NEWAVGDELAY"\t"$STRD_DEV_DELAY >> "machine1.dat"
     echo $COUNTER1" | "$NEWAVGDELAY" | "$STRD_DEV_DELAY | column -t >> "machine1.tmp"
     MACHINE_COUNT=$(($MACHINE_COUNT + 1))
+    TMPMACHINE1DELAY=$(echo 'scale=3;'$TMPMACHINE1DELAY + $NEWAVGDELAY|bc)
+    TMPMACHINE1DELAYDEV=$(echo 'scale=3;'$TMPMACHINE1DELAYDEV + $STRD_DEV_DELAY|bc)
   else
     COUNTER2=$((COUNTER2+1))
     echo $COUNTER1"\t"$NEWAVGDELAY"\t"$STRD_DEV_DELAY >> "machine2.dat"
     echo $COUNTER2" | "$NEWAVGDELAY" | "$STRD_DEV_DELAY | column -t >> "machine2.tmp"
     MACHINE_COUNT=$(($MACHINE_COUNT - 1))
+    TMPMACHINE2DELAY=$(echo 'scale=3;'$TMPMACHINE2DELAY + $NEWAVGDELAY|bc)
+    TMPMACHINE2DELAYDEV=$(echo 'scale=3;'$TMPMACHINE2DELAYDEV + $STRD_DEV_DELAY|bc)
   fi
 done
 echo "* MACHINE 1 *" >> $FILENAME".log"
 echo "Iteration | Delay Avg | Deviation delay (ms)" | column -t >> $FILENAME".log"
 cat machine1.tmp >> $FILENAME".log"
+echo "Machine | "$(echo 'scale=3;'$TMPMACHINE1DELAY/$COUNTER1|bc)" | "$(echo 'scale=3;'$TMPMACHINE1DELAYDEV/$COUNTER1|bc) | column -t >> $FILENAME".log"
 echo "\n" >> $FILENAME".log"
 echo "\n* MACHINE 2 *" >> $FILENAME".log"
 echo "Iteration | Delay Avg | Deviation delay (ms)" | column -t >> $FILENAME".log"
 cat machine2.tmp >> $FILENAME".log"
+echo "Machine | "$(echo 'scale=3;'$TMPMACHINE2DELAY/$COUNTER2|bc)" | "$(echo 'scale=3;'$TMPMACHINE2DELAYDEV/$COUNTER2|bc) | column -t >> $FILENAME".log"
 echo "\n" >> $FILENAME".log"
 echo "\nOverall | "$(echo 'scale=4;'$AVGDELAY/$COUNTER_TOTAL|bc)" | "$(echo 'scale=4;'$TOTALSTRD_DEV_DELAY/$COUNTER_TOTAL|bc) | column -t >> $FILENAME".log"
 
@@ -383,7 +437,7 @@ set xrange [ 0.00000 : 10.5000 ]
 
 set grid
 
-set title "Mean and deviation for delay" font ",14"
+#set title "Mean and deviation for delay" font ",14"
 set xlabel "Iterations"
 plot "machine1.dat" u (column(1)-0.1):2:3 with yerrorbars lt -1 pi -6 pt 7 lc 4 lw 5 ps 1.5 title "Machine A", \
 "machine2.dat" u (column(1)+0.1):2:3 with yerrorbars lt -1 pi -6 pt 7 lc 6 lw 5 ps 1.5 title "Machine B"
