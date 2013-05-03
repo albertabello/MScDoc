@@ -59,7 +59,7 @@ Setup time is stablished as the time it take since the start of the PeerConnecti
 	\midrule
 	\textbf{CPU (\%)} & 48.76 ,2.76 & 48.83 ,2.78 & 48.79 ,2.77\\
 	\textbf{Memory (\%)} & 35.98 ,0.3 & 36.43 ,0.29 & 36.21 ,0.29\\
-	\textbf{Banddwidth (Kbit/s)} & 1947.61 ,232.75 & 1951.76 ,234.5 & 1949.7 ,233.62\\
+	\textbf{Bandwidth (Kbit/s)} & 1947.61 ,232.75 & 1951.76 ,234.5 & 1949.7 ,233.62\\
 	\textbf{Setup time (ms)} & 1436.33 ,25 & 1447.44 ,22.71 & 1441.88 ,24.04\\
 	\textbf{RTT (ms)} & 9.49 ,2.11 & 9.64 ,2.71 & 9.57 ,2.41\\
 	\textbf{Delay (ms)} & 4.84 ,1.5 & 5.4 ,1.53 & 5.12 ,1.52\\
@@ -179,7 +179,7 @@ Low latency networks will play a big role when WebRTC extends to mobile devices 
 
 \subsubsection{Loss and delay}
 
-Regarding P2P scenario we also tested the possibility of having a combined lossy network with delay added to it, this kind of environment could be easily found in mobile applications in low coverage areas. We have set 10\% packet loss with different delays such as 50ms, 100ms and 200ms. In Table~\ref{fig:p2p_packet_bw} we saw an average of over 1 Mbit/s of bandwidth usage in 10\% loss environments, the result when adding delay to the constraint is  an average of barely 60 Kbit/s. Those results differ due to the difficulty of WebRTC to handle congestion in those environments. 
+Regarding P2P scenario we also tested the possibility of having a combined lossy network with delay added to it, this kind of environment could be easily found in mobile applications in low coverage areas. We have set 10\% packet loss with different delays such as 25ms, 50ms, 100ms and 200ms. In Table~\ref{fig:p2p_packet_bw} we saw an average of over 1 Mbit/s of bandwidth usage in 10\% loss environments, the result when adding delay to the constraint is  an average of barely 60 Kbit/s. Those results differ due to the difficulty of WebRTC to handle congestion in those environments. 
 
 \begin{table}[h]
 \begin{center}
@@ -190,6 +190,7 @@ Regarding P2P scenario we also tested the possibility of having a combined lossy
 	& \multicolumn{1}{c}{\textit{Machine B}}
 	& \multicolumn{1}{c}{\textit{Overall}}\\
 	\midrule
+	\textbf{25ms (Kbit/s)} & 72.59 ,18.54 & 70.69 ,18.09 & 71.78 ,18.32\\
 	\textbf{50ms (Kbit/s)} & 59.7 ,16.84 & 60.36 ,18 & 60.03 ,17.42\\
 	\textbf{100ms (Kbit/s)} & 63.3 ,19.29 & 64.82 ,20.95 & 64.06 ,20.12\\
 	\textbf{200ms (Kbit/s)} & 66.89 ,20.12 & 65.66 ,19.63 & 66.27 ,19.87\\
@@ -200,9 +201,18 @@ Regarding P2P scenario we also tested the possibility of having a combined lossy
 \end{center}
 \end{table}
 
-Table~\ref{fig:p2p_delay_loss_bw} describes the averaged bandwidth result with not much difference in each situation.If we study the way WebRTC calculates the rate in difficult situations we can see that the sender will establish its decision on the RTT, packet loss and available bandwidth that is estimated from the receiving side using Equation~\ref{eq:RateCalc}~\cite{alvestrandCongestion2012}. Obviously the real output differs form the expected by using the formula.
+Table~\ref{fig:p2p_delay_loss_bw} describes the averaged bandwidth result with not much difference in each situation.If we study the way WebRTC calculates the rate in difficult situations we can see that the sender will establish its decision on the RTT, packet loss and available bandwidth that is estimated from the receiving side using Equation~\ref{eq:RateCalc}~\cite{alvestrandCongestion2012}. Obviously the real output differs form the expected by using the formula, the reason is that even the congestion mechanism on WebRTC calculates the rate using Equation~\ref{eq:RateCalc}, the sender rate is always limited by the TCP Friendly Rate Control (TFRC) formula that is calculated using delay an packet loss ratio together~\cite{tfrc}.
 
-Carrying delay and losses in the same path will not be handled by the congestion mechanisms in WebRTC giving a low rate output for the link.
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/plr10_rtt50ms_RV.pdf}
+      \caption[Remote stream bandwidth for 10\% packet loss rate and 50ms delay]{Remote stream bandwidth for 10\% packet loss rate and 50ms delay.}
+	\label{fig:bw_plr10_rtt50ms}
+\end{figure}
+
+Figure~\ref{fig:bw_plr10_rtt50ms} is an example that illustrates how the rate is lowered after the beginning of the call even the bandwidth is available. This is due to the formulas and mechanisms previously described.
+
+Carrying delay and losses in the same path will not be handled by the congestion mechanisms in WebRTC giving a low rate output for the stream.
 
 Another interesting factor around this test is the setup time that increases to up 4.6 seconds with 200ms delay and 3 seconds with 50ms, obviously this increase will also affect mobile developers when establishing calls in delayed environments.
 
@@ -221,13 +231,29 @@ We have seen a good response when having big queue sizes but larger deviation in
 
 When we tested the 5 Mbit/s case we got a high delay output even the bandwidth response adapted to the constraints, delay deviation is also high and will affect the time the packets arrive with large jittering.
 
-We will deeply study the result of the test performed at 1 Mbit/s limitation as the maximum standard bandwidth for WebRTC is approximately 2 Mbit/s, when having 1 Mbit/s limitation WebRTC will need to adapt the actual encoding rate and bandwidth control to that amount.
+We will study the result of the test performed at 1 Mbit/s limitation as the maximum standard bandwidth for WebRTC is approximately 2 Mbit/s, when having 1 Mbit/s limitation WebRTC will need to adapt the actual encoding rate and bandwidth control to that amount.
 
-Figure~\ref{fig:1mb_mean_deviation_bw} represents the bandwidth and mean plotted for all the different tests performed in the 1 Mbit/s case. We can see that the response varies in small amount of bandwidth but with large deviation, when having 500ms and 1s queue size we have much more deviation in means of packets being buffered in the relay. Otherwise, when the queue size reduces to 100ms the deviation gets smaller but delay response is worst.
+Figure~\ref{fig:1mb_mean_deviation_bw} represents the bandwidth and mean plotted for all the different tests performed in the 1 Mbit/s case. We can see that the response varies in small amount of bandwidth but with large deviation, when having 500ms and 1s queue size (\ref{fig:1mb_500ms_mean_deviation_bw}) we have much more deviation in means of packets being buffered in the relay. Otherwise, when the queue size reduces to 100ms (\ref{fig:1mb_100ms_mean_deviation_bw}) the deviation gets smaller but delay response is worst.
 
-We can compare Figure~\ref{fig:1mb_total_delay_distribution} delay distribution results for the best case (10s queue) and worst case (100ms queue). The delay response with large queue is better due to the rapid increase of packets that carry small delay, for the 100ms queue the curve is smoother having packets ranging in all values of delay between 0 and 130ms.
+We can compare Figure~\ref{fig:1mb_total_delay_distribution} delay distribution results for the best case (\ref{fig:1mb_10s_total_delay_distribution}) and worst case (\ref{fig:1mb_01s_total_delay_distribution}). The delay response with large queue is better due to the rapid increase of packets that carry small delay, for the 100ms queue the curve is smoother having packets ranging in all values of delay between 0 and 130ms.
 
-Delay experience with small queue sizes will be worst in the sense of the call flow, we might experience sudden delay situations that WebRTC won't be able to handle, when having larger queue sizes we son't notice the delay variations as much as with the previous example. Having curvy increases in delay distribution figure will result in sudden delay variations in the call. The conclusion is that WebRTC is able to adapt to low capacity networks using its codec mechanism at the same time as it should improve the congestion control systems to adapt to different buffer sizes and queuing conditions. 
+Delay experience with small queue sizes will be worst in the sense of the call flow, we might experience sudden delay situations that WebRTC won't be able to handle, when having larger queue sizes we son't notice the delay variations as much as with the previous example. Having a curvy increase in delay distribution figure will result in sudden delay variations in the call. The conclusion is that WebRTC is able to adapt to low capacity networks using its codec mechanism at the same time as it should improve the congestion control systems to adapt to different buffer sizes and queuing conditions. 
+
+The congestion mechanisms in WebRTC will stabilize the rate until the amount of delay triggers the rate change to fit the new queue state requirements. Figure~\ref{fig:1cd81aa8-bw} and~\ref{fig:1cd81aa8-delay} show the bandwidth and delay for the same stream and how the rate adapts once the queues are full increasing the delay on the packets, rate is lowered and queues get empty giving producing low delay.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/1cd81aa8-bw.pdf}
+      \caption[Remote stream bandwidth for 1 Mbit/s and 500ms queue size]{Remote stream bandwidth for 1 Mbit/s and 500ms queue size.}
+	\label{fig:1cd81aa8-bw}
+\end{figure}
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/1cd81aa8-delay.pdf}
+      \caption[Stream delay for 1 Mbit/s and 500ms queue size]{Stream delay for 1 Mbit/s and 500ms queue size.}
+	\label{fig:1cd81aa8-delay}
+\end{figure}
 
 Studying the way the sender takes decisions about rate constraints we can observe that the available bandwidth estimates calculated by the receiving side are only reliable when the size of the queues along the channel are large enough~\cite{alvestrandCongestion2012} . When having short queues along the path the maximum usage of the bandwidth cannot be estimated if there is no packet loss in the link, as in this case the packet loss is negligible, the connection is not able to use the maximum amount of bandwidth available in the link.
 
@@ -303,7 +329,7 @@ Studying the way the sender takes decisions about rate constraints we can observ
 \clearpage
 \subsection{Loaded network}
 
-Similar to the previous test, in this case we will be measuring the performance of WebRTC in a loaded network using a tool named {\it Iperf}. This tool will allow us to emulate traffic between our two peers loading the network according to our needs with UDP or TCP packets. The configuration we will use is the one shown in Figure~\ref{fig:iperfTest} with the clients running {\it Dummynet} instead of the relay.
+Similar to the previous test, in this case we will be measuring the performance of WebRTC in a loaded network using a tool named {\it Iperf}. This tool will allow us to emulate traffic between our two peers loading the network according to our needs with UDP or TCP packets. The configuration we will use is the one shown in Figure~\ref{fig:iperfTest} with the clients running {\it Dummynet} instead of the relay. This scenario is chosen due its widely usage in real devices, having video calls meanwhile manipulating large amounts of online data is something that might happen when using WebRTC.
 
  \begin{figure}[h]
   \centering
@@ -314,7 +340,7 @@ Similar to the previous test, in this case we will be measuring the performance 
 
 In this scenario we are interested in measuring also the behavior of real bandwidth setups for different environments, we will be testing the link with 100/10 Mbit/s and 20/4 Mbit/s limitations, the second one could be defined as the standard for HSPA networks. The data that will be sent to the other peer will be either 10 Mbit/s of TCP and UDP traffic or 2 Mbit/s.
 
-First we will run the server as deamon on the recipient of the packets by executing:
+First we will run the server as daemon on the recipient of the packets by executing:
 
 \begin{verbatim}
 # iperf -s -D
@@ -326,7 +352,145 @@ The next step will rely on the usage of UDP or TCP, {\it Iperf} sends TCP packet
 # iperf -c XXXX -t 300 {-u} -b 10m/2m 
 \end{verbatim}
 
-In the previous command, {\it -t} is the amount of time the test length, {\it -c} is the feature that configures the remote server to send the packets to, {\it -u} is going to be used to sent UDP datagrams instead of TCP and {\it -b} will define the amount of Mbit/s to be sent to the remote server. In this case every test is run three times to assure proper results.
+In the previous command, {\it -t} is the amount of time the test length, {\it -c} is the feature that configures the remote server to send the packets to, {\it -u} is going to be used to sent UDP datagrams instead of TCP and {\it -b} will define the amount of Mbit/s to be sent to the remote server. In this case every test is run three times.
+
+Table~\ref{fig:tcp_iperf_no_dummynet} summarizes the results of the 10 Mbit/s TCP packet test without {\it Dummynet} constraints in the link.
+
+\begin{table}[h]
+\begin{center}
+    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+   	 \toprule
+	\textit{}
+	& \multicolumn{1}{c}{\textit{Machine A}}
+	& \multicolumn{1}{c}{\textit{Machine B}}
+	& \multicolumn{1}{c}{\textit{Overall}}\\
+	\midrule
+	\textbf{CPU (\%)} & 81.06 ,5.2 & 82.15 ,5.23 & 81.16 ,5.22\\
+	\textbf{Memory (\%)} & 35.65 ,0.43 & 34.27 ,0.39 & 34.96 ,0.41\\
+	\textbf{Bandwidth (Kbit/s)} & 990.11 ,202.62 & 1250.13 ,264.38 & 1120.12 ,233.506\\
+	\textbf{Setup time (ms)} & 1533.66 ,11.3 & 1577.66 ,41.89 & 1555 ,32.59\\
+	\textbf{RTT (ms)} & 25.61 ,16.02 & 24.76 ,14.11 & 25.19 ,15.07\\
+	\textbf{Delay (ms)} & 81.61 ,11.42 & 83.99 ,11.42 & 81.61 ,11.42\\
+	\bottomrule
+    \end{tabular}
+    \caption[IPERF 10 Mbit/s TCP test without link constraints]{IPERF 10 Mbit/s TCP test without link constraints.}
+    \label{fig:tcp_iperf_no_dummynet}
+\end{center}
+\end{table}
+
+The bandwidth rate in the call is affected by the traffic of TCP packets along the path, at the same time we are getting higher delays. Call behavior in this environment changes in every iteration being unpredictable, Figure~\ref{fig:iperfTestStd} represents the bandwidth mean and deviation of every iteration, we can easily observe that in the worst case we are getting three times less rate than the optimum case, ranging from 1.5 Mbit/s to under 400 Kbit/s in the worst iteration.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/iperf_std_mean_deviation_bw.pdf}
+      \caption[Bandwidth mean and deviation for 10 Mbit/s TCP {\it Iperf} test without link constraints]{Bandwidth mean and deviation for 10 Mbit/s TCP {\it Iperf} test without link constraints.}
+	\label{fig:iperfTestStd}
+\end{figure}
+
+We can observe some interesting behavior in all three iterations when looking at Figure~\ref{fig:iperfTestStdDelay} total delay distribution, the response varies from all three tests being all of them bad, a lot of sudden delay changes will appear during the call making real time communication difficult. The delay deviation is small but the tolerance for TCP flooded networks is low int WebRTC.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/iperf_std_total_delay_distribution.pdf}
+      \caption[Total delay distribution for 10 Mbit/s TCP {\it Iperf} test without link constraints]{Total delay distribution for 10 Mbit/s TCP {\it Iperf} test without link constraints.}
+	\label{fig:iperfTestStdDelay}
+\end{figure}
+
+Now we will test the behavior when sending those 10 Mbit/s with UDP and TCP in a constrained link of 100/10 (downlink/uplink), in this test {\it Dummynet} scripts have been executed on the client side instead of in the Relay. Table~\ref{fig:tcp_iperf_100in_10out} shows the different bandwidth responses between TCP and UDP traffic, in both cases the link constraint have been the same but the result varies. We will se an increase of rate with TCP flooded packets but also an increase of delay, this delay might be produced due the need of processing more packets with TCP than the simple mechanism of UDP.
+
+\begin{table}[h]
+\begin{center}
+    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+   	 \toprule
+	\textit{}
+	& \multicolumn{1}{c}{\textit{Machine A}}
+	& \multicolumn{1}{c}{\textit{Machine B}}
+	& \multicolumn{1}{c}{\textit{Overall}}\\
+	\midrule
+	\textbf{Bandwidth UDP (Kbit/s)} & 159.41 ,28.69 & 149.04 ,25.76 & 159.23 ,27.23 \\
+	\textbf{Delay UDP (ms)} & 98.07 ,3.14 & 98.85 ,2.75 & 96.85 ,2.94 \\
+	\hline
+	\hline
+	\textbf{Bandwidth TCP (Kbit/s)} & 208.97 ,20.64 & 194.41 ,18.9 & 201.69 ,19.77\\
+	\textbf{Delay TCP (ms)} & 146.9 ,4.38 & 147.92 ,4 & 147.41 ,4.23 \\
+	\bottomrule
+    \end{tabular}
+    \caption[IPERF 10 Mbit/s TCP and UDP test with constrained 100/10 Mbit/s link]{IPERF 10 Mbit/s TCP and UDP test with constrained 100/10 Mbit/s link.}
+    \label{fig:tcp_iperf_100in_10out}
+\end{center}
+\end{table}
+
+Delay distribution response in a constrained environment (Figure~\ref{fig:10m_udp_total_delay_distribution} and \ref{fig:10m_tcp_total_delay_distribution}) is smoother compared to Figure~\ref{fig:iperfTestStdDelay}, the absolute amount of delay is larger but the distribution curve is better for WebRTC needs as it does not have any sudden increase of delay. Delay response when having constraints will output a better delay distribution but with higher RTT in the link.
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/10m_udp_total_delay_distribution.pdf}
+                \caption{Delay distribution response for UDP test}
+                \label{fig:10m_udp_total_delay_distribution}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/10m_tcp_total_delay_distribution.pdf}
+                \caption{Delay distribution response for TCP test}
+                \label{fig:10m_tcp_total_delay_distribution}
+        \end{subfigure}
+        \caption[10 Mbit/s UDP/TCP {\it Iperf} test with 100/10 link condition]{10 Mbit/s UDP/TCP {\it Iperf} test with 100/10 link condition.}
+        \label{fig:10m_tcp_udp_distribution}
+\end{figure}
+
+When testing the 2 Mbit/s TCP and UDP flows with 20/4 Mbit/s constraints results are surprisingly close to the version without constraints, we are testing this configuration due to its similitudes to HSDPA networks that carry a similar averaged bandwidth. Unstable bandwidth is also noticed in this test but values for the rate are much higher and delay distribution graphs are similar to Figure~\ref{fig:10m_tcp_udp_distribution}. We are using 2 Mbit/s flows to imitate the encoding rate for an online streaming 1280x720 HD video.\footnote{http://www.adobe.com/devnet/adobe-media-server/articles/dynstream_live/popup.html}
+
+Table~\ref{fig:tcp_iperf_20in_4out} describes the output we had in terms of rate and delay for the 2 Mbit/s test in a HSDPA type network. Rate adaptation is good even having an small uplink capacity of 4 Mbit/s, the way the rate is adapted to this link confirms that in this kind of not delayed or lossy low latency networks WebRTC could perform properly with simultaneous ongoing traffic. 
+
+\begin{table}[h]
+\begin{center}
+    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+   	 \toprule
+	\textit{}
+	& \multicolumn{1}{c}{\textit{Machine A}}
+	& \multicolumn{1}{c}{\textit{Machine B}}
+	& \multicolumn{1}{c}{\textit{Overall}}\\
+	\midrule
+	\textbf{Bandwidth UDP (Kbit/s)} & 683.81 ,259.38 & 749.66 ,249.69 & 716.74 ,254.53 \\
+	\textbf{Delay UDP (ms)} & 56.34 ,2.83 & 54.31 ,2.64 & 55.32 ,2.74 \\
+	\hline
+	\hline
+	\textbf{Bandwidth TCP (Kbit/s)} & 760.94 ,238.44 & 1174.95 ,235.12 & 967.94 ,236.78\\
+	\textbf{Delay TCP (ms)} & 85.18 ,2.3 & 80.04 ,2.26 & 82.61 ,2.28 \\
+	\bottomrule
+    \end{tabular}
+    \caption[IPERF 2 Mbit/s TCP and UDP test with constrained 20/4 Mbit/s link]{IPERF 2 Mbit/s TCP and UDP test with constrained 20/4 Mbit/s link.}
+    \label{fig:tcp_iperf_20in_4out}
+\end{center}
+\end{table}
+
+From the delay distribution point of view (Figure~\ref{fig:2m_tcp_udp_distribution}), the output is similar in both tests being TCP slightly better (\ref{fig:2m_tcp_total_delay_distribution}) with less absolute delay and with an acceptable variation.
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/2m_udp_total_delay_distribution.pdf}
+                \caption{Delay distribution response for UDP test}
+                \label{fig:2m_udp_total_delay_distribution}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/2m_tcp_total_delay_distribution.pdf}
+                \caption{Delay distribution response for TCP test}
+                \label{fig:2m_tcp_total_delay_distribution}
+        \end{subfigure}
+        \caption[2 Mbit/s UDP and TCP {\it Iperf} test with 20/4 link condition]{2 Mbit/s UDP and TCP {\it Iperf} test with 20/4 link condition.}
+        \label{fig:2m_tcp_udp_distribution}
+\end{figure}
+
+In general, the response of WebRTC congestion mechanisms with ongoing link traffic should be better as this environment will be common for all users. The bandwidth adaptation produces an acceptable call adapting the rate but might produce delays smaller than one second which are acceptable from a usability perspective, the delay distribution for the standard case with an ongoing traffic of 10 Mbit/s is not as good as expected but it might be due to the high available capacity and the way {\it Iperf} simulates the packets to the other end.
 
 \subsection{Parallel calls}
 

@@ -37,9 +37,9 @@ This proposal had a greater reliance in modularity in order to move forward fast
 
 \subsection{Contribution}
 
-Investigate how WebRTC performs in a real environment trying to evaluate the best way to set multiple peer connections able to transfer media and data in different network topologies. Measure the performance of WebRTC in a real environment identifying bottlenecks related to encoding/decoding, media establishment or connection maintenance. All this should be performed in real-time over a browser by using the already existing WebRTC API.
+Investigate how WebRTC performs in a real environment trying to evaluate the best way to set multiple peer connections able to transfer media in different network topologies. Measure the performance of WebRTC in a real environment, identifying bottlenecks related to encoding/decoding, media establishment or connection maintenance. All this should be performed in real-time over a browser by using the already existing WebRTC API.
 
-Using metrics related to RTT, latency, packet loss and bandwidth usage we expect to understand the way WebRTC performs when handling multiple connections.
+Using metrics related to RTT, latency, packet loss and bandwidth usage we expect to understand the way WebRTC performs when handling in different environments.
 
 \subsection{Goals}
 
@@ -49,6 +49,8 @@ WebRTC uses and adapts some existing technologies for real-time communication. T
 	\item WebRTC performs considering different topologies using video/audio acquired form the Webcam using the API and encoded using different codec types provided by the standard.
 
 	\item Usage of WebRTC to build a real application that can be used by final users proving that the API is ready to be deployed and is a good approach for the developer needs when building real-time applications over the web. This will be done in conjunction with other new APIs and technologies introduced with HTML5.
+	
+	\item Testing of different WebRTC topologies with different network constraints to observe the response of the actual existing API.
 \end{itemize}
 
 The final conclusion will cover an overall opinion and usage experience of WebRTC, providing some valuable feedback for the needs and requirements for further modifications on the API.
