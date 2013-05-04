@@ -470,7 +470,7 @@ Table~\ref{fig:tcp_iperf_20in_4out} describes the output we had in terms of rate
 
 From the delay distribution point of view (Figure~\ref{fig:2m_tcp_udp_distribution}), the output is similar in both tests being TCP slightly better (\ref{fig:2m_tcp_total_delay_distribution}) with less absolute delay and with an acceptable variation.
 
-\begin{figure}
+\begin{figure}[h]
         \centering
         \begin{subfigure}[b]{0.5\textwidth}
                 \centering
@@ -547,3 +547,116 @@ Table~\ref{fig:cpu_mem_parallel} describes the resource comparison between two a
     \label{fig:bw_parallel}
 \end{center}
 \end{table}
+
+The bandwidth represented in Table~\ref{fig:bw_parallel} is the one used per each machine with the calls together, we will study the worst case. The bandwidth for three calls is to use an average of 800 Kbit/s with different responses in every case, the deviation is approximately $\pm202$ Kbit/s. 
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/sync_three-calls.pdf}
+      \caption[Bandwidth representation for all remote streams in a synchronous three peer parallel call for first iteration]{Bandwidth representation for all remote streams in a synchronous three peer parallel call for first iteration.}
+	\label{fig:three_parallel}
+\end{figure}
+
+
+Furthermore, it is interesting to see the global rate on the call as the bandwidth averaged is not following a stable value, Figure~\ref{fig:three_parallel} represents the bandwidth during all call for the remote video stream of the three peers. We can see how the rate mechanism tries to use the maximum available rate for the actual video encoding but fails to reach the 2 Mbit/s as multiple calls are running and behaving in the same way, this decision is taken also considering the delay that limits the maximum available rate for the call. Figure represents the delay on the same streams during the call, we can observe those peaks of delay during the same period as the bandwidth rise, the result of this is the sudden drop of bandwidth, this mechanism is triggered multiple times.
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/delay_three_parallel_1.pdf}
+                \caption{Remote stream for call 1}
+                \label{fig:three_parallel_1}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/delay_three_parallel_2.pdf}
+                \caption{Remote stream for call 2}
+                \label{fig:three_parallel_2}
+        \end{subfigure}        
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/delay_three_parallel_3.pdf}
+                \caption{Remote stream for call 3}
+                \label{fig:three_parallel_3}
+        \end{subfigure}
+        \caption[Delay representation for all remote streams in a three peer parallel call]{Delay representation for all remote streams in a three peer parallel call.}
+        \label{fig:three_parallel}
+\end{figure}
+
+We can compare this scenario with the one in Figure~\ref{fig:1cd81aa8-bw}, the difference relays in the channel condition, in the example of Figure~\ref{fig:1cd81aa8-bw} the channel condition set high restrictions on the path making the rate drop and keep stable as the condition didn't change after that moment. In Figure~\ref{fig:three_parallel}, path condition changes after the drop as it becomes available again as all the three peer calls behaved the same way. 
+
+In general the delay response in all the calls is bad, Figure~\ref{fig:delayThreeCalls} plots the delay distribution of the three simultaneous calls, the slow increase of delay makes the call lag large and variable, probably the user experience for all the three calls will be bad.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/three_parallel_total_delay_distribution.pdf}
+      \caption[Total delay distribution for three parallel calls]{Total delay distribution for three parallel calls.}
+	\label{fig:delayThreeCalls}
+\end{figure}
+
+The problem relies on the separate treatment of every peer connection, they have no acknowledge of having different similar processes going so the rate change cannot be constrained by the other ongoing calls. Notice that for this test all calls started at the same time, for this purpose we ran a second set of tests starting every call delayed by 15 seconds to check the behavior of the system.
+
+After analyzing the captures of the new asynchronous call we can plot the averaged bandwidth to be approximately 1154 Kbit/s with $\pm250$ Kbit/s of deviation. Overall averaged results are significantly higher than in the previous case but we should have a close look at Figure that represents the bandwidth behavior of the three calls during all the duration for the first iteration we can observe that the average is high but one of the calls rate is very low.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/async_three-calls.pdf}
+      \caption[Bandwidth representation for all remote streams in an asynchronous three peer parallel call for iteration one]{Bandwidth representation for all remote streams in an asynchronous three peer parallel call for iteration one.}
+	\label{fig:three_parallel}
+\end{figure}
+
+In this case, the first call that started to increase its rate suddenly drops it to approximately 100 Kbit/s and stays there along the call meanwhile the other two parallel calls try to obtain the maximum available bandwidth of the path. This environment is more approximated to the a real scenario as users won't start calls exactly at the same time but they will probably do that randomly, some calls quality will be degraded with barely no quality and others will have sudden drop of bandwidth affecting the interaction with the user.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/async_total_delay_distribution.pdf}
+      \caption[Total delay distribution for three asynchronous parallel calls]{Total delay distribution for three asynchronous parallel calls.}
+	\label{fig:delayThreeCallsAsync}
+\end{figure}
+
+Figure~\ref{fig:delayThreeCallsAsync} represents the delay distribution for the asynchronous test, similar to the previous example (Figure~\ref{fig:delayThreeCalls}) but with a worst delay response. Delay will affect to the user experience having sudden cuts of communications of milliseconds that will occur randomly, they are not large but they are random and unexpected.
+
+WebRTC should be able to identify parallel connections of the same type and balance the bandwidth usage, this is difficult as the transport level uses already existing RTP technology over UDP, the conclusion is that WebRTC will not be reliable for multiple parallel calls in an average computer.
+
+\subsection{Mesh topology}
+
+A common setup in real-time communications is video conferencing, this way of calling people is widely used in virtual meetings. Until this moment there were multiple available options in the market, with the arrival of WebRTC this feature extends to the web application world, with multiple options and features to be enabled with it. We will try to determine if WebRTC is mature enough to handle multiple peers at the same time and session, the way this is done varies depending on the technology, we will study pure peer-to-peer mesh networks.
+
+The most common option for this kind of environments is to use an MCU to perform the relying of the media through a unique connection by multiplexing the streams in a single one. There are some MCU available in the market for WebRTC but the API is still not evolved enough to allow multiplexing of streams over the same Peer Connection, in the following updates of the API this should be enabled allowing developers to perform real media multiplexing. Some vendors offer MCUs that require extra plugins to be installed, this is due to the impossibility to multiplex multiple media streams over the same Peer Connection, this is required when using Google Hangouts product.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.7\textwidth]{./figures/mesh.pdf}
+      \caption[Mesh topology for WebRTC]{Mesh topology for WebRTC.}
+	\label{fig:meshTopology}
+\end{figure}
+
+Our topology, shown in Figure~\ref{fig:meshTopology}, consist in a mesh network of different virtual machines that connect by using our centralized Dialogue.io application for signaling, media is sent over the peers directly, this will produce a big load in the performance for those clients as the amount of peer connections will be large, each of them obliged to encode and decode media, different from the previous example of parallel calls in this case all the peer connections will be running in the same process making the resource management a key point for the performance of WebRTC. We have increased the amount of CPUs to two in order to get proper results.
+
+Three peers are used for the first test and it will increased by one peer every test, the output for the first test is shown in Table~\ref{fig:mesh_three_peers}. It is important to consider the amount of time required to set up the call, the worst result for the setup time in this scenario has been of 2206 ms to set up the three whole mesh. 
+
+\begin{table}[h]
+\begin{center}
+    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+   	 \toprule
+	\textit{}
+	& \multicolumn{1}{c}{\textit{Machine A}}
+	& \multicolumn{1}{c}{\textit{Machine B}}
+	& \multicolumn{1}{c}{\textit{Machine C}}\\
+	\midrule
+	\textbf{CPU (\%)} & 88.5 ,4.77 & 89.49 ,4.46 & 91.65 ,4.23\\
+	\textbf{Memory (\%)} & 49.25 ,0.33 & 50.52 ,0.28 & 55.52 ,0.29\\
+	\textbf{Bandwidth (Kbit/s)} & 333.38 ,115.13 & 344.48 ,95.43 & 410.77 ,115.97\\
+	\bottomrule
+    \end{tabular}
+    \caption[CPU, memory and bandwidth results for three peer mesh scenario without relay]{CPU, memory and bandwidth results for three peer mesh scenario without relay.}
+    \label{fig:mesh_three_peers}
+\end{center}
+\end{table}
+
+CPU and memory usage is nearly double than in the previous scenario, considering we have doubled the CPU capacity, being this very consuming taking into consideration that is the only application running on the test machine.
