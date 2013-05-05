@@ -54,8 +54,22 @@
 \usepackage{mathtools}
 \usepackage{listings}
 \usepackage{booktabs}
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
 \lstset{frame=tb,
-  language=Java,
+  language=JavaScript,
   aboveskip=3mm,
   belowskip=3mm,
   showstringspaces=false,
@@ -310,6 +324,8 @@ Otaniemi, 9.3.2012
 \include{./appendix/fakevideo}
 
 \include{./appendix/dummynet}
+
+\include{./appendix/scripting}
 
 \end{document}
 

@@ -26,7 +26,7 @@ Connection Monitor ({\it ConMon}) is a command line utility that relies on the t
 
 Typically we will run the PeerConnections between two devices and start capturing those packets by using {\it ConMon}. The PeerConnection will carry real data so the environment for testing will be a precise approach to a real scenario of WebRTC usage.
 
-{\it ConMon} captures will be saved into different files and allow us to plot every stream bandwidth and calculate other parameters such as delay by using some parsing, this will allow us to compare how precise are both way of analyzing WebRTC as {\it ConMon} is working directly over the incoming interface and avoids all the processing that the browser is doing to send the stats to the JavaScript layer. Figure~\ref{fig:onetooneWifiRTCConMon} represents one video stream from the same call as Figure~\ref{fig:onetooneWifiRTC} and~\ref{fig:onetooneWifiRTCVideoStreams} but captured from the {\it ConMon} application.
+{\it ConMon} captures will be saved into different files and allow us to plot every stream bandwidth and calculate other parameters such as delay by using some parsing, this will allow us to compare how precise are both way of analyzing WebRTC as {\it ConMon} is working directly over the incoming interface and avoids all the processing that the browser is doing to send the stats to the JavaScript layer. Figure~\ref{fig:onetooneWifiRTCConMon} represents one video stream from the same call as Figure~\ref{fig:onetooneWifiRTC} but captured from the {\it ConMon} application.
 
  \begin{figure}[h]
   \centering
@@ -37,11 +37,13 @@ Typically we will run the PeerConnections between two devices and start capturin
 
 The capture from {\it ConMon} will be very accurate capturing all the packets that go through the interface, dumping the values into the output file, this data will then be processed and averaged for every second prior plotting. This processing will lead to some fluctuations on the graph that distort the reality.
 
+Furthermore, {\it ConMon} will be used to provide OWD and RTT calculations for our tests, in order to do this we must assure a proper synchronization between local clocks in all the peers. This will be done by using the sequence number of all RTP packets captured and subtracting the timestamp saved from both sides, no RTCP will be used in this case.
+
 \subsubsection{Stats API}
 
 WebRTC carries a subsection of methods to help developers to access the lower layer network information, this methods return all different types of statistics and performance indicators that we will be using to build our own JavaScript Stats API. When using those statistics we will measure all the congestion KPIs to analyze them.
 
-The method used is the RTCStatsCallback returns a dictionary object (JSON) that has be parsed and manipulated to get the correct indicators, this object returns as many streams as available in a PeerConnection, usually audio and video. This data is provided by the lower layers of the network channel using the RTCP packets that come multiplexed in the RTP stream~\cite{rtpusageIETF}.
+The method used is the RTCStatsCallback returns a dictionary object (JSON) that has be parsed and manipulated to get the correct indicators, this object returns as many streams as available in a PeerConnection, usually audio and video~\ref{editorWebRTCdraft}. This data is provided by the lower layers of the network channel using the RTCP packets that come multiplexed in the RTP stream~\cite{rtpusageIETF}.
 
 The Stats API is the way that WebRTC allows the developer to access different metrics, as this is still in an ongoing discussion the stats report object has not been totally defined and can slightly change, the methods used by the Stats API are available on the W3C editors draft ~\cite{editorWebRTCdraft}. 
 
@@ -150,13 +152,43 @@ Figure~\ref{fig:testV4L2niklas} shows the bandwidth of a video stream measured b
 
 Our TURN server is used to pipe all the media as a relay to apply the constraints required for the tests, this machine is a Ubuntu Server 12.04 LTS with a tuned kernel to perform better with {\it Dummynet}.
 
-As TURN software we are using {\it Restund} which has been proven to be reliable for our needs, this open source STUN/TURN server works with{\it MySQL} database authentication~\cite{http://www.creytiv.com/restund.html}. We have modified the source in order to have a hardcoded password making it easier for our needs.
+As TURN software we are using {\it Restund} which has been proven to be reliable for our needs, this open source STUN/TURN server works with {\it MySQL} database authentication~\cite{restund}. We have modified the source in order to have a hardcoded password making it easier for our needs.
 
 To do so, we need to modify {\it db.c} file before compiling. Method {\it restund\_get\_ha1} content should be replaced with the following line of code where XXX is username and YYY the password.
 
-\begin{lstlisting}
+\lstset{language=C}
+\begin{lstlisting}[caption=Forcing a hardcoded password in our TURN server]
 md5_printf(ha1, "\%s:\%s:\%s", "XXX", "myrealm", "YYY");
 \end{lstlisting}
+
+Furthermore, in order to force WebRTC to use TURN connectivity instead of STUN or direct path we need to configure the WebRTC API with this server by doing:
+
+\lstset{language=JavaScript}
+\begin{lstlisting}[caption=Configuring our TURN server in WebRTC]
+var pc_config = {
+	"iceServers": [{url: "turn:XXX@192.168.1.106:3478", credential:"YYY"}]
+};
+\end{lstlisting}
+
+The IP address will be pointing to our TURN server with the desired port (3478 by default), now all candidates are obtained through our TURN. This does not mean that the connection will run through the relay as WebRTC will try to find the best path which is still not through the TURN, to force this we will need to drop all candidates that do not point to the relay.
+
+\lstset{language=JavaScript}
+\begin{lstlisting}[caption=Dropping all candidates except relay]
+function onIceCandidate(event) {
+	if ((event.candidate) && (event.candidate.candidate.toLowerCase().indexOf('relay')) !== -1) {
+		sendMessage({
+               		type: 'candidate',
+               		label: event.candidate.sdpMLineIndex,
+               		id: event.candidate.sdpMid,
+               		candidate: event.candidate.candidate
+          	 },receiver,from);
+       	} else {
+           	console.log("End of candidates.");
+       	}
+}
+\end{lstlisting}
+
+Function {\it onIceCandidate} will be fired every time we get a new candidate form our STUN/TURN or WebRTC API, those candidates need to be forwarded to the other peer by using our method {\it sendMessage} through {\it WebSockets}. In this code we are dropping all candidates except the ones containing the option {\it relay} on it, those are the candidates that will force the Peer Connection to go through our TURN machine.
 
 This part is important as it allow us to set the constraints in a middle point without affecting the behavior of the WebRTC clients.
 
@@ -174,4 +206,8 @@ Some problems arise when using {\it Dummynet} in our scenario, we will be using 
 
 Our application server will run the Node.js instance for the WebRTC signaling part, this machine runs Ubuntu with a domain specified as {\it dialogue.io}. This app is a group working application to allow people to chat and video call at the same time, we have modified it to build an specific instance for our tests, this instance will simply allow two users that access the page to automatically call each other and start running the JavaScript code with built-in {\it Stats API}
 
-Most of this application is coded with JavaScript and use WebSocket protocol to carry the signaling messages.
+Most of this application is coded with JavaScript and uses WebSocket protocol to carry the signaling messages from peer to peer.
+
+\subsection{Summary of tools}
+
+Using all the previous mentioned tools together we will be able to measure how WebRTC performs in a real environment, some tools have been modified according to our requirements of bandwidth and security. To process the data obtained by all those tools we have built some special scripts that measure and extract the information we require form the captures, some of them are explained in Appendix~\ref{sec:scriptsWebRTC}.

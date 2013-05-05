@@ -15,6 +15,7 @@ Once the kernel timing is done we will need to compile the {\it Dummynet} code, 
 
 We should try the code first and check if we are able to set queues to our defined pipes, this part is the one that might crash due to system incompatibilities with FreeBSD and old kernel versions of Linux.  If we are unable we should then modify the following code in the {\it ./ipfw/dummynet.c} and {\it ./ipfw/glue.c}.
 
+\lstset{language=C}
 \begin{lstlisting}
 Index: ipfw/dummynet.c
 ===================================================================
@@ -44,6 +45,7 @@ if (fs->flags & DN_QSIZE_BYTES) {
 
 The problem arises from a the misassumption of {\it sizeof(long) == 4} in 64-bit architectures which is false. By changing those two files we are modifying the system in order to accept higher values than 100 for the queue length.
 
+\lstset{language=C}
 \begin{lstlisting}
 Index: ipfw/glue.c
 ===================================================================

@@ -35,6 +35,14 @@ Due to the need to extend the features of the already existing HTML4 standard, a
 
 This proposal had a greater reliance in modularity in order to move forward faster, this meant that some specs that were included in the initial draft moved to different working groups in the W3C. Those technologies defined in HTML5 are now in separate specifications, one of them being WebRTC. WebRTC works as an integrated API within the browser that is accessible using JavaScript and is used in conjunction with the Document Object Model (DOM) interfaces. Some of the APIs that have been developed are not part of the HTML5 W3C specification but are included into the WHATWG HTML specification.
 
+\subsection{Challenges}
+
+WebRTC is a real time media protocol that will be obliged to share the available resources with many other applications. Due to the short experience in WebRTC congestion situations that share the available bandwidth with other existing solutions we will find some lack of documentation or previous literature regarding this topic. 
+
+The aim to investigate and help to develop new protocols such as WebRTC is usually backed by a lack of information that may affect some of the statements made in this thesis. Hopefully, this won't affect the development of itself and the conclusions obtained at the moment of the development of the topic. 
+
+Considering WebRTC is being developed at the moment of writing this thesis some of the statements made in here might be different in the following versions of WebRTC meaning that the problems analyzed have been solved.
+
 \subsection{Contribution}
 
 Investigate how WebRTC performs in a real environment trying to evaluate the best way to set multiple peer connections able to transfer media in different network topologies. Measure the performance of WebRTC in a real environment, identifying bottlenecks related to encoding/decoding, media establishment or connection maintenance. All this should be performed in real-time over a browser by using the already existing WebRTC API.

@@ -1,0 +1,90 @@
+\section{Scripts for testing WebRTC}
+\label{sec:scriptsWebRTC}
+
+%% 
+%% Leave first page empty
+\thispagestyle{empty}
+
+
+
+\lstset{language=bash}
+\begin{lstlisting}[caption=Script for P2P testing with 15 iterations]
+#!/bin/bash
+#
+
+#First argument will define the name of the test, second the video to use
+#and third may define the IPERF configuration if used
+
+
+echo "" > 1to1.log
+#Exporting variables required for the test
+echo "Exporting variables"
+PATH="$PATH:/home/lubuntu/MThesis/v4l2_file_player/"
+PASSWORD=lubuntu
+
+#Timers for the call duration and break time after the call
+REST_TIMEOUT=30
+TIMEOUT=300
+
+INIT_TIME=$(date +"%m-%d-%Y_%T")
+
+#Define folders to sabe files
+backup_files="/home/lubuntu/MThesis/ConMon/rtp/rtp_*"
+mkdir results/$INIT_TIME"_"$1
+dest_folder="/home/lubuntu/results/"$INIT_TIME"_"$1
+echo "Starting $INIT_TIME"
+counter=0
+
+#Loop the test 15 times to avoid call failures
+while [ $counter -le 14 ]
+do
+	actual_time=$(date +"%m-%d-%Y_%T")
+	echo "Iteration - $counter"
+ 	#Clean all ongoing processes from previous iterations
+ 	echo "Cleaning processes"
+ 	echo $PASSWORD | sudo -S killall conmon >> 1to1.log 2>&1
+ 	killall v4l2_file_player >> 1to1.log 2>&1
+ 	killall chrome >> 1to1.log 2>&1
+	sleep $REST_TIMEOUT
+ 
+ 	#Set virtual device for Webcam
+ 	echo "Setting dummy devices"
+ 	echo $PASSWORD | sudo -S modprobe v4l2loopback devices=2 >> 1to1.log 2>&1
+
+ 	cd MThesis/ConMon
+ 	#Start ConMon and configure 192.168.1.106 which is the turn relay for the media
+ 	echo $PASSWORD | sudo -S ./conmon eth3 "udp and host 192.168.1.106" --turn >> 1to1.log 2>&1 &
+ 	cd ../..
+
+ 	#Load fake video into virtual device
+ 	echo "Loading video"
+ 	v4l2_file_player /home/lubuntu/MThesis/v4l2_file_player/$2 352 288 /dev/video1 >> 1to1.log 2>&1 &
+ 	#If third argument available then we run the IPERF
+ 	if [ $# -eq 3 ]
+ 	then 
+        		iperf -c 192.168.1.106 -t 300 -i 5 -b $3 >> 1to1.log 2>&1 &
+ 	fi
+ 
+ 	#Load browser pointing the test site with the n= parameter that will define the StatsAPI filename
+ 	#We need to ignore the certificate errors to load the page with an untrusted certificate
+ 	DISPLAY=:0 google-chrome --ignore-certificate-errors https://192.168.1.100:8088/?n=$1"_"$counter >> /dev/null  2>&1 &
+
+ 	#Script for capturing CPU and Memory usage for every test
+ 	./memCPU.sh $dest_folder $counter >> 1to1.log 2>&1 &
+ 	memCPUPID=$!
+
+ 	sleep $TIMEOUT
+ 	echo $PASSWORD | sudo -S killall conmon >> 1to1.log 2>&1
+ 	kill $memCPUPID
+ 	dir_file=$1"_"$counter
+ 	mkdir $dest_folder/$dir_file
+ 	mv $backup_files $dest_folder/$dir_file
+ 	(( counter++ ))
+done
+
+sleep 30
+echo "Finishing test..."
+echo $PASSWORD | sudo -S killall conmon >> 1to1.log 2>&1
+killall v4l2_file_player >> 1to1.log 2>&1
+killall chrome >> 1to1.log 2>&1
+\end{lstlisting}
