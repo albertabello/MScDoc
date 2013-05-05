@@ -6,14 +6,16 @@
 \thispagestyle{empty}
 
 
-
 \lstset{language=bash}
-\begin{lstlisting}[caption=Script for P2P testing with 15 iterations]
+\begin{lstlisting}[caption=Script for testing WebRTC with 15 iterations]
 #!/bin/bash
 #
 
 #First argument will define the name of the test, second the video to use
 #and third may define the IPERF configuration if used
+
+#We also will use this as test example modifying some parameters for the
+#other examples such as parallel and mesh
 
 
 echo "" > 1to1.log
@@ -87,4 +89,50 @@ echo "Finishing test..."
 echo $PASSWORD | sudo -S killall conmon >> 1to1.log 2>&1
 killall v4l2_file_player >> 1to1.log 2>&1
 killall chrome >> 1to1.log 2>&1
+\end{lstlisting}
+
+\lstset{language=bash}
+\begin{lstlisting}[caption=Measue and store CPU and Memory usage]
+#!/bin/bash 
+
+#Script used to measure periodically the status of the CPU and memory
+PREV_TOTAL=0 
+PREV_IDLE=0 
+
+#Runs until the script is killed by another process
+while true; 
+do 
+  	CPU=(`cat /proc/stat | grep '^cpu '`) # Get the total CPU statistics. 
+  	unset CPU[0]                          # Discard the "cpu" prefix. 
+  	IDLE=${CPU[4]}                        # Get the idle CPU time. 
+  	timeStamp=$(date +%s)
+  	# Calculate the total CPU time. 
+  	TOTAL=0 
+  	for VALUE in "${CPU[@]}"; do 
+    		let "TOTAL=$TOTAL+$VALUE" 
+  	done 
+
+  	# Calculate the CPU usage since we last checked. 
+  	let "DIFF_IDLE=$IDLE-$PREV_IDLE" 
+  	let "DIFF_TOTAL=$TOTAL-$PREV_TOTAL" 
+  	let "DIFF_USAGE=(1000*($DIFF_TOTAL-$DIFF_IDLE)/$DIFF_TOTAL+5)/10" 
+
+	# Remember the total and idle CPU times for the next check. 
+ 	PREV_TOTAL="$TOTAL" 
+ 	 PREV_IDLE="$IDLE" 
+
+  	#Save the amount of used memory in Mb
+  	total=$(free |grep Mem | awk '$3 ~ /[0-9.]+/ { print $2"" }')
+  	used=$(free |grep Mem | awk '$3 ~ /[0-9.]+/ { print $3"" }')
+  	free=$(free |grep Mem | awk '$3 ~ /[0-9.]+/ { print $4"" }')
+  	
+	#Calculate the percentage
+  	usedmem=`expr $used \* 100 / $total`
+
+  	#Export all the data to the defined iteration in argument 2 and folder 1
+  	echo  $timeStamp"     "$DIFF_USAGE"  "$usedmem"      "$total"        "$used" "$free >> $1/log_performance_$2.txt
+
+  	# Wait before checking again one second
+  	sleep 1 
+done
 \end{lstlisting}

@@ -585,10 +585,10 @@ Furthermore, it is interesting to see the global rate on the call as the bandwid
                 \label{fig:three_parallel_3}
         \end{subfigure}
         \caption[Delay representation for all remote streams in a three peer parallel call]{Delay representation for all remote streams in a three peer parallel call.}
-        \label{fig:three_parallel}
+        \label{fig:delay_three_parallel}
 \end{figure}
 
-We can compare this scenario with the one in Figure~\ref{fig:1cd81aa8-bw}, the difference relays in the channel condition, in the example of Figure~\ref{fig:1cd81aa8-bw} the channel condition set high restrictions on the path making the rate drop and keep stable as the condition didn't change after that moment. In Figure~\ref{fig:three_parallel}, path condition changes after the drop as it becomes available again as all the three peer calls behaved the same way. 
+We can compare this scenario with the one in Figure~\ref{fig:1cd81aa8-bw}, the difference relays in the channel condition, in the example of Figure~\ref{fig:1cd81aa8-bw} the channel condition set high restrictions on the path making the rate drop and keep stable as the condition didn't change after that moment. In Figure~\ref{fig:delay_three_parallel}, path condition changes after the drop as it becomes available again as all the three peer calls behaved the same way. 
 
 In general the delay response in all the calls is bad, Figure~\ref{fig:delayThreeCalls} plots the delay distribution of the three simultaneous calls, the slow increase of delay makes the call lag large and variable, probably the user experience for all the three calls will be bad.
 
@@ -636,7 +636,7 @@ The most common option for this kind of environments is to use an MCU to perform
 	\label{fig:meshTopology}
 \end{figure}
 
-Our topology, shown in Figure~\ref{fig:meshTopology}, consist in a mesh network of different virtual machines that connect by using our centralized Dialogue.io application for signaling, media is sent over the peers directly, this will produce a big load in the performance for those clients as the amount of peer connections will be large, each of them obliged to encode and decode media, different from the previous example of parallel calls in this case all the peer connections will be running in the same process making the resource management a key point for the performance of WebRTC. We have increased the amount of CPUs to two in order to get proper results.
+Our topology, shown in Figure~\ref{fig:meshTopology}, consist in a mesh network of different virtual machines that connect by using our centralized {\it dialogue.io} application for signaling, media is sent over the peers directly, this will produce a big load in the performance for those clients as the amount of peer connections will be large, each of them obliged to encode and decode media, different from the previous example of parallel calls in this case all the peer connections will be running in the same process making the resource management a key point for the performance of WebRTC. We have increased the amount of CPUs to two in order to get proper results.
 
 Three peers are used for the first test and it will increased by one peer every test, the output for the first test is shown in Table~\ref{fig:mesh_three_peers}. It is important to consider the amount of time required to set up the call, the worst result for the setup time in this scenario has been of 2206 ms to set up the three whole mesh. 
 
@@ -660,3 +660,83 @@ Three peers are used for the first test and it will increased by one peer every 
 \end{table}
 
 CPU and memory usage is nearly double than in the previous scenario, considering we have doubled the CPU capacity, being this very consuming taking into consideration that is the only application running on the test machine.
+
+Bandwidth will be an important constraint when having multiple peer connections, in a single P2P call we have two streams that are being sent/received, in mesh this amount is greater. Figure~\ref{fig:bwThreeMesh} represents the bandwidth mean and deviation for the three peer mesh call without relay, for every machine we will have two remote streams plotted with different bandwidth rates for them, is interesting to see how they are related in being one always greater than the other, this means that one stream will handle better quality than its other peer.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/mesh_mean_deviation_bw.pdf}
+      \caption[Bandwidth average and deviation for three peers mesh call]{Bandwidth average and deviation for three peers mesh call.}
+	\label{fig:bwThreeMesh}
+\end{figure}
+
+The total averaged bandwidth is approximately 362 Kbit/s, as it can be observed this value does not agree with the real plot for every peer (\ref{fig:bwThreeMesh}), this is due to the disturbances of the call and the continuous rate adaptation of the congestion mechanism. For better accuracy and understanding of what happened during the call we should look directly to the continuous rate of the incoming streams in Figure~\ref{fig:three_mesh}.
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/peer1_three_calls_bw.pdf}
+                \caption{Remote streams for machine A}
+                \label{fig:three_mesh_A}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/peer2_three_calls_bw.pdf}
+                \caption{Remote streams for machine B}
+                \label{fig:three_mesh_B}
+        \end{subfigure}        
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/peer3_three_calls_bw.pdf}
+                \caption{Remote streams for machine C}
+                \label{fig:three_mesh_C}
+        \end{subfigure}
+        \caption[Bandwidth plot during all the call for the incoming streams of each peer for the first iteration]{Bandwidth plot during all the call for the incoming streams of each peer for the first iteration.}
+        \label{fig:three_mesh}
+\end{figure}
+
+Each machine will have a pair of incoming streams, the rate calculated for the streams is based on the same mechanisms as the previous tests, this figure should look similar to Figure~\ref{fig:three_parallel} as they both are running multiple peer connections in the same test, we can see how the rate is being recalculated and how one of the streams is always being deprecated to a very low rate compared to the rest at a certain point when the other increase their throughput. This response of the rate adaptation will be negative to the call. 
+
+Furthermore, a different behavior is observed in the delay of the call (Figure~\ref{fig:delay_mesh_peer1}), compared to the parallel calls (\ref{fig:three_parallel}) which had a very bad response to OWD in this specific case the output for the same four streams in delay is much better than the prior test.
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/mesh_delay_1_116_6d141817.pdf}
+                \caption{Delay for Figure~\ref{fig:three_mesh_A} stream 1}
+                \label{fig:delay_mesh_peer1_1}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{./figures/mesh_delay_1_116_c57d9b9b.pdf}
+                \caption{Delay for Figure~\ref{fig:three_mesh_A} stream 2}
+                \label{fig:delay_mesh_peer1_2}
+        \end{subfigure}
+        \caption[Delay output for Figure~\ref{fig:three_mesh_A} incoming streams]{Delay output for Figure~\ref{fig:three_mesh_A} incoming streams.}
+        \label{fig:delay_mesh_peer1}
+\end{figure}
+
+The global delay distribution response is also good compared to previous tests, we can compare the obtained one in Figure~\ref{fig:delayThreeMesh} with the three parallel calls in Figure~\ref{fig:delayThreeCalls} and \ref{fig:delayThreeCallsAsync}. Considering the curve of the delay for the mesh networks we can say that the delay won't be affecting significantly the user experience during the call duration, we won't have good quality regarding the video and rate but there won't be any sudden delays expected in the communication. This means that from the perspective of a non relayed mesh call we can have three peers with relative acceptable bandwidth in most of the streams with an acceptable delay, the only drawback observed is the amount of used resources by the process, considering that the browser was the only application running on the test machine increasing the amount of processes will probably affect the behavior of the call.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/mesh_total_delay_distribution.pdf}
+      \caption[Total delay distribution for three peer mesh call]{Total delay distribution for three peer mesh call.}
+	\label{fig:delayThreeMesh}
+\end{figure}
+
+\subsection{Summary of results}
+
+After all the performed tests we can conclude that WebRTC is a young protocol for real time communication that still has long way to go in terms of congestion control to adapt to all topologies, still is a reliable and interesting method that uses all existing technologies previously developed for other projects there is a lot of work to do in terms of scalability and environment adaption. 
+
+Considering the existing WebRTC congestion mechanisms we can conclude that is still not ready for low tolerance networks or to be used simultaneously in different calls, the resource consumption of the existing WebRTC API is still something to care if we want to integrate WebRTC in mobile devices.
+
+Delay response for some low latency environments is not suitable for production applications and scenarios should be considered  by developers prior deciding to use WebRTC instead of other competitors.

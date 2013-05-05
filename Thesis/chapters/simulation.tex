@@ -204,7 +204,7 @@ Some problems arise when using {\it Dummynet} in our scenario, we will be using 
 
 \subsection{Application Server}
 
-Our application server will run the Node.js instance for the WebRTC signaling part, this machine runs Ubuntu with a domain specified as {\it dialogue.io}. This app is a group working application to allow people to chat and video call at the same time, we have modified it to build an specific instance for our tests, this instance will simply allow two users that access the page to automatically call each other and start running the JavaScript code with built-in {\it Stats API}
+Our application server will run the Node.js instance for the WebRTC signaling part, this machine runs Ubuntu with a domain specified as {\it dialogue.io}. This app is a group working application to allow people to chat and video call at the same time in different rooms, we have modified it to build an specific instance for our tests, this instance will simply allow two users that access the page to automatically call each other and start running the JavaScript code with built-in {\it Stats API}
 
 Most of this application is coded with JavaScript and uses WebSocket protocol to carry the signaling messages from peer to peer.
 

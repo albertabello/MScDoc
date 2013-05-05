@@ -7,7 +7,7 @@
 
 To address the issue in the video that is transferred from our automated devices we have built a fake input device on the virtual machines that will be fed with a RAW YUV video of different resolutions and quality. This device will be added by using a hacked version of the {\it V4L2Loopback} which derives from the {\it V4L} driver for Linux, the modified version of the {\it V4L2Loopback} builds two extra devices as Chrome is unable to read from the same reading/writing device for security reasons, one of them will be used to fed the video and the other one to read it~\cite{chromiumIssue142568}. 
 
-Differences between standard driver and hacked version:
+Differences between standard driver and modified version:
 
 \begin{itemize}
 	\item Need to write a non-null value into the the bus information of the device, this is required as Chrome input needs to be named as a real device. When using Firefox this is not required but works as well.
