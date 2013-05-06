@@ -93,6 +93,8 @@
 %% Use this if you write hard core mathematics, these are usually needed
 \usepackage{amsfonts,amssymb,amsbsy}  
 \usepackage[titletoc,toc,page]{appendix}
+\usepackage{nomencl}
+\renewcommand{\nomname}{Abbreviatures}
 
 %% Vaakasuunnan mitat, ƒLƒ KOSKE!
 \setlength{\hoffset}{-1in}
@@ -106,7 +108,7 @@
 \setlength{\topmargin}{25mm-\headheight-\headsep}
 \setlength{\textheight}{23cm}
 
-
+\makenomenclature
 %% Kaikki mik‰ paperille tulostuu, on t‰m‰n j‰lkeen
 %%
 %% Output starts here
@@ -260,6 +262,7 @@ Otaniemi, 9.3.2012
 \tableofcontents
 \listoffigures
 \listoftables
+\printnomenclature
 
 %% 
 %% Corrects the page numbering, there is no need to change these
@@ -267,7 +270,7 @@ Otaniemi, 9.3.2012
 \storeinipagenumber
 %%
 %%Definitions and abreviations
-\mysection{Definitions and abreviations}
+\mysection{Abreviations}
 %\addcontentsline{toc}{section}{Definitions and abreviations}
 
 \newpage

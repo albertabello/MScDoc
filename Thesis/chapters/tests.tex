@@ -729,14 +729,27 @@ The global delay distribution response is also good compared to previous tests, 
 \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/mesh_total_delay_distribution.pdf}
-      \caption[Total delay distribution for three peer mesh call]{Total delay distribution for three peer mesh call.}
+      \caption[Total delay distribution for three peer mesh call without relay]{Total delay distribution for three peer mesh call without relay.}
 	\label{fig:delayThreeMesh}
 \end{figure}
+
+Similar to the previous scenario we have run a test using the TURN as relay for the media to check the results, the bandwidth and CPU results are approximately the same, Figure~\ref{fig:delayThreeMeshNOTURN} represents the averaged delay result for the three iterations in both tests. Results are slightly better with the TURN, this might be due to the fixed path for routing the packets that produce smaller deviation, the averaged delay is similar in both cases.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/mesh_turnno_mean_deviation_delay.pdf}
+      \caption[Averaged delay and deviation for TURN and non relayed mesh call for all iterations]{Averaged delay and deviation for TURN and non relayed mesh call for all iterations.}
+	\label{fig:delayThreeMeshNOTURN}
+\end{figure}
+
+For environments such as mesh the usage of MCU should be considered as a good alternative to the pure P2P option, this will drastically reduce the resource consumption and bandwidth distribution on the different peer connections.
 
 \subsection{Summary of results}
 
 After all the performed tests we can conclude that WebRTC is a young protocol for real time communication that still has long way to go in terms of congestion control to adapt to all topologies, still is a reliable and interesting method that uses all existing technologies previously developed for other projects there is a lot of work to do in terms of scalability and environment adaption. 
 
 Considering the existing WebRTC congestion mechanisms we can conclude that is still not ready for low tolerance networks or to be used simultaneously in different calls, the resource consumption of the existing WebRTC API is still something to care if we want to integrate WebRTC in mobile devices.
+
+In multiple peer connections environments the usage of an MCU is something that should be considered in order to reduce load and increase performance, the actual WebRTC API does not allow to natively use multiplexing of streams over the same peer connection but the roadmap of the standardization protocol includes this feature for future versions of WebRTC.
 
 Delay response for some low latency environments is not suitable for production applications and scenarios should be considered  by developers prior deciding to use WebRTC instead of other competitors.
