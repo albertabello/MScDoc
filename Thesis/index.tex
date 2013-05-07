@@ -95,7 +95,7 @@
 \usepackage[titletoc,toc,page]{appendix}
 \usepackage{nomencl}
 \renewcommand{\nomname}{Abbreviatures}
-
+\renewcommand{\nomlabel}[1]{\hspace{1em}#1}
 %% Vaakasuunnan mitat, ƒLƒ KOSKE!
 \setlength{\hoffset}{-1in}
 \setlength{\oddsidemargin}{35mm}
@@ -107,8 +107,7 @@
 \setlength{\headheight}{1em}
 \setlength{\topmargin}{25mm-\headheight-\headsep}
 \setlength{\textheight}{23cm}
-
-\makenomenclature
+\usepackage{xpatch}
 %% Kaikki mik‰ paperille tulostuu, on t‰m‰n j‰lkeen
 %%
 %% Output starts here
@@ -232,7 +231,16 @@
 %% if you are writting your master's thesis in English place the English
 %% abstract first followed by the possible Finnish abstract
 
+\mysection{}
+\vspace*{\fill} 
+\begin{quote} 
+%\centering 
+%{\it ``It has become appallingly obvious that our technology has exceeded our humanity.''}
 
+
+%\hfill \textbf{Albert Einstein (1879 - 1955)}
+\end{quote}
+\vspace*{\fill}
 %% Preface
 \mysection{Preface}
 Thank you everybody.\\
@@ -262,15 +270,18 @@ Otaniemi, 9.3.2012
 \tableofcontents
 \listoffigures
 \listoftables
-\printnomenclature
-
+%%\nomenclature{$l$}{Length\nomunit{m}}
 %% 
 %% Corrects the page numbering, there is no need to change these
 \cleardoublepage
 \storeinipagenumber
 %%
 %%Definitions and abreviations
-\mysection{Abreviations}
+\setlength{\nomitemsep}{-\parsep}
+\setlength{\nomlabelwidth}{.20\hsize}
+\makenomenclature
+\printnomenclature
+
 %\addcontentsline{toc}{section}{Definitions and abreviations}
 
 \newpage

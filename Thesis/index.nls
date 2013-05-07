@@ -1,0 +1,53 @@
+\begin{thenomenclature} 
+
+ \nomgroup{A}
+
+  \item [{AMS}]\begingroup Adobe Media Server\nomeqref {0}
+		\nompageref{8}
+  \item [{API}]\begingroup Application Programming Interface\nomeqref {0}
+		\nompageref{1}
+  \item [{DNS}]\begingroup Domain Name System\nomeqref {0}
+		\nompageref{7}
+  \item [{DOM}]\begingroup Document Object Model\nomeqref {0}
+		\nompageref{9}
+  \item [{HTML}]\begingroup HyperText Markup Language\nomeqref {0}
+		\nompageref{2}
+  \item [{IETF}]\begingroup Internet Engineering Task Force\nomeqref {0}
+		\nompageref{2}
+  \item [{IM}]\begingroup Instant Messaging\nomeqref {0}\nompageref{5}
+  \item [{IRC}]\begingroup Internet Relay Chat\nomeqref {0}
+		\nompageref{5}
+  \item [{JSFL}]\begingroup JavaScript Flash Language\nomeqref {0}
+		\nompageref{7}
+  \item [{MEGACO}]\begingroup Media Gateway Control Protocol\nomeqref {0}
+		\nompageref{6}
+  \item [{NAT}]\begingroup Network Address Translation\nomeqref {0}
+		\nompageref{3}
+  \item [{RFC}]\begingroup Request for Comments\nomeqref {0}
+		\nompageref{6}
+  \item [{RIA}]\begingroup Rich Internet Application\nomeqref {0}
+		\nompageref{7}
+  \item [{RTC}]\begingroup Real Time Communication\nomeqref {0}
+		\nompageref{1}
+  \item [{RTMFP}]\begingroup Real Time Media Flow Protocol\nomeqref {0}
+		\nompageref{7}
+  \item [{RTP}]\begingroup Real-time Transport Protocol\nomeqref {0}
+		\nompageref{6}
+  \item [{SDP}]\begingroup Session Description Protocol\nomeqref {0}
+		\nompageref{6}
+  \item [{SIP}]\begingroup Session Initiation Protocol\nomeqref {0}
+		\nompageref{6}
+  \item [{UDP}]\begingroup User Datagram Protocol\nomeqref {0}
+		\nompageref{7}
+  \item [{VoIP}]\begingroup Voice over IP\nomeqref {0}\nompageref{5}
+  \item [{VVoIP}]\begingroup Video and Voice over IP\nomeqref {0}
+		\nompageref{5}
+  \item [{W3C}]\begingroup World Wide Web Consortium\nomeqref {0}
+		\nompageref{2}
+  \item [{WebRTC}]\begingroup Real Time Communications for the Web\nomeqref {0}
+		\nompageref{1}
+  \item [{WHATWG}]\begingroup Web HyperText Application Technology Working Group\nomeqref {0}
+		\nompageref{2}
+  \item [{WWW}]\begingroup World Wide Web\nomeqref {0}\nompageref{1}
+
+\end{thenomenclature}

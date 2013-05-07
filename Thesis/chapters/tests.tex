@@ -742,7 +742,11 @@ Similar to the previous scenario we have run a test using the TURN as relay for 
 	\label{fig:delayThreeMeshNOTURN}
 \end{figure}
 
-For environments such as mesh the usage of MCU should be considered as a good alternative to the pure P2P option, this will drastically reduce the resource consumption and bandwidth distribution on the different peer connections.
+For environments such as mesh, the usage of MCU should be considered as a good alternative to the pure P2P option, this could drastically reduce the resource consumption and bandwidth distribution on the different peer connections when using multiple peer topologies.
+
+\subsection{CPU performance}
+
+After running all the tests we can see that WebRTC is facing a big problem when it comes to CPU and memory consumption. Averaged computers could have problems when handling multiple peer connections in WebRTC, we have also tested the CPU usage in all those different scenarios. 
 
 \subsection{Summary of results}
 
