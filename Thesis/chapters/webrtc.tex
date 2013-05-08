@@ -265,6 +265,8 @@ WebRTC is not only useful for sending media, it can also provide P2P data transf
 
 The encapsulation of SCTP over DTLS on top of ICE/UDP provides a NAT traversal solution that combines confidentiality, source authentication and integrity with protected transfers. This data transport service can operate in parallel with media transfer and is sent multiplexed over the same port. This feature of WebRTC is accessible from the JavaScript {\it PeerConnection} API by a combination of methods, functions and callbacks. From the developer perspective all the previous statements regarding security and transport are made in the browser internals providing a simple and reliable way of sending P2P secure data over WebRTC.
 
+WebRTC provides Secure Real-time Transport Protocol (SRTP) \nomenclature{SRTP}{Secure Real-time Transport Protocol} to allow media to be secured.
+
 Quality of Service (QoS) \nomenclature{QoS}{Quality of Service} for WebRTC is also being discussed in the IETF and a draft is available with some proposals~\cite{qosWebRTCIETF}. WebRTC uses DiffServ packet marking for QoS but this is not sufficient to help prevent congestion in some environments. When using DiffServ the problem arises from the Internet Service Providers (ISPs) as they might be using their own packet marking with different DiffServ code-points, those won't be interoperability between ISPs, there is an ongoing proposal to build consistent code-points. Audio/video packets will be marked as priority using DSCP mappings with audio being more important than video or data~\cite{qosWebRTCIETF}. 
 
 WebRTC also uses a Google congestion control algorithm that enables proper congestion control mechanisms for rate adaptation~\cite{alvestrandCongestion2012}. The aim of this algorithm is to provide performance and bandwidth sharing with other ongoing conferences and applications that share the same link.
@@ -334,3 +336,50 @@ If the web service is running over a trusted HTTPS certificate and has been auth
 
 Security an privacy issues in WebRTC can be given in multiple layers of the protocol, the increment of trust for the provider gives some vulnerability issues that sometimes cannot be easily solved if the aim is to keep a flexible and open sourced real time protocol. Some use cases for WebRTC also incorporate some level of vulnerability as the JavaScript will be provided by a third-party and could led to privacy vulnerability, in the use case of media streaming, advertisement or call centers those providers could pick data form the users and store them for further usage~\cite{WebRTCcasesIETF}.
 
+\subsection{Comparison of WebRTC, SIP and RTMFP}
+
+After describing various RTC mechanisms and all the similar alternatives for WebRTC, Table~\ref{fig:CompareRTC} is a summary of common features between SIP, RTMFP and WebRTC. In this Table~\ref{fig:CompareRTC}, common internal mechanisms are described for all of them.
+
+RTFMP is a proprietary protocol which mean that might have its own mechanisms other than the standardized ones stated on the table to solve some of the issues.
+
+All there protocols are designed to provide the same real time functionalities but in different ways, meanwhile SIP is a protocol that helped to develop some of the important mechanisms that will be used in other technologies is still not easily accessible by developers. On the other side, RTMFP provides real time communication for developers in a licensed way having some of their mechanisms not standardized and with compatibility issues.
+
+From the mobile perspective, SIP is used in mobile technology and WebRTC has announced to be compatible with near versions of iOS and Android~\cite{ericssonbowser}. Furthermore, RTMFP has active support for Android but is still not able to extend its usage to iOS platforms.
+
+All three protocols provide NAT traversal solutions but RTMFP is the only one that provides a proprietary solution that is not standardized, SIP and WebRTC use a conjunction of TURN, STUN and ICE mechanisms.
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{| l | c | c | c |}
+	\hline
+    	 & SIP & RTMFP & WebRTC \\ \hline
+    	Plugin-enabled & No &Yes & No \\ \hline
+    	Cross-domain & Yes & No & No \\ \hline
+    	Licensed & No & Yes & No \\ \hline
+    	Mobile & Yes & Partially & Yes \\ \hline
+    	Audio & Yes & Yes & Yes \\ \hline
+    	Video & Yes & Yes & Yes \\ \hline
+    	Data & No & No & Yes \\ \hline
+	\hline \hline
+	TURN & Yes & No & Yes \\ \hline
+    	STUN & Yes & No & Yes \\ \hline
+    	SDP & Yes & No & Yes \\ \hline
+    	RTP & Yes & No & Yes \\ \hline
+    	SRTP & Yes & No & Yes \\ \hline
+    	UDP & Yes & Yes & Yes \\ \hline
+    	TCP & No & No & Yes \\ \hline
+    	SCTP & No & No & Yes \\ \hline
+	\hline \hline
+    	VP8 & No & No & Yes \\ \hline
+    	H.264 & Yes & No & Yes \\ \hline
+    	G711 & Yes & No & Yes \\ \hline
+    	Opus & No & No & Yes \\
+	\hline
+	\end{tabular}
+      \caption[Feature comparison between SIP, RTMFP and WebRTC]{Feature comparison between SIP, RTMFP and WebRTC.}
+	\label{fig:CompareRTC}
+\end{center}
+\end{table}
+	
+All of them are valid options, in this thesis we will work with WebRTC and its related mechanisms,
+	

@@ -60,6 +60,8 @@
 		\nompageref{6}
   \item [{SIP}]\begingroup Session Initiation Protocol\nomeqref {0}
 		\nompageref{6}
+  \item [{SRTP}]\begingroup Secure Real-time Transport Protocol\nomeqref {0}
+		\nompageref{16}
   \item [{STUN}]\begingroup Simple Transversal Utilities for NAT\nomeqref {0}
 		\nompageref{14}
   \item [{TURN}]\begingroup Traversal Using Relays around NAT\nomeqref {0}
