@@ -35,6 +35,10 @@
 		\nompageref{13}
   \item [{JSFL}]\begingroup JavaScript Flash Language\nomeqref {0}
 		\nompageref{7}
+  \item [{LAN}]\begingroup Local Area Networks\nomeqref {0}
+		\nompageref{20}
+  \item [{MCU}]\begingroup Multipoint Control Unit\nomeqref {1}
+		\nompageref{22}
   \item [{MEGACO}]\begingroup Media Gateway Control Protocol\nomeqref {0}
 		\nompageref{6}
   \item [{NAT}]\begingroup Network Address Translation\nomeqref {0}
