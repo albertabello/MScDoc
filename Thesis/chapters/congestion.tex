@@ -5,17 +5,42 @@
 %% Leave first page empty
 \thispagestyle{empty}
 
-This section will define the way we measure the performance in WebRTC environments, this real-time media environment will require an specific approach and some metrics to define how the protocol behaves in different topologies and scenarios. 
+This section defines metrics to measure the performance in WebRTC topologies, this real-time media environment will require an specific approach and some metrics to define how the protocol behaves in different scenarios. 
 
-Different issues might affect directly how the WebRTC media performs, these range from the hardware of the clients to the state of the link. In the following chapters we will describe some of them that will be used in our study cases.
+Some issues might affect directly how WebRTC performs, these range from the resources available in the peers to the state of the link. In the following chapters we will describe some of them that will be used in our study cases.
 
-\subsection{Losses}
+We will have two different type of metrics, from one side metrics related to network performance and on the other side those to the host. Some of them will be close related to rate and congestion but others might be more close to the performance of the actual API implementation on the browser.
 
-Loss rate indicates packet losses during the transmission or processing. Usually packet losses affect directly the performance of a call and can indicate how the link is behaving between the different peers, in our case, packet loss will be a direct indicator of the quality of the ongoing WebRTC transmission. However, the packet loss indicate that some packets are not arriving, another strong indicator that goes attached is delay as packets will arrive later prior to getting lost in the link. This indicator will show up when the link is carrying big congestion of failures. 
+\subsection{Simple Feedback Loop}
 
-The second option is called congestion error meanwhile the loss of packets by buffered queues or other issues is called bit-error, over use of a link may led to losses due to congestion. In WebRTC we are using RTCP protocol for control and reporting of the ongoing stream~\cite{rtcpIETF}.
+Traditionally real time media communication always rely on inelastic traffic, this type of traffic has low tolerance to error as packets should always arrive in time for playback, this is more important than having 100\% packet delivery rate. Elastic traffic is common in applications that do not require real time data to be sent and is tolerant to delay having better data delivery compared to inelastic traffic.
 
-Some delayed packets should also be considered as losses as they won't be useful anymore for the ongoing connection, those packets won't show up in the stats as losses. In WebRTC loss rate will affect directly to the ongoing transmission as the delay range that we can tolerate is very low before the quality of the call deteriorates, some data-driven WebRTC connections will tolerate some more delay. In general case Loss Rate will be considered as a main point for recalculating the path by using faster routes. This indicator is manly attached to link quality.
+With real time media applications congestion will play a big role in traffic delivering, if the media generation rate is lower than the available channel capacity there is no need for rate adaption. However, losses and available capacity of the link will vary on time requiring adaptation from the sender side. This adaptation is done by analyzing the receiver feedback packets sent to the sender, this technique is called simple feedback loop.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{./figures/simplefeedback.pdf}
+      \caption[Multimedia feedback loop]{Multimedia feedback loop.}
+	\label{fig:feedbackloop}
+\end{figure}
+
+Figure~\ref{fig:feedbackloop} shows a simplified feedback model for multimedia communication, the feedback path will carry messages with link characteristics that help the sender to adjust it's rate mechanisms. Those feedback messages are sent periodically by the receiver and are very important to test the congestion of the link.
+ 
+\subsection{Network metrics}
+
+Metrics defined in this chapter will be only related to those provided by the network, those metrics will trigger the congestion mechanisms in WebRTC changing the behavior of the stream according to the constraints on the link.
+
+Three global factors are considered when analyzing network links: {\it loss}, {\it bandwidth} and {\it delay}.
+
+\subsubsection{Loss}
+
+Loss rate indicates packet losses during the transmission or processing. Usually packet losses affect directly the performance of a call and can indicate how the link is behaving between the different peers, in our case, packet loss will be a direct indicator of the quality of the ongoing WebRTC transmission. 
+
+There are two types of losses, bit-error losses and congestion. Bit-error losses appear randomly and affect some packets, those packets are automatically discarded as the data has been corrupted. Over use of a link produces losses due to congestion. 
+
+WebRTC uses RTCP protocol for control and feedback of the ongoing stream~\cite{rtcpIETF}. In RTCP losses are reported in the feedback message, this metric does not include discarded packets.
+
+Some delayed packets should also be considered as losses as they won't be useful anymore for the ongoing connection, those packets won't show up in the stats as losses and will be discarded in the receiver. In WebRTC loss rate will affect directly to the ongoing transmission as the delay range that we can tolerate is very low before the quality of the call deteriorates, some data-driven WebRTC connections will tolerate some more delay. In general case Loss Rate will be considered as a main point for recalculating the path by using faster routes. This indicator is manly attached to link quality.
 
 Losses will be calculated in a certain period of time so we will be able to see how much loss rate we have in a certain range of time.
 
@@ -24,51 +49,127 @@ Losses will be calculated in a certain period of time so we will be able to see 
 	\label{eq:PKTloss}
 \end{equation}
 
-Equation~\ref{eq:PKTloss} calculates the estimated packet loss we might have on the link. This operation will be done every period, we will determine this period when building the testing environment.
+Equation~\ref{eq:PKTloss} calculates the estimated packet loss we might have on the link. This operation will be done periodically by our statistic API.
 
-\subsection{Round-Trip Time (RTT) and One-way delay (OWD)}
+\subsubsection{Round-Trip Time (RTT) \nomenclature{RTT}{Round-Trip Time} and One-Way Delay (OWD) \nomenclature{OWD}{One-Way Delay}}
 
-The delay in a link can be measured form different perspectives, one-way delay indicates the time it takes for a packet to move from one peer to the other peer, this time includes different delays that are given in the link. This one-way delay is calculated form the time taken to process it in both sides (building and decoding), the lower layer delay in the client (interface and intra-layering delay), queuing delay (from the multiple buffers in the path) and propagation delay (speed of light). The sum of all those delays compose the total one-way delay.
+Delay in a link can be measured form different perspectives, One-Way Delay (OWD) indicates the time it takes for a packet to move from one peer to the other peer, this time includes different delays that are produced along the link. OWD is calculated form the time taken to process it in both sides (building and decoding), the lower layer delay in the client (interface and intra-layering delay), queuing delay (from the multiple buffers in the path) and propagation delay (speed of light). The sum of all those delays compose the total one-way delay.
+
+\begin{equation}
+	OWD = delay_{propagation} + delay_{queues} + delay_{serialization} + delay_{processing}	
+	\label{eq:owd}
+\end{equation}
 
 Considering the structure of WebRTC, one of the most important delays that we will have to consider and study is the processing delay as our applications will rely in a multiple layer structure, running over the browser will affect the performance compared to other technologies that run directly over the OS. Delays in our case will be symmetric as we will be sending and receiving media, the delay will be important in order to reproduce the streams in the best quality possible and avoid decoding artifacts in the media. 
 
-OWD and RTT measurements are included in standard RTCP specification, in order to calculate this timestamp from sender and receiver is needed in the reports. Sender Report (ST) timestamp is saved in the sender meanwhile the receiver informs the same timestamp in the Receiver Report (RR) that goes back to the origin. By that, we are able to calculate the RTT using the following Equation~\ref{eq:rtt}.
+OWD and RTT measurements are included in standard RTCP specification, in order to calculate those metrics, timestamp from sender and receiver is needed in the reports. Sender Report (ST) timestamp is saved in the sender, meanwhile, the receiver returns the same timestamp in the Receiver Report (RR) that goes back to the origin. By that, we are able to calculate the RTT using the following Equation~\ref{eq:rtt}.
 
 \begin{equation}
-	RTT = TS_{RR} - TS_{SR} -T_{Delay}\\
-	
-	TS_{RR} \text{: Local timestamp at reception of last Receiver Report}\\
-	
-	TS_{SR}Ê\text{: Last Sender Report timestamp}\\
-	
-	T_{Delay} \text{: Receiver time period between SR reception and RR sending in the sender}\\
-	\label{eq:rtt}
+\label{eq:rtt}
+\begin{split}
+&RTT = TS_{RR} - TS_{SR} -T_{Delay}\\
+ \quad &TS_{RR} \text{: Local timestamp at reception of last Receiver Report} \\
+ \quad &TS_{SR}Ê\text{: Last Sender Report timestamp} \\
+ \quad &T_{Delay} \text{: Receiver time period between SR reception and RR sending in the sender}
+\end{split}
 \end{equation}
 
-Calculating OWD requires both machines clock to be accurately synchronized, we might try to assure this but usually OWD delay is defined as $\frac{RTT}{2}$. 
+Calculating OWD requires both machines clock to be accurately synchronized and can be complicated, we will try to assure this but usually OWD delay is defined as $\frac{RTT}{2}$. 
 
-RTT will be an early indicator of congestion in a WebRTC connection, this RTT must be monitored and most important, the adequate RTT have to be defined for every connection as the clients won't be aware of the appropriate amount for good performance.
+RTT and OWD will be an early indicator of congestion in a WebRTC connection.
 
-\subsection{Throughput}
+\subsubsection{Throughput}
 
-Throughput will be a key metric for testing the performance of WebRTC environments, this value will show how much capacity of the link is taking each PC and stream. It is complex though as there is still no QoS implemented in WebRTC. The throughput metric is going to provide bandwidth for video/audio in each direction, we can then use this value to provide some quality metric averaging all the previous mentioned measures in order to monitor the overall quality of the call. A sudden drop of the throughput will mean that the bandwidth available for that PC has been drastically reduced, this will lead to artifacts, or in the word case, loose of communication between peers. In this specific situation ICE candidates will try to be renegotiated in order to obtain a different solution for the connection and reestablish the media with the best throughput possible.
+Throughput will be a key metric for testing the performance of WebRTC environments, this value will show how much capacity of the link is taking each {\it PeerConnection}. It is complex though, as there are still no fully functional QoS mechanisms implemented in WebRTC. The throughput metric is going to provide bandwidth usage for video/audio in each direction, we can then use this value to get some quality metric in order to monitor the overall quality of the call. A sudden drop of the throughput will mean that the bandwidth available for that {\it PeerConnection} has been drastically reduced, this will lead to artifacts, or in the worst case, loss of communication between peers. In this specific situation ICE candidates will try to be renegotiated in order to obtain an alternative link for the connection and reestablish the media with the best possible throughput.
 
-Furthermore, throughput can be divided into sending rate ($BR_S$), receiver rate ($BR_R$) and goodput ($GP$). From the technical point of view sender rate is defined as the amount of packets that are injected into the network by the sender, receiver rate is the speed at which packets arrive at the receiver and goodput is calculated by discarding all the lost packets on the path, only packets that have been received are counted making goodput a good metric for our purposes. Usually, those metrics are calculated by extracting the information from the RTCP packets, in our case, we will rely on the Stats API that uses the WebRTC API to obtain the amount of bytes and measurements to manually calculate those by using JavaScript. Taking into account the last amount of bytes received, the actual amount and the time elapsed we will be able to calculate and accurate value for the goodput or throughput.
+Furthermore, throughput can be divided into sending rate ($BR_S$), receiver rate ($BR_R$) and goodput ($GP$). From the technical point of view, sender rate is defined as the amount of packets that are injected into the network by the sender, receiver rate is the speed at which packets arrive at the receiver and goodput is the result of discarding all the lost packets along the path, only packets that have been received are counted being goodput a good metric for our purposes. 
 
-\subsubsection{Audio streams}
+Typically, those metrics are calculated by extracting the information from the RTCP packets, in our case, we will rely on the Stats API included in WebRTC API to obtain the amount of bytes and measurements to manually calculate those by using JavaScript. Taking into account the last amount of bytes received, the actual amount and the time elapsed we will be able to calculate an accurate value for the goodput.
 
-When using real time media environments for bidirectional communication the user experience is a key indicator of success. One of the factors that have to be considered is the Noise Reduction (NR) and Acoustic Echo Canceler (AEC). Those mechanisms allow the call to be smooth and avoid extra noises and echoes from the speaker voice to be transmitted, in WebRTC will provide a strange behavior when measuring the throughput, when the is no speech the bytes transferred will be approximately zero, being the throughput negligible. This helps to reduce the bandwidth usage and provides a more comfortable conversation when having a call.
+\subsubsection{Inter-Arrival Time (IAT) \nomenclature{IAT}{Inter-Arrival Time} and Jitter}
 
-\subsection{Other metrics}
+Due to latency on the path packets can arrive ad different times, congestion causes the increase and decrease in Inter-Arrival Time (IAT) between packets. This is also known as packet Jitter.
 
-Besides the metrics explained in the previous sections we are keeping other important values that affect WebRTC.
+Congestion mechanisms in WebRTC uses an adaptive filter that continuously updates the rate control of the sender side by using an estimation of network parameters based on the timing of the received frame. The actual mechanisms implement rate control by using IAT but other delay effects such as jitter are not captured by this model~\cite{alvestrandCongestion2012}.
 
-CPU/RAM usages are logged in order to determine how an average system performs when running the different scenarios as some of them will be more demanding than others, this will give an approximate approach to the required resources needed.
+In WebRTC, IAT is given as Equation~\ref{eq:iat},~\ref{eq:iat1} and~\ref{eq:iat2}~\cite{alvestrandCongestion2012}.
 
-Also call setup time and frequency of call drops will be saved, it might be important to determine an approximate call setup time since the start of the negotiation until the media arrives. By doing this, we are measuring a parameter that directly affects the user experience in WebRTC. From the other side, call drops will be counted to see the call success ratio in every scenario.
+\begin{equation}
+\label{eq:iat}
+\begin{split}
+&d(i) = t(i) - t(i-1) - (T(i) - T(i-1))\\
+ \quad &t \text{: arrival time } \\
+ \quad &T \text{: timestamp time } \\
+\end{split}
+\end{equation}
 
-We will also calculate and pay attention to the delay variation, this is important as it affects how the user interacts with the other peer during a call. Having high delay variations led to an uncomfortable call and distortion. We will measure this variation and the amount of delay that different topologies produce.
+Since the time $t_s$ to send a frame of size $L$ over a path with a capacity of $C$ is approximately:
+
+\begin{equation}
+\label{eq:iat1}
+\begin{split}
+&t_s = \frac{L}{C}\\
+ \quad &L \text{: Frame size } \\
+ \quad &C \text{: Capacity of the link } \\
+\end{split}
+\end{equation}
+
+The final model for the IAT in WebRTC can be simplified as:
+
+\begin{equation}
+\label{eq:iat2}
+\begin{split}
+d(i) = \frac{L(i) - L(i-1)}{C} + w(i)
+\end{split}
+\end{equation}
+
+Here, $w(i)$ is a sample from a stochastic process $W$ which is given in function of $C$, the current cross traffic $X(i)$ and the send bit rate $R(i)$. If the channel congestion is high $w(i)$ will increase, otherwise $w(i)$ will decrease.
+
+Jitter and IAT are usually calculated in the receiver and reported to the sender to have sender-driven rate control.
+%\subsubsection{Jitter}
+%
+%WebRTC streams are sent over the link in RTP format, those packets are generated sequentially. Due congestion on the path those packets may arrive in different order than in the source. Jitter is defined as the estimate of the statistical variance mean of the RTP packet inter-arrival time~\cite{rtcpIETF}.
+%
+%Inter-arrival time is a congestion indicator, Equation~\ref{eq:jitter} extracted from RTP RFC indicates how to calculate the approximate jitter~\cite{rtcpIETF}.
+%
+%\begin{equation}
+%\label{eq:jitter}
+%\begin{split}
+%J_m &= J_{m-1} + \frac{D_{m-1} - J_{m-1}}{16}\\
+% \quad m &= \text{received packets} \\
+%\end{split}
+%\end{equation}
+%
+%Jitter covers inter-arrival time information for the last 16 packets, in our case this will be useful as we will be using extended feedback profile (RTP/AVPF) for our media streams. In other scenarios jitter won't be useful as it will only cover a part of the interval between two RTCP feedback messages.
+
+\subsection{Host metrics}
+
+Host metrics are measurements made locally by the host that affect the behavior of real time media communication. Those metrics are not directly related to the network and can give information about the host congestion usage.
+
+They will also provide information about timing and encoding.
+
+\subsubsection{Resources}
+
+In WebRTC we will have to measure the resources usage of the peers, this metric will be very important for multiple peer topologies and resource demanding encoding.
+
+CPU/RAM usage will be stored for each call to calculate an average and mean for general WebRTC. This information will be crucial in some environments.
+
+\subsubsection{Setup time}
+
+We will measure the setup time required for every topology, with this it will be possible to establish an average setup time for WebRTC. The setup time will be calculated using local timestamps when building the {\it PeerConnection}Êobject.
+
+Once the media form the remote stream arrives we will subtract both timestamps to check the elapsed time, this will be done with STUN and TURN to check the difference in each NAT situation.
+
+\subsubsection{Call failure}
+
+Call failure will be an important metric that will decide wherever to ship a production application based on WebRTC or not. This also will depend on NAT situations and we will calculate the average failed calls with STUN and TURN. Both of them can give different results due to the differences in topologies.
+
+This metric will define the success rate for WebRTC calls.
+
+\subsubsection{Encoding and decoding}
+
+WebRTC statistical API also provides real time information about the encoding and decoding bit rate of the video codec. This metric will vary depending on the congestion mechanisms that rely on top of the path conditions, it will be a good indicator for congestion and can give some hints about the way the encoding is done in WebRTC.
 
 \subsection{Summary of metrics}
 
-Performance metrics for WebRTC will help us to determine the behavior of the link just by using information provided by the RTCP packets and the pure API, the goal of all this metrics is to provide better mechanisms to properly adapt the rate and response to the condition of the link. Rate adaptation will be a key mechanism to provide good response in WebRTC and we will closely study how those perform in different environments, some such as RTT, OWD and setup call time will affect the user experience more than the pure video quality of the call and should also be taken in consideration. Based on the results we get for those indicators we will determine wether the congestion mechanisms are worked as defined or should be improved in the actual version of WebRTC.
+Performance metrics for WebRTC will help us to determine the behavior of the link just by using information provided by the RTCP packets and the statistical API of WebRTC, the goal of all this metrics is to provide better mechanisms to properly adapt the rate and response to the condition of the link. Rate adaptation will be a key mechanism to provide good response in WebRTC and we will closely study how those perform in different environments, some such as RTT, OWD and setup call time will affect the user experience more than the pure video quality of the call and should also be taken in consideration. Based on the results we get for those indicators we will determine wether the congestion mechanisms are worked as defined or should be improved in the actual version of WebRTC.

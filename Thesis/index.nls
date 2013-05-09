@@ -22,6 +22,8 @@
 		\nompageref{2}
   \item [{HTTPS}]\begingroup Hypertext Transfer Protocol Secure\nomeqref {0}
 		\nompageref{17}
+  \item [{IAT}]\begingroup Inter-Arrival Time\nomeqref {4}
+		\nompageref{28}
   \item [{ICE}]\begingroup Interactive Connectivity Establishment\nomeqref {0}
 		\nompageref{14}
   \item [{IETF}]\begingroup Internet Engineering Task Force\nomeqref {0}
@@ -44,6 +46,7 @@
   \item [{NAT}]\begingroup Network Address Translation\nomeqref {0}
 		\nompageref{3}
   \item [{NR}]\begingroup Noise Reduction\nomeqref {0}\nompageref{15}
+  \item [{OWD}]\begingroup One-Way Delay\nomeqref {2}\nompageref{26}
   \item [{QoS}]\begingroup Quality of Service\nomeqref {0}
 		\nompageref{16}
   \item [{RFC}]\begingroup Request for Comments\nomeqref {0}
@@ -58,6 +61,7 @@
 		\nompageref{7}
   \item [{RTP}]\begingroup Real-time Transport Protocol\nomeqref {0}
 		\nompageref{6}
+  \item [{RTT}]\begingroup Round-Trip Time\nomeqref {2}\nompageref{26}
   \item [{SCTP}]\begingroup System Control Transmission Protocol\nomeqref {0}
 		\nompageref{15}
   \item [{SDP}]\begingroup Session Description Protocol\nomeqref {0}

@@ -70,7 +70,7 @@ Media transfer in this protocol is encrypted, this issue has been addressed clea
 	\label{fig:RTMFParchitecture}
 \end{figure}
  
-Some of the most valuable features is the possibility to easy integrate P2P multicast topologies where one source sends a video to a group of receivers.
+Some of the most valuable features is the possibility to easily integrate P2P multicast topologies where one source sends a video to a group of receivers.
 
 \subsection{WebRTC}
 
@@ -255,7 +255,7 @@ Media encoding in WebRTC is done through codecs implemented in the browser inter
 
 Defined codecs for audio are G711 and Opus. G711 is an International Telecommunication Union (ITU) \nomenclature{ITU}{International Telecommunication Union} standard audio codec that has been used in multiple real time applications such as SIP. In real-time media applications Opus is also a good alternative for G711, Opus is a lossy audio compression format codec developed by the IETF and that is designed to work in real-time media applications on the Internet~\cite{opusIETF}. Opus can be easily adjusted for high and low encoding rates being a good candidate for the needs of WebRTC.
 
-Along with the codecs, the audio engine for WebRTC also includes some interesting mechanisms such as Acoustic Echo Canceler (AEC) \nomenclature{AEC}{Acoustic Echo Canceler} and Noise Reduction (NR) \nomenclature{NR}{Noise Reduction}. The first mechanism is a software based signal processing component that removes, in real time, the acoustic echo resulting from the voice being played out coming into the microphone, with this, WebRTC avoids to create audio loops with the output and input sound devices of computers. NR is a component that removes background noise associated to real time audio communications. 
+Along with the codecs, the audio engine for WebRTC also includes some interesting mechanisms such as Acoustic Echo Canceler (AEC) \nomenclature{AEC}{Acoustic Echo Canceler} and Noise Reduction (NR) \nomenclature{NR}{Noise Reduction}. The first mechanism is a software based signal processing component that removes, in real time, the acoustic echo resulting from the voice being played out coming into the microphone, with this, WebRTC avoids to create audio loops with the output and input sound devices of computers. NR is a component that removes background noise associated to real time audio communications. When both mechanisms are functioning the amount of rate required by the audio channel is reduced as the unnecessary noise is removed form the spectrum.
 
 Those mechanisms provide a smooth audio input for WebRTC protocol.
 

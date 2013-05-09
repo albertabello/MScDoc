@@ -39,14 +39,51 @@
 %%
 \usepackage[utf8]{inputenc} % Ficheros de entrada en latin1
 
-\usepackage{graphicx} 
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{subfig} 
 \graphicspath{{../figures/}}
 %%\DeclareGraphicsExtensions{.pdf}{png}{.png}{.jpg}{jpg}{.jpeg}{jpeg}
 \DeclareGraphicsExtensions{.svg,.pdf,.png,.jpeg,.jpg}
 \usepackage{url}
+\usepackage{hyperref}
 \usepackage[small, bf]{caption}
+\usepackage{dcolumn}
 \usepackage[font=small]{subfig}
-\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{booktabs}
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+\lstset{frame=tb,
+  language=JavaScript,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
 %%\usepackage{ucs} % Soporte Unicode
 %% Use this if you do not like hyperref package - this
 %% defines url environment and formats it correctly
@@ -55,7 +92,10 @@
 %%
 %% Use this if you write hard core mathematics, these are usually needed
 \usepackage{amsfonts,amssymb,amsbsy}  
-
+\usepackage[titletoc,toc,page]{appendix}
+\usepackage{nomencl}
+\renewcommand{\nomname}{Abbreviatures}
+\renewcommand{\nomlabel}[1]{\hspace{1em}#1}
 %% Vaakasuunnan mitat, ƒLƒ KOSKE!
 \setlength{\hoffset}{-1in}
 \setlength{\oddsidemargin}{35mm}
@@ -67,8 +107,7 @@
 \setlength{\headheight}{1em}
 \setlength{\topmargin}{25mm-\headheight-\headsep}
 \setlength{\textheight}{23cm}
-
-
+\usepackage{xpatch}
 %% Kaikki mik‰ paperille tulostuu, on t‰m‰n j‰lkeen
 %%
 %% Output starts here
@@ -123,7 +162,7 @@
 %% does unsatisfactory job of breaking the lines, you will have to
 %% break the lines yourself with \\ control character. 
 %% Do not hyphenate titles.
-\thesistitle{Performance analysis of WebRTC}{Opinn‰yteohje}
+\thesistitle{Performance analysis of topologies for Web-based Real-Time Communication (WebRTC)}{Opinn‰yteohje}
 
 \place{Espoo}
 %% Kandidaatintyˆn p‰iv‰m‰‰r‰ on sen esitysp‰iv‰m‰‰r‰! 
@@ -192,7 +231,16 @@
 %% if you are writting your master's thesis in English place the English
 %% abstract first followed by the possible Finnish abstract
 
-
+%\mysection{}
+%\vspace*{\fill} 
+%\begin{quote} 
+%%\centering 
+%%{\it ``It has become appallingly obvious that our technology has exceeded our humanity.''}
+%
+%
+%%\hfill \textbf{Albert Einstein (1879 - 1955)}
+%\end{quote}
+%\vspace*{\fill}
 %% Preface
 \mysection{Preface}
 Thank you everybody.\\
@@ -223,13 +271,18 @@ Otaniemi, 9.3.2012
 \listoffigures
 \listoftables
 
+%%\nomenclature{$l$}{Length\nomunit{m}}
 %% 
 %% Corrects the page numbering, there is no need to change these
 \cleardoublepage
 \storeinipagenumber
 %%
 %%Definitions and abreviations
-\mysection{Definitions and abreviations}
+\setlength{\nomitemsep}{-\parsep}
+\setlength{\nomlabelwidth}{.20\hsize}
+\makenomenclature
+\printnomenclature
+
 %\addcontentsline{toc}{section}{Definitions and abreviations}
 
 \newpage
@@ -277,11 +330,17 @@ Otaniemi, 9.3.2012
 \include{./chapters/conclusion}
 
 
-
-
 \addcontentsline{toc}{section}{References}
 \bibliographystyle{unsrt}
 \bibliography{./chapters/allpapers} 
+
+%%Appendix
+\appendix
+\include{./appendix/fakevideo}
+
+\include{./appendix/dummynet}
+
+\include{./appendix/scripting}
 
 \end{document}
 
