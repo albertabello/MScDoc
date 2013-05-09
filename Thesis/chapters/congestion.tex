@@ -172,4 +172,8 @@ WebRTC statistical API also provides real time information about the encoding an
 
 \subsection{Summary of metrics}
 
-Performance metrics for WebRTC will help us to determine the behavior of the link just by using information provided by the RTCP packets and the statistical API of WebRTC, the goal of all this metrics is to provide better mechanisms to properly adapt the rate and response to the condition of the link. Rate adaptation will be a key mechanism to provide good response in WebRTC and we will closely study how those perform in different environments, some such as RTT, OWD and setup call time will affect the user experience more than the pure video quality of the call and should also be taken in consideration. Based on the results we get for those indicators we will determine wether the congestion mechanisms are worked as defined or should be improved in the actual version of WebRTC.
+Performance metrics for WebRTC will help us to determine the behavior of the link just by using information provided by the RTCP packets and the statistical API of WebRTC, the goal of those metrics is to design better mechanisms to properly adapt the rate and response to the condition of the link. 
+
+Rate adaptation will be an important feature to have good response in WebRTC calls and we will closely study how those perform in different topologies, some such as RTT, OWD and setup call time will affect the user experience more than the expected video quality of the call and should also be taken in consideration. 
+
+Based on the results we get for those indicators we will determine wether the congestion mechanisms are working as defined in the specs or should be improved for future versions of WebRTC.
