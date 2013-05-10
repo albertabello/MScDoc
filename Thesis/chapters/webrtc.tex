@@ -32,9 +32,9 @@ All the previous ways of communication work in real time, logically they work us
 %
 %Some alternatives are available to the WebRTC concept, considering the global architecture of WebRTC, Session Initiation Protocol (SIP) and Secure Real-Time Media Flow Protocol (RTMFP) are similar approaches to the same solution.
 
-\subsection{Session Initiation Protocol (SIP) \nomenclature{SIP}{Session Initiation Protocol}}
+\subsection{Session Initiation Protocol (SIP)}
 
-SIP allows communication between two different users with audio/video support in real-time. SIP final Request for Comments (RFC) \nomenclature{RFC}{Request for Comments} was published in June 2004, this document describes the original functionalities and mechanisms of SIP~\cite{sipRFC}. From an overview perspective, SIP is an application-layer control protocol for multimedia sessions which can establish, maintain and terminate media sessions. During the development of the standard different new functionalities were added to the drafts such as conferencing and the possibility of adding/removing media from existing sessions. 
+SIP \nomenclature{SIP}{Session Initiation Protocol} allows communication between two different users with audio/video support in real-time. SIP final Request for Comments (RFC) \nomenclature{RFC}{Request for Comments} was published in June 2004, this document describes the original functionalities and mechanisms of SIP~\cite{sipRFC}. From an overview perspective, SIP is an application-layer control protocol for multimedia sessions which can establish, maintain and terminate media sessions. During the development of the standard different new functionalities were added to the drafts such as conferencing and the possibility of adding/removing media from existing sessions. 
 
 %SIP differentiates from RTMFP/WebRTC by locating the end user to be used for communication, this feature allows SIP to be closely related to traditional PSTN networks as it allow cross-domain communication which is not possible when using RTMFP/WebRTC. SIP is not a complete toolkit for communications. <<-- SUMMARY OF RTC
 
@@ -53,9 +53,9 @@ DNS provides the IP address for both proxy servers and allows the messages to be
 
 SIP is a pure VoIP confederated technology that helped the community to learn about real-time P2P communication.
 
-\subsection{Real Time Media Flow Protocol (RTMFP) \nomenclature{RTMFP}{Real Time Media Flow Protocol} and Adobe Flash}
+\subsection{Real Time Media Flow Protocol (RTMFP) and Adobe Flash}
 
-RTMFP and Adobe Flash are proprietary technologies provided by Adobe, both services work together to provide multimedia and RTC between users.
+RTMFP  \nomenclature{RTMFP}{Real Time Media Flow Protocol} and Adobe Flash are proprietary technologies provided by Adobe, both services work together to provide multimedia and RTC between users.
 
 Adobe Flash is a multimedia software that uses a plugin to work on top of the browser, it is used to build multimedia experiences for end users such as graphics, animation, games and Rich Internet Applications (RIA) \nomenclature{RIA}{Rich Internet Application}. It is widely used to stream video or audio in web applications, in order to reproduce this content we need to install Adobe Flash plugin in our computer. It also uses a different programming language that do not comply with any standards called JavaScript Flash Language (JSFL) \nomenclature{JSFL}{JavaScript Flash Language} and ActionStript. RTMFP and Adobe Flash require a plugin to work with any device, this obliges the user to install extra software that is not included in the browser, these two technologies are not standardized and are difficult to enable in some mobile devices. Adobe Flash Player is available in most platforms except iOS devices and reaches about 98\% of all internet-enabled desktop devices. This plugin allows developers to access media streams from external devices such as cameras and microphones to be used along with RTMFP.
 
@@ -130,7 +130,7 @@ function gotStream(stream) {
 
 With the previous code, we are using the video and audio media from our devices to be played in an video HTML element identified as {\it local-video}. 
 
-GetUserMedia also allow developers to set some specific constraints to the media acquisition. This help developers to better adapt the stream to their requirements, those {\it cameraConstraints()} are stored into a JavaScript Object Notation library and provided to the API through the {\it navigator.webkitGetUserMedia} method.
+GetUserMedia also allow developers to set some specific constraints to the media acquisition. This help developers to better adapt the stream to their requirements, those {\it cameraConstraints()} are stored into a JavaScript Object Notation (JSON) \nomenclature{JSON}{JavaScript Object Notation} library and provided to the API through the {\it navigator.webkitGetUserMedia} method.
 
 \subsubsection{Networking API}
 \label{sec:pcAPI}

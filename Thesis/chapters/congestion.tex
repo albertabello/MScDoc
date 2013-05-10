@@ -84,9 +84,9 @@ Losses will be calculated in a period of time, with this we will be able to see 
 
 Equation~\ref{eq:PKTloss} calculates the estimated packet loss we might have on the link. This operation will be done periodically by our statistic API.
 
-\subsubsection{Round-Trip Time (RTT) \nomenclature{RTT}{Round-Trip Time} and One-Way Delay (OWD) \nomenclature{OWD}{One-Way Delay}}
+\subsubsection{Round-Trip Time (RTT) and One-Way Delay (OWD)}
 
-Delay in a link can be measured form different perspectives, One-Way Delay (OWD) indicates the time it takes for a packet to move from one peer to the other peer, this time includes different delays that are produced along the link. OWD is calculated form the time taken to process it in both sides (building and decoding), the lower layer delay in the client (interface and intra-layering delay), queuing delay (from the multiple buffers in the path) and propagation delay (speed of light). The sum of all those delays compose the total one-way delay.
+Delay in a link can be measured form different perspectives, One-Way Delay (OWD) \nomenclature{OWD}{One-Way Delay} indicates the time it takes for a packet to move from one peer to the other peer, this time includes different delays that are produced along the link. OWD is calculated form the time taken to process it in both sides (building and decoding), the lower layer delay in the client (interface and intra-layering delay), queuing delay (from the multiple buffers in the path) and propagation delay (speed of light). The sum of all those delays compose the total one-way delay.
 
 \begin{equation}
 	OWD = delay_{propagation} + delay_{queues} + delay_{serialization} + delay_{processing}	
@@ -95,7 +95,7 @@ Delay in a link can be measured form different perspectives, One-Way Delay (OWD)
 
 Considering the structure of WebRTC, one of the most important delays that we will have to consider and study is the processing delay as our applications will rely in a multiple layer structure, running over the browser will affect the performance compared to other technologies that run directly over the OS. Delays in our case will be symmetric as we will be sending and receiving media, the delay will be important in order to reproduce the streams in the best quality possible and avoid decoding artifacts in the media. 
 
-OWD and RTT measurements are included in standard RTCP specification, in order to calculate those metrics, timestamp from sender and receiver is needed in the reports. Sender Report (ST) timestamp is saved in the sender, meanwhile, the receiver returns the same timestamp in the Receiver Report (RR) that goes back to the origin. By that, we are able to calculate the RTT using the following Equation~\ref{eq:rtt}.
+OWD and RTT \nomenclature{RTT}{Round-Trip Time} measurements are included in standard RTCP specification, in order to calculate those metrics, timestamp from sender and receiver is needed in the reports. Sender Report (ST) timestamp is saved in the sender, meanwhile, the receiver returns the same timestamp in the Receiver Report (RR) that goes back to the origin. By that, we are able to calculate the RTT using the following Equation~\ref{eq:rtt}.
 
 \begin{equation}
 \label{eq:rtt}
@@ -119,9 +119,9 @@ Furthermore, throughput can be divided into sending rate ($BR_S$), receiver rate
 
 Typically, those metrics are calculated by extracting the information from the RTCP packets, in our case, we will rely on the Stats API included in WebRTC API to obtain the amount of bytes and measurements to manually calculate those by using JavaScript. Taking into account the last amount of bytes received, the actual amount and the time elapsed we will be able to calculate an accurate value for the goodput.
 
-\subsubsection{Inter-Arrival Time (IAT) \nomenclature{IAT}{Inter-Arrival Time} and Jitter}
+\subsubsection{Inter-Arrival Time (IAT) and Jitter}
 
-Due to latency on the path packets can arrive ad different times, congestion causes the increase and decrease in Inter-Arrival Time (IAT) between packets. This is also known as packet Jitter.
+Due to latency on the path packets can arrive ad different times, congestion causes the increase and decrease in Inter-Arrival Time (IAT) \nomenclature{IAT}{Inter-Arrival Time}  between packets. This is also known as packet Jitter.
 
 Congestion mechanisms in WebRTC uses an adaptive filter that continuously updates the rate control of the sender side by using an estimation of network parameters based on the timing of the received frame. The actual mechanisms implement rate control by using IAT but other delay effects such as jitter are not captured by this model~\cite{alvestrandCongestion2012}.
 

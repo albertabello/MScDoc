@@ -75,9 +75,9 @@ Equation~\ref{eq:meshformula} calculates the amount of WebRTC connections requir
 
 %Inside the mesh structure we can find other types of topologies such as {\it Multipoint Control Unit (MCU) \nomenclature{MCU}{Multipoint Control Unit}}, {\it hub and spoke}, {\it three} and {\it overlay}.
 
-\subsection{Multipoint Control Unit (MCU) \nomenclature{MCU}{Multipoint Control Unit}}
+\subsection{Multipoint Control Unit (MCU)}
 
-MCUs is a device used to bridge streams in conferences, it multiplexes, mixes and encodes media of different sources to be sent over one gateway. MCU usage will be a good alternative when designing WebRTC infrastructures, the ability to multiplex different streams into the same channel will directly affect on how the client performs when reproducing the video reducing the amount of used resources. 
+MCUs \nomenclature{MCU}{Multipoint Control Unit} is a device used to bridge streams in conferences, it multiplexes, mixes and encodes media of different sources to be sent over one gateway. MCU usage will be a good alternative when designing WebRTC infrastructures, the ability to multiplex different streams into the same channel will directly affect on how the client performs when reproducing the video reducing the amount of used resources. 
 
 In real time media topologies MCU is a common component, used as relay it helps end devices to handle less load for the sources by multiplexing all the streams of the call into the same channel, we can have multiple peers connected to the same MCU that will multiplex the media sent by them into one stream forwarded to all the participants.
 
