@@ -5,11 +5,11 @@
 %% Leave first page empty
 \thispagestyle{empty}
 
-This section defines metrics to measure the performance in WebRTC topologies, this real-time media environment will require an specific approach and some metrics to define how the protocol behaves in different scenarios. 
+This section describes metrics to monitor the performance of WebRTC topologies, WebRTC real-time media environment will require an specific approach and some metrics to define how the protocol behaves in different scenarios. 
 
-Some issues might affect directly how WebRTC performs, these range from the resources available in the peers to the state of the link. In the following chapters we will describe some of them that will be used in our study cases.
+Some issues will affect how WebRTC performs, these range from the resources available in the peers to the state of the link. In the following chapters we will describe some of them that will be used in our study cases.
 
-We will have two different type of metrics, from one side metrics related to network performance and on the other side those to the host. Some of them will be close related to rate and congestion but others might be more close to the performance of the actual API implementation on the browser.
+There are two different type of metrics, from one side metrics related to network performance and on the other side those to the host. Some of them will be close related to rate and congestion but others might be more close to the performance of the actual API implementation on the browser.
 
 \subsection{Simple Feedback Loop}
 
@@ -25,7 +25,40 @@ With real time media applications congestion will play a big role in traffic del
 \end{figure}
 
 Figure~\ref{fig:feedbackloop} shows a simplified feedback model for multimedia communication, the feedback path will carry messages with link characteristics that help the sender to adjust it's rate mechanisms. Those feedback messages are sent periodically by the receiver and are very important to test the congestion of the link.
- 
+
+%\subsection{Congestion control in real time media communication}
+%
+%Congestion control decisions in real time media communication are done periodically with the data retrieved from various sources, such as the feedback loop. This data helps the protocol to trigger special mechanisms that can modify the traffic shape of the peers that participate in the call. The factors that interact in this decision-making process are the metrics exposed in the following chapters.
+%
+%Different schemes can be given in congestion control mechanisms.
+%
+%Sender-driven rate adaptation is one of the methods to control the congestion of the link, his mechanism requires the sender to be aware of the status of the path. Different algorithms will then evaluate the congestion on the path and take decisions on how to send the media.
+%
+%Receiver-driven rate adaptation requires the receiver to study the status of the network and provide the best rate values back to the source of the data. Those values are then applied to the source of the traffic.
+%
+%Network-driven rate adaptation is the ability of the network to provide congestion information to the peers of a call about the capacity available and future variables. Once both peers have the new information of network rate, provided by some element of the network, they will be able to adjust to the new condition.
+%
+%There are two different types of congestion control: congestion avoidance and congestion mitigation.   
+%
+%Congestion avoidance is done before the link undergoes heavy congestion. Small congestion conditions can be detected by closely evaluating delay, jittering and different metrics. When doing congestion avoidance small changes occur in the sender to better adapt the rate.
+%
+%However, congestion mitigation is the action performed once the link is already handling heavy congestion. In this case, actions taken by the algorithms are drastic in order to mitigate congestion.
+% 
+% \begin{figure}[h]
+%  \centering
+%    \includegraphics{./figures/rateadaptation.jpg}
+%      \caption[Rate adaptation modes. Source~\cite{varunthesis}]{Rate adaptation modes. Source~\cite{varunthesis}.}
+%	\label{fig:rateadaptation}
+%\end{figure}
+%
+%When congestion is detected in the path, rate control algorithms operate in three different modes (Figure~\ref{fig:rateadaptation}): {\it overshoot}, {\it undershoot} and {\it stability}.
+%
+%Overshoot appears when the sending rate exceeds the capacity of the link, this mode of rate adaptation usually produces more congestion on the path and extra packet losses.
+%
+%Undershoot is the opposite behavior to Overshoot, it is given when heavy congestion appear on the link and packet losses occur. This produces a sudden conservative rate to avoid more losses and mitigate congestion.
+%
+%Stability is given when the capacity of the link is the same for a certain period of time, bandwidth rate may fluctuate but it will finally converge to the stable channel capacity on the path.
+%
 \subsection{Network metrics}
 
 Metrics defined in this chapter will be only related to those provided by the network, those metrics will trigger the congestion mechanisms in WebRTC changing the behavior of the stream according to the constraints on the link.
