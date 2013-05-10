@@ -34,15 +34,15 @@ Three global factors are considered when analyzing network links: {\it loss}, {\
 
 \subsubsection{Loss}
 
-Loss rate indicates packet losses during the transmission or processing. Usually packet losses affect directly the performance of a call and can indicate how the link is behaving between the different peers, in our case, packet loss will be a direct indicator of the quality of the ongoing WebRTC transmission. 
+Loss rate indicates packet losses during the transmission over the path. Usually packet losses affect directly the performance of a call and can indicate how the link is behaving between the different peers, in WebRTC, packet loss will be a direct indicator of the quality of the ongoing WebRTC transmission. 
 
-There are two types of losses, bit-error losses and congestion. Bit-error losses appear randomly and affect some packets, those packets are automatically discarded as the data has been corrupted. Over use of a link produces losses due to congestion. 
-
-WebRTC uses RTCP protocol for control and feedback of the ongoing stream~\cite{rtcpIETF}. In RTCP losses are reported in the feedback message, this metric does not include discarded packets.
+There are two types of losses, bit-error losses and congestion. Bit-error losses appear randomly and affect some packets, those packets are automatically discarded as the data has been corrupted, this type of error occurs randomly and cannot be predicted. Over use of a link produces losses due to congestion of a path, those errors can be anticipated by using congestion mechanisms. 
 
 Some delayed packets should also be considered as losses as they won't be useful anymore for the ongoing connection, those packets won't show up in the stats as losses and will be discarded in the receiver. In WebRTC loss rate will affect directly to the ongoing transmission as the delay range that we can tolerate is very low before the quality of the call deteriorates, some data-driven WebRTC connections will tolerate some more delay. In general case Loss Rate will be considered as a main point for recalculating the path by using faster routes. This indicator is manly attached to link quality.
 
-Losses will be calculated in a certain period of time so we will be able to see how much loss rate we have in a certain range of time.
+WebRTC uses RTCP protocol for control and feedback of the ongoing stream~\cite{rtcpIETF}. In RTCP losses are reported in the feedback message, this metric does not include discarded packets by the protocol.
+
+Losses will be calculated in a period of time, with this we will be able to see how much loss rate we have in a certain path.
 
 \begin{equation}
 	\frac{PKT_{loss}(T) - PKT_{loss}(T-1)}{PKT_{received}(T) - PKT_{received}(T-1) + PKT_{loss}(T) - PKT_{loss}(T-1)}
@@ -123,7 +123,7 @@ d(i) = \frac{L(i) - L(i-1)}{C} + w(i)
 \end{split}
 \end{equation}
 
-Here, $w(i)$ is a sample from a stochastic process $W$ which is given in function of $C$, the current cross traffic $X(i)$ and the send bit rate $R(i)$. If the channel congestion is high $w(i)$ will increase, otherwise $w(i)$ will decrease.
+Here, $w(i)$ is a sample from a stochastic process $W$ which is given in function of $C$, the current cross traffic $X(i)$ and the send bit rate $R(i)$. If the channel congestion is high $w(i)$ will increase, otherwise $w(i)$ will decrease. Otherwise we can consider $w(i)$ equal to zero.
 
 Jitter and IAT are usually calculated in the receiver and reported to the sender to have sender-driven rate control.
 %\subsubsection{Jitter}
@@ -144,31 +144,31 @@ Jitter and IAT are usually calculated in the receiver and reported to the sender
 
 \subsection{Host metrics}
 
-Host metrics are measurements made locally by the host that affect the behavior of real time media communication. Those metrics are not directly related to the network and can give information about the host congestion usage.
+Host metrics are measurements made locally by the host that affect the behavior of real time media communication. Those metrics do not need to be directly related to the network and can give information about the host congestion usage.
 
 They will also provide information about timing and encoding.
 
 \subsubsection{Resources}
 
-In WebRTC we will have to measure the resources usage of the peers, this metric will be very important for multiple peer topologies and resource demanding encoding.
+In WebRTC, we will measure the local resources usage in the peers participating in a call, this metric will be very important for multiple peer topologies and resource demanding encoding.
 
-CPU/RAM usage will be stored for each call to calculate an average and mean for general WebRTC. This information will be crucial in some environments.
+CPU/RAM usage will be stored for each call to calculate an average and mean for general WebRTC scenarios. This information will be crucial for the success of WebRTC in some environments.
 
 \subsubsection{Setup time}
 
 We will measure the setup time required for every topology, with this it will be possible to establish an average setup time for WebRTC. The setup time will be calculated using local timestamps when building the {\it PeerConnection}Êobject.
 
-Once the media form the remote stream arrives we will subtract both timestamps to check the elapsed time, this will be done with STUN and TURN to check the difference in each NAT situation.
+Once the media form the remote stream arrives we will subtract both timestamps, start of the {\it PeerConnection}Êand stream arrival, to check the elapsed time, this will be done with STUN and TURN to check the difference in each NAT scenario.
 
 \subsubsection{Call failure}
 
-Call failure will be an important metric that will decide wherever to ship a production application based on WebRTC or not. This also will depend on NAT situations and we will calculate the average failed calls with STUN and TURN. Both of them can give different results due to the differences in topologies.
+Call failure will be an important metric that will decide wherever to ship a production application based on WebRTC or not. This also will depend on NAT situations and we will calculate the average failed calls with STUN and TURN NAT techniques.
 
-This metric will define the success rate for WebRTC calls.
+This metric will define the success ratio for establishing WebRTC calls.
 
 \subsubsection{Encoding and decoding}
 
-WebRTC statistical API also provides real time information about the encoding and decoding bit rate of the video codec. This metric will vary depending on the congestion mechanisms that rely on top of the path conditions, it will be a good indicator for congestion and can give some hints about the way the encoding is done in WebRTC.
+WebRTC statistical API also provides real time information about the encoding and decoding bit rate of the video codec. This metric will vary depending on the congestion mechanisms that change considering path conditions, it will be a good indicator for congestion and can give some hints about the way the encoding is done in WebRTC.
 
 \subsection{Summary of metrics}
 
