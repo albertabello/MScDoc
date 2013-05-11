@@ -4,9 +4,57 @@
 
 In this chapter we will study how WebRTC performs in different use cases and topologies previously described in chapter~\ref{sec:topologies}. All tests will be done using a real working environment with the tools previously mentioned in chapter~\ref{sec:testingEnv}.
 
-\subsection{Point-to-point}
+\subsection{Interoperability}
 
-In a point-to-point scenario we have performed different tests to calculate how the application performs. 
+WebRTC is a standard, one of the goal is that it should be interoperable between different browser providers.
+
+Actually, three different browsers carry native implementations for WebRTC: Google Chrome, Mozilla Firefox and Opera. Of those, two of them include the {\it GetUserMedia} and {\it PeerConnection} APIs: Mozilla Firefox and Google Chrome. Those browsers should be able to perform calls between them.
+
+Google Chrome has included WebRTC {\it PeerConnection} API for long time, but Mozilla Firefox came up with the {\it PeerConnection} API much later~\cite{chromefirefoxinterop}. 
+
+Making both browsers compatible required work from both providers, because the SDP messages provided by them are different but rely on the IETF standard. Both engines should be able to understand those signaling messages and respond with the adequate SDP.
+
+Some differences in the SDP messages are visible, in the Mozilla Firefox implementation the SDP provides the STUN/TURN candidates bundled on the message meanwhile the SDP from Chrome provides the candidates separately by default, at the same time, the signaling messages from Chrome include some extra information about the streams that is not given in the Firefox version~\cite{interopnotes}.
+
+At the same time, both browsers must implement cross-compatible codecs to send the stream and be able to decode the proper incoming data.
+
+Even most compatibility issues are solved, there are still some ongoing problems with the actual JavaScript API method reference in both browsers~\cite{interopnotes}.
+
+However, we might find interesting results when comparing the enabled congestion mechanisms on both browsers. They should be able to manage the different environments in the same way as a the previous tests. At the time of this document no congestion control mechanisms are included in Mozilla Firefox.
+
+For our tests we have executed a point-to-point call between a Firefox and Chrome in different machines. In this test, we are more interested in seeing the behavior of the rate and other metrics between the peers than the possible overall result.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/firefoxvschrome1.pdf}
+      \caption[Remote stream rate for a point-to-point call between Mozilla Firefox and Google Chrome]{Remote stream rate for a point-to-point call between Mozilla Firefox and Google Chrome.}
+	\label{fig:firefoxvschrome1}
+\end{figure}
+
+Figure~\ref{fig:firefoxvschrome1} represents the rate given by the streams of both vendors captured at each receiver. We can observe that congestion mechanism is not triggered for the Firefox stream, Chrome applies some rate adaptation meanwhile Firefox maintains the same stream rate over the link.
+
+Considering that we didn't apply any constraint on the link for this scenario we could consider this as a misunderstanding between both transport layers, the delay over the path is barely inexistent and there is no packet loss on the reported metrics.
+
+We should consider that for rate adaptation WebRTC uses RTCP message with Receiver Estimated Maximum Bitrate (REMB) \nomenclature{REMB}{Receiver Estimated Maximum Bitrate}~\cite{alvestrandCongestion2012}~\cite{alvestrandCongestionREMB}. This mechanism provides an extra field in the WebRTC RTCP messages with the estimated total available bandwidth for the session. Considering that Firefox has not fully implemented it's congestion mechanism this mechanism would fail to establish an available rate for both ends having this type of unstable output for Chrome which expects this parameter to be available.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[scale=0.7]{./figures/rtcpchrome.png}
+      \caption[RTCP packet content sent by a Google Chrome WebRTC call]{RTCP packet content sent by a Google Chrome WebRTC call.}
+	\label{fig:rtcpchrometochrome}
+\end{figure}
+
+To check the behavior of the RTCP feedback mechanism in WebRTC, we have captured different samples using a network sniffer. However, it is important to advise that some of the congestion mechanisms are still in ongoing discussion on the working groups and have not reached full consensus.
+
+Firstly, we obtained a capture from a call between two Chrome browsers, after analyzing the multiplexed RTP/RTCP data we can observe that both peers where exchanging {\it Sender Reports} control packets. In WebRTC, the RTT measurement of the RTCP packets is made by using the same RTP media flow timing, this avoids the usage of {\it Receiver Reports} in most point-to-point or single {\it PeerConnection} topologies~\cite{rtpusageIETF}.
+
+Those messages carry important data required by the WebRTC internals to build the {\it Stats API}. Figure~\ref{fig:rtcpchrometochrome} shows an example of RTCP packet sent by a Google Chrome browser in our test. We can see that most of the metrics are available in the packet, some such as REMB have not been implemented yet or are not available in the API~\cite{rtpusageIETF}.
+
+Some other features are required to be answered by the WebRTC RTCP engine, but might not be asked by the {\it PeerConnection} if they are not necessary or implemented in one of the peers.
+
+During the capture between different vendors we have observed a different behavior from the RTCP mechanisms. Meanwhile Chrome continuously provide the {\it Sender Report} metrics in the RTP/RTCP channel, Firefox is only reporting {\it Receiver Reports} back to the source. No metrics from the outgoing stream of Firefox are being sent to Chrome, this forces Chrome not to provide any feedback control messages to Firefox in order to trigger congestion control mechanisms. This behavior may affect the rate adaptation mechanisms in Firefox which could lead to an output such as Figure~\ref{fig:firefoxvschrome1}.
+
+We can state that congestion mechanisms on Firefox are still not available and this avoids any rate adaptation between browsers, by conclusion, using Firefox in multiple scenarios would lead to unexpected rate adaption and poor response.
 
 \subsubsection{WiFi scenario}
 
@@ -33,6 +81,10 @@ When we try to measure the quality of the call one important indicator is the de
 \end{figure}
 
 Figure~\ref{fig:delay_116_646227} represents the delay of the stream plotted in~\ref{fig:onetooneWifistatsconmon}. We can see that the quality of the call is affected by the network distortion at the end of Figure~\ref{fig:onetooneWifistatsconmon}, this variation of the throughput delivers a high delay of more than 4 seconds during some period of time between 13:15:30 and 13:16:30, the media received at that time will not render correctly and the user experience of the call is going to be worst than at the beginning of the call. A bursty WiFi network will led to delay even the bandwidth seems to be stable.
+
+\subsection{Point-to-point}
+
+In a point-to-point scenario we have performed different tests to calculate how the application performs. 
 
 \subsubsection{Non-constrained link test}
 
@@ -744,9 +796,9 @@ Similar to the previous scenario we have run a test using the TURN as relay for 
 
 For environments such as mesh, the usage of MCU should be considered as a good alternative to the pure P2P option, this could drastically reduce the resource consumption and bandwidth distribution on the different peer connections when using multiple peer topologies.
 
-\subsection{CPU performance}
-
-After running all the tests we can see that WebRTC is facing a big problem when it comes to CPU and memory consumption. Averaged computers could have problems when handling multiple peer connections in WebRTC, we have also tested the CPU usage in all those different scenarios. 
+%\subsection{CPU performance}
+%
+%After running all the tests we can see that WebRTC is facing a big problem when it comes to CPU and memory consumption. Averaged computers could have problems when handling multiple peer connections in WebRTC, we have also tested the CPU usage in all those different scenarios. 
 
 \subsection{Summary of results}
 

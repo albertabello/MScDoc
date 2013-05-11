@@ -182,7 +182,7 @@ Previous code describes a simple example on how to use the {\it PeerConnection} 
 
 Control and monitoring is an important part of all RTC protocols, this part is usually handled by the software that adapts the constraints and configurations to the available resources. 
 
-In WebRTC, this is done through the Statistics Model and Constraints defined in the W3C draft~\cite{editorWebRTCdraft}, these methods are part of the actual {\it PeerConnection} API defined in section~\ref{sec:pcAPI}. Once the {\it PeerConnection} is made and media is flowing we need to measure the quality of the connection, this is done by retrieving the stats provided in the Real Time Control Protocol (RTCP) \nomenclature{RTCP}{Real Time Control Protocol} messages that are being sent over the link. 
+In WebRTC, this is done through the Statistics Model and Constraints defined in the W3C draft~\cite{editorWebRTCdraft}, these methods are part of the actual {\it PeerConnection} API defined in section~\ref{sec:pcAPI}. Once the {\it PeerConnection} is made and media is flowing we need to measure the quality of the connection, this is done by retrieving the stats provided in the Real Time Control Protocol (RTCP) \nomenclature{RTCP}{Real Time Control Protocol} messages that are being sent over the link. The  Audio Video Profile with Feedback (AVPF) \nomenclature{AVPF}{Audio Video Profile with Feedback} early feedback provides significant improvements in the transmission of RTCP message that are event driven rather than periodic~\cite{salvatore}.
 
 To access this data contained on the control messages we need to call the {\it getStats()} method in the {\it PeerConnection}, this method will allow the developers to access that data in a JSON format that will require some post-processing. Statistical models will be useful for the developers to monitor the usage of their WebRTC applications and change the attributes of the {\it PeerConnection}.
 
@@ -265,11 +265,21 @@ WebRTC is not only useful for sending media, it can also provide P2P data transf
 
 The encapsulation of SCTP over DTLS on top of ICE/UDP provides a NAT traversal solution that combines confidentiality, source authentication and integrity with protected transfers. This data transport service can operate in parallel with media transfer and is sent multiplexed over the same port. This feature of WebRTC is accessible from the JavaScript {\it PeerConnection} API by a combination of methods, functions and callbacks. From the developer perspective all the previous statements regarding security and transport are made in the browser internals providing a simple and reliable way of sending P2P secure data over WebRTC.
 
-WebRTC provides Secure Real-time Transport Protocol (SRTP) \nomenclature{SRTP}{Secure Real-time Transport Protocol} to allow media to be secured.
+WebRTC provides Secure Real-time Transport Protocol (SRTP) \nomenclature{SRTP}{Secure Real-time Transport Protocol} to allow media to be secured.The key-management for SRTP is provided by DTLS-SRTP which is an in-band keying and security parameter negotiation mechanism~\cite{salvatore}.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[scale=0.6]{./figures/protocolStack.jpg}
+      \caption[WebRTC protocol stack. Source~\cite{salvatore}]{WebRTC protocol stack. Source~\cite{salvatore}.}
+	\label{fig:stack}
+\end{figure}
+
+Figure~\ref{fig:stack} illustrates the full protocol stack for WebRTC described in this chapter.
 
 Quality of Service (QoS) \nomenclature{QoS}{Quality of Service} for WebRTC is also being discussed in the IETF and a draft is available with some proposals~\cite{qosWebRTCIETF}. WebRTC uses DiffServ packet marking for QoS but this is not sufficient to help prevent congestion in some environments. When using DiffServ the problem arises from the Internet Service Providers (ISPs) as they might be using their own packet marking with different DiffServ code-points, those won't be interoperability between ISPs, there is an ongoing proposal to build consistent code-points. Audio/video packets will be marked as priority using DSCP mappings with audio being more important than video or data~\cite{qosWebRTCIETF}. 
 
 WebRTC also uses a Google congestion control algorithm that enables proper congestion control mechanisms for rate adaptation~\cite{alvestrandCongestion2012}. The aim of this algorithm is to provide performance and bandwidth sharing with other ongoing conferences and applications that share the same link.
+
 %\subsection{Support}
 %The following companies and organizations have supported and are actively working in the development of WebRTC standard in the W3C: Google, Mozilla and Opera~\cite{googleAnnouncement}. Other companies such as Microsoft have supported browser-to-browser solution but have published their own proposal which differs with the one published in the WebRTC WG, called CU-RTC-Web~\cite{curtcweb} which is a lower level API that claims to do everything that JSEP does.
 %

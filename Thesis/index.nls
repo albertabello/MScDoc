@@ -8,12 +8,14 @@
 		\nompageref{8}
   \item [{API}]\begingroup Application Programming Interface\nomeqref {0}
 		\nompageref{1}
+  \item [{AVPF}]\begingroup Audio Video Profile with Feedback\nomeqref {0}
+		\nompageref{12}
   \item [{DNS}]\begingroup Domain Name System\nomeqref {0}
 		\nompageref{7}
   \item [{DOM}]\begingroup Document Object Model\nomeqref {0}
 		\nompageref{9}
   \item [{DoS}]\begingroup Denial of Service\nomeqref {0}
-		\nompageref{16}
+		\nompageref{17}
   \item [{DTLS}]\begingroup Datagram Transport Layer Security\nomeqref {0}
 		\nompageref{15}
   \item [{FPS}]\begingroup Frames per Second\nomeqref {0}
@@ -23,7 +25,7 @@
   \item [{HTTPS}]\begingroup Hypertext Transfer Protocol Secure\nomeqref {0}
 		\nompageref{17}
   \item [{IAT}]\begingroup Inter-Arrival Time\nomeqref {4}
-		\nompageref{28}
+		\nompageref{29}
   \item [{ICE}]\begingroup Interactive Connectivity Establishment\nomeqref {0}
 		\nompageref{14}
   \item [{IETF}]\begingroup Internet Engineering Task Force\nomeqref {0}
@@ -40,15 +42,15 @@
   \item [{JSON}]\begingroup JavaScript Object Notation\nomeqref {0}
 		\nompageref{10}
   \item [{LAN}]\begingroup Local Area Networks\nomeqref {0}
-		\nompageref{20}
+		\nompageref{21}
   \item [{MCU}]\begingroup Multipoint Control Unit\nomeqref {1}
-		\nompageref{22}
+		\nompageref{23}
   \item [{MEGACO}]\begingroup Media Gateway Control Protocol\nomeqref {0}
 		\nompageref{6}
   \item [{NAT}]\begingroup Network Address Translation\nomeqref {0}
 		\nompageref{3}
   \item [{NR}]\begingroup Noise Reduction\nomeqref {0}\nompageref{15}
-  \item [{OWD}]\begingroup One-Way Delay\nomeqref {2}\nompageref{26}
+  \item [{OWD}]\begingroup One-Way Delay\nomeqref {2}\nompageref{27}
   \item [{QoS}]\begingroup Quality of Service\nomeqref {0}
 		\nompageref{16}
   \item [{RFC}]\begingroup Request for Comments\nomeqref {0}
@@ -63,7 +65,7 @@
 		\nompageref{7}
   \item [{RTP}]\begingroup Real-time Transport Protocol\nomeqref {0}
 		\nompageref{6}
-  \item [{RTT}]\begingroup Round-Trip Time\nomeqref {2}\nompageref{26}
+  \item [{RTT}]\begingroup Round-Trip Time\nomeqref {3}\nompageref{28}
   \item [{SCTP}]\begingroup System Control Transmission Protocol\nomeqref {0}
 		\nompageref{15}
   \item [{SDP}]\begingroup Session Description Protocol\nomeqref {0}
@@ -72,6 +74,8 @@
 		\nompageref{6}
   \item [{SRTP}]\begingroup Secure Real-time Transport Protocol\nomeqref {0}
 		\nompageref{16}
+  \item [{SSRC}]\begingroup Synchronization Source identifier\nomeqref {7}
+		\nompageref{36}
   \item [{STUN}]\begingroup Simple Transversal Utilities for NAT\nomeqref {0}
 		\nompageref{14}
   \item [{TURN}]\begingroup Traversal Using Relays around NAT\nomeqref {0}
@@ -89,6 +93,6 @@
 		\nompageref{2}
   \item [{WWW}]\begingroup World Wide Web\nomeqref {0}\nompageref{1}
   \item [{XSS}]\begingroup Cross-site scripting\nomeqref {0}
-		\nompageref{16}
+		\nompageref{17}
 
 \end{thenomenclature}
