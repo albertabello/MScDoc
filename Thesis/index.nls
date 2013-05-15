@@ -11,19 +11,19 @@
   \item [{AVPF}]\begingroup Audio Video Profile with Feedback\nomeqref {0}
 		\nompageref{12}
   \item [{DNS}]\begingroup Domain Name System\nomeqref {0}
-		\nompageref{7}
+		\nompageref{6}
   \item [{DOM}]\begingroup Document Object Model\nomeqref {0}
-		\nompageref{9}
+		\nompageref{10}
   \item [{DoS}]\begingroup Denial of Service\nomeqref {0}
 		\nompageref{17}
   \item [{DTLS}]\begingroup Datagram Transport Layer Security\nomeqref {0}
-		\nompageref{15}
+		\nompageref{16}
   \item [{FPS}]\begingroup Frames per Second\nomeqref {0}
 		\nompageref{12}
   \item [{HTML}]\begingroup HyperText Markup Language\nomeqref {0}
 		\nompageref{2}
   \item [{HTTPS}]\begingroup Hypertext Transfer Protocol Secure\nomeqref {0}
-		\nompageref{17}
+		\nompageref{18}
   \item [{IAT}]\begingroup Inter-Arrival Time\nomeqref {4}
 		\nompageref{29}
   \item [{ICE}]\begingroup Interactive Connectivity Establishment\nomeqref {0}
@@ -50,9 +50,13 @@
   \item [{NAT}]\begingroup Network Address Translation\nomeqref {0}
 		\nompageref{3}
   \item [{NR}]\begingroup Noise Reduction\nomeqref {0}\nompageref{15}
+  \item [{NTPd}]\begingroup Network Time Protocol daemon\nomeqref {7}
+		\nompageref{44}
   \item [{OWD}]\begingroup One-Way Delay\nomeqref {2}\nompageref{27}
   \item [{QoS}]\begingroup Quality of Service\nomeqref {0}
 		\nompageref{16}
+  \item [{REMB}]\begingroup Receiver Estimated Maximum Bitrate\nomeqref {7}
+		\nompageref{40}
   \item [{RFC}]\begingroup Request for Comments\nomeqref {0}
 		\nompageref{6}
   \item [{RIA}]\begingroup Rich Internet Application\nomeqref {0}
@@ -62,12 +66,12 @@
   \item [{RTCP}]\begingroup Real Time Control Protocol\nomeqref {0}
 		\nompageref{12}
   \item [{RTMFP}]\begingroup Real Time Media Flow Protocol\nomeqref {0}
-		\nompageref{7}
+		\nompageref{6}
   \item [{RTP}]\begingroup Real-time Transport Protocol\nomeqref {0}
 		\nompageref{6}
   \item [{RTT}]\begingroup Round-Trip Time\nomeqref {3}\nompageref{28}
   \item [{SCTP}]\begingroup System Control Transmission Protocol\nomeqref {0}
-		\nompageref{15}
+		\nompageref{16}
   \item [{SDP}]\begingroup Session Description Protocol\nomeqref {0}
 		\nompageref{6}
   \item [{SIP}]\begingroup Session Initiation Protocol\nomeqref {0}
@@ -81,7 +85,7 @@
   \item [{TURN}]\begingroup Traversal Using Relays around NAT\nomeqref {0}
 		\nompageref{14}
   \item [{UDP}]\begingroup User Datagram Protocol\nomeqref {0}
-		\nompageref{7}
+		\nompageref{6}
   \item [{VoIP}]\begingroup Voice over IP\nomeqref {0}\nompageref{5}
   \item [{VVoIP}]\begingroup Video and Voice over IP\nomeqref {0}
 		\nompageref{5}
