@@ -21,7 +21,7 @@ On the other hand, once signaling is done data flow can be sent to the receiver,
 
 RTC scenarios can be given either over the Internet or using traditional techniques, some real-time scenarios are: telephony, mobile phone communication, radio, instant messaging (IM) \nomenclature{IM}{Instant Messaging}, Voice over IP (VoIP) \nomenclature{VoIP}{Voice over IP},  Video and Voice over IP (VVoIP) \nomenclature{VVoIP}{Video and Voice over IP}, Internet Relay Chat (IRC) \nomenclature{IRC}{Internet Relay Chat} and videoconferencing. 
 
-All the previous ways of communication work in real time and rely in Figure~\ref{fig:RTC} topology but with different technologies. In this thesis we will manly work with Internet RTC using media and data.
+All the previous ways of communication work in real time and rely in Figure~\ref{fig:RTC} topology but with different technologies. In this thesis we manly work with Internet RTC using media and data.
 %Web Real-Time Communication is a technology that builds P2P applications by using a defined JavaScript API. The first announcement went public in a WG of the World Wide Web Consortium (W3C) in May 2011~\cite{webrtcW3cgroup} and started the official mailing list in April 2011~\cite{welcomeW3C}. During the first stage of discussion, the main goal was to define a public draft for the version 1 API implementation and a route timeline with the goal to publish the first version by March 2013. The first public draft of W3C came public the 27th of October 2011~\cite{originalW3Cdraft}. During this first W3C draft, only media (audio and video) could be sent over the network to other peers, it is focused in the way browsers are able to access the media devices without using any plugin or external software.
 %
 %Alongside to the W3C working group, the WebRTC project also joined the IETF with a WG in May 2011~\cite{webrtcIETFgroup} with the first public announcement charter done the 3th of May 2011~\cite{webrtcIETFcharter}. Milestones of the WG initially marked December 2011 as deadline to provide the information and elements required to the W3C for the API design input. On the other side, the main goals of the WG covered the definition of the communication model, session management, security, NAT traversal solution, media formats, codec agreement and data transport~\cite{webrtcIETFcharter}.
@@ -108,9 +108,11 @@ WebRTC uses an API called {\it GetUserMedia} to access media streams from local 
 	\label{fig:mediastreamAPI}
 \end{figure}
 
-Figure~\ref{fig:mediastreamAPI} illustrates how the browser access the media and delivers the output to JavaScript. We will use this function to build WebRTC enabled applications for RTC video conferencing. The video tag is an HTML5 a Document Object Model (DOM) \nomenclature{DOM}{Document Object Model} element that reproduces local and remote media streams.
+Figure~\ref{fig:mediastreamAPI} illustrates how the browser access the media and delivers the output to JavaScript. We use this function to build WebRTC enabled applications for RTC video conferencing. The video tag is an HTML5 a Document Object Model (DOM) \nomenclature{DOM}{Document Object Model} element that reproduces local and remote media streams.
 
-{\it GetUserMedia} API works using a fallback model, this means than the JavaScript method will return an object that can be played in an HTML web application, a simple example of this method can be seen in the following code.
+{\it MediaStreams} are objects returned by the {\it GetUserMedia} API, those objects are composed by {\it MediaStreamTracks} that carry the actual data for the media. The goal of using this architecture is to be able, in a near future, to include multiple sources of video and audio over the same stream. {\it MediaStreams} handle the synchronization between all the {\it MediaStreamTracks} included for proper playback in the application level.
+
+{\it GetUserMedia} API works using a fallback model, this means than the JavaScript method returns an object that can be played in an HTML web application, a simple example of this method can be seen in the following code.
 
 \lstset{language=JavaScript}
 \begin{lstlisting}[caption=Simple example of video and audio access using JavaScript]
@@ -119,6 +121,7 @@ navigator.webkitGetUserMedia(cameraConstraints(), gotStream, function() {
 });
     
 function gotStream(stream) {
+	//Stream is the MediaStream object returned by the API
 	console.log("GetUserMedia succeeded");
   	document.getElementById("local-video").src = webkitURL.createObjectURL(stream);
 }
@@ -133,7 +136,7 @@ With the previous code, we are using the video and audio media from our devices 
 
 WebRTC uses a separate API to provide the networking support to transfer media to the other peers, this API is named {\it PeerConnection}~\cite{editorWebRTCdraft}. {\it PeerConnection} API bundles all the internal mechanisms of the browser that enable media and data transfer, at the same time it also handles all the exchange signaling messages with specific JavaScript methods. 
 
-Signaling messages will be exchanged using a topology similar to Figure~\ref{fig:webrtcExample}, with the messages being sent either by WebSockets or other similar HTTP polling protocols. Messages are built using a modified bundled version of SDP, WebRTC signaling messages are similar to SIP as they use SDP bodies for the agreement.
+Signaling messages are exchanged using a topology similar to Figure~\ref{fig:webrtcExample}, with the messages being sent either by WebSockets or other similar HTTP polling protocols. Messages are built using a modified bundled version of SDP, WebRTC signaling messages are similar to SIP as they use SDP bodies for the agreement.
 
 WebRTC uses multiplexing over one port when sending the traffic, this means that media, data and monitoring messages are sent over the same port from peer to peer, traffic is sent over UDP or TCP~\cite{alvestrandOverview2012}. {\it PeerConnection} API provides signaling and NAT transversal techniques to bypass routers and firewalls, this part is very important to guarantee a high degree of success when establishing calls in different scenarios.
 
@@ -176,13 +179,13 @@ function gotRemoteStream(e){
 
 The previous code describes a simple example on how to use the {\it PeerConnection} API to perform a P2P connection and start transferring media, this code works in conjunction with the code in section~\ref{sec:gum}. When building the new {\it PeerConnection} object we need to pass the JSON object {\it server} with the stun configuration for the NAT transversal process. 
 
-\subsubsection{Control and Monitoring API}
+\subsubsection{Control and Monitoring}
 
 Control and monitoring is an important part of all RTC protocols, this part is usually handled by the software that may adapt the media constraints and configurations to the available resources on the link. 
 
 In WebRTC, this is done through the Statistics Model and Constraints defined in the W3C draft~\cite{editorWebRTCdraft}, these methods are part of the actual {\it PeerConnection} API defined in section~\ref{sec:pcAPI}. Once the {\it PeerConnection} is made and media is flowing we need to measure the quality of the connection, this is done by retrieving the stats provided in the Real Time Control Protocol (RTCP) \nomenclature{RTCP}{Real Time Control Protocol} messages that are being sent over the link. The  Audio Video Profile with Feedback (AVPF) \nomenclature{AVPF}{Audio Video Profile with Feedback} provides significant improvements in the transmission of RTCP messages that are event driven rather than periodic~\cite{salvatore} like in other RTP based technologies.
 
-To access the statistical data retrieved from the control messages we need to use the {\it getStats()} method in the {\it PeerConnection}, this method will allow the developers to access that data in a JSON format that might require some post-processing. Statistical models will be useful for the developers to monitor the status of their WebRTC applications and adapt the attributes of the {\it PeerConnection}.
+To access the statistical data retrieved from the control messages we need to use the {\it getStats()} method in the {\it PeerConnection}, this method allow the developers to access that data in a JSON format that might require some post-processing. Statistical models are useful for the developers to monitor the status of their WebRTC applications and adjust the attributes of the {\it PeerConnection}.
 
 With constraints developers are able to change media capture configuration by setting  Frames per Second (FPS) \nomenclature{FPS}{Frames per Second} and video resolution. Other attributes can be set on the {\it PeerConnection} such as bandwidth requirements, transfer rate is automatically adjusted in WebRTC using its internal mechanisms but we can set a maximum value. 
 
@@ -222,11 +225,11 @@ Both constraints objects are added to the {\it GetUserMedia} and {\it PeerConnec
 
 During the development of WebRTC there has been a lot of discussion in the different working groups about the API layout, those APIs have been designed using the feedback provided by the JavaScript developers.
 
-One of the difficult parts in the standardization process has been to decide the complexity level of the API, how much is available to be accessed by the developers and which configurations or mechanisms should be automatized in the browser. After long discussion, WebRTC is now using JavaScript Session Establishment Protocol (JSEP) \nomenclature{JSEP}{JavaScript Session Establishment Protocol}~\cite{jsepIETF}, this API is a low level API that gives the developers control of the signaling plane allowing each application to be used in different environments, some will give legacy to SIP or Jingle protocols meanwhile others might only work in a closed web domain. 
+One of the difficult parts in the standardization process has been to decide the complexity level of the API, how much is available to be accessed by the developers and which configurations or mechanisms should be automatized in the browser. After long discussion, WebRTC is now using JavaScript Session Establishment Protocol (JSEP) \nomenclature{JSEP}{JavaScript Session Establishment Protocol}~\cite{jsepIETF}, this API is a low level API that gives the developers control of the signaling plane allowing each application to be used in different environments, some applications give legacy to SIP or Jingle protocols meanwhile others might only work in a closed web domain. 
 
 The media process is done in the browser but most of the signaling is handled in the JavaScript plane by using JSEP methods and functions. Figure~\ref{fig:JSEP} represents the JSEP signaling model, this system extracts the signaling part leaving media transmission to the browser. However, JSEP provides mechanisms to create offers and answers, as well to apply them to a session. The way those messages are communicated to the remote side is left entirely up to the application.
 
-One interesting feature that JSEP provides is called {\it rehydration}, this process is used whenever a page that contains an existing WebRTC session is reloaded keeping the existing session alive. This will avoid session cuts when accidentally reloading the page or with any automatic update from the web application. With {\it rehydration}, the current signaling state is stored somewhere outside the page, either on the server or in browser local storage~\cite{jsepIETF}.
+One interesting feature that JSEP provides is called {\it rehydration}, this process is used whenever a page that contains an existing WebRTC session is reloaded keeping the existing session alive. This technique avoid session cuts when accidentally reloading the page or with any automatic update from the web application. With {\it rehydration}, the current signaling state is stored somewhere outside the page, either on the server or in browser local storage~\cite{jsepIETF}.
  
  \begin{figure}[h]
   \centering
@@ -237,15 +240,15 @@ One interesting feature that JSEP provides is called {\it rehydration}, this pro
 
 Low level APIs allow developers to build their own high level APIs that handle all the WebRTC protocol from media access to signaling. Those high level methods are useful to simplify the way JavaScript developers build their applications, building object oriented calls we can have JavaScript libraries that set up and maintain multiple calls at the same time. The benefits of having low level JSEP API for WebRTC are the multiple possibilities to adapt WebRTC to the requirements of each specific application.
 
-In this thesis we will be using some high level APIs that handle signaling over WebSockets and statistics.
+In this thesis we use some high level APIs that handle signaling over WebSockets and statistics.
 
 \subsubsection{Internals of WebRTC}
 
 WebRTC has multiple internal mechanisms that enable the RTC on the browser level by using APIs. Those mechanisms work together to accomplish all the needs for WebRTC features, some of them are related to the network level and others to video acquisition.
 
-One of WebRTC main issues is NAT transversal, this problem will affect all RTC technologies. Real-time P2P protocols cannot success in all environments without a NAT transversal solution, in SIP and WebRTC, this problem is addressed with the usage of Simple Transversal Utilities for NAT (STUN) \nomenclature{STUN}{Simple Transversal Utilities for NAT} and Traversal Using Relays around NAT (TURN) \nomenclature{TURN}{Traversal Using Relays around NAT}~\cite{stunIETF}~\cite{turnIETF}. Both of these methods are combined with Interactive Connectivity Establishment (ICE) \nomenclature{ICE}{Interactive Connectivity Establishment} technique that helps WebRTC to decide which is the best way to bypass NATs and firewalls, ICE is widely used in P2P media communications and has proven to be reliable when choosing the best option to succeed with the connexion~\cite{iceIETF}.
+One of WebRTC main issues is NAT transversal, this problem usually affect all RTC related technologies. Real-time P2P protocols cannot success in all environments without a NAT transversal solution, in SIP and WebRTC, this problem is addressed with the usage of Simple Transversal Utilities for NAT (STUN) \nomenclature{STUN}{Simple Transversal Utilities for NAT} and Traversal Using Relays around NAT (TURN) \nomenclature{TURN}{Traversal Using Relays around NAT}~\cite{stunIETF}~\cite{turnIETF}. Both of these methods are combined with Interactive Connectivity Establishment (ICE) \nomenclature{ICE}{Interactive Connectivity Establishment} technique that helps WebRTC to decide which is the best way to bypass NATs and firewalls, ICE is widely used in P2P media communications and has proven to be reliable when choosing the best option to succeed with the connexion~\cite{iceIETF}.
 
-TURN and STUN machines are usually placed outside the local network of the clients and help them to find the way to communicate each other by discovering new open paths, the final decision is taken by the ICE mechanism in WebRTC. STUN server provide different IP and port configurations that allow a direct connection to the peer behind the firewall, those configurations are named {\it candidates}, this information is given to the sender that process the information and tries to choose the best {\it candidate}. On the other side, TURN works as a relay, this option should be always stated as the last resort when there is no valid STUN {\it candidate} for connectivity. TURNs will reroute the traffic from one peer to the other. 
+TURN and STUN machines are usually placed outside the local network of the clients and help them to find the way to communicate each other by discovering new open paths, the final decision is taken by the ICE mechanism in WebRTC. STUN server provide different IP and port configurations that allow a direct connection to the peer behind the firewall, those configurations are named {\it candidates}, this information is given to the sender that process the information and tries to choose the best {\it candidate}. On the other side, TURN works as a relay, this option should be always stated as the last resort when there is no valid STUN {\it candidate} for connectivity. TURNs work by rerouting the traffic from one peer to the other. 
 
 All traffic in WebRTC is done over UDP and multiplexed over the same port except the case of TURN that might use TCP.
 
@@ -270,7 +273,7 @@ WebRTC provides Secure Real-time Transport Protocol (SRTP) \nomenclature{SRTP}{S
 	\label{fig:stack}
 \end{figure}
 
-Quality of Service (QoS) \nomenclature{QoS}{Quality of Service} for WebRTC is also being discussed in the IETF and a draft is available with some proposals~\cite{qosWebRTCIETF}. WebRTC uses DiffServ packet marking for QoS but this is not sufficient to help prevent congestion in some environments. When using DiffServ, the problem arises from the Internet Service Providers (ISPs) as they might be using their own packet marking with different DiffServ code-points, those won't be interoperable between ISPs, there is an ongoing proposal to solve this problem by building consistent code-points~\cite{diffservIETF}. Audio/video packets will be marked as priority using DSCP mappings with audio being more important than video or data~\cite{qosWebRTCIETF}. 
+Quality of Service (QoS) \nomenclature{QoS}{Quality of Service} for WebRTC is also being discussed in the IETF and a draft is available with some proposals~\cite{qosWebRTCIETF}. WebRTC uses DiffServ packet marking for QoS but this is not sufficient to help prevent congestion in some environments. When using DiffServ, the problem arises from the Internet Service Providers (ISPs) as they might be using their own packet marking with different DiffServ code-points, those packets are not going to be interoperable between ISPs, there is an ongoing proposal to solve this problem by building consistent code-points~\cite{diffservIETF}. Audio/video packets shall be marked as priority using DSCP mappings with audio being more important than video or data~\cite{qosWebRTCIETF}. 
 
 WebRTC also uses a Google congestion control algorithm that enables proper congestion control mechanisms for rate adaptation~\cite{alvestrandCongestion2012}. The aim of this algorithm is to provide performance and bandwidth sharing with other ongoing conferences and applications that share the same link.
 
@@ -310,7 +313,7 @@ WebRTC also uses a Google congestion control algorithm that enables proper conge
 
 \subsubsection{Security concerns}
 
-To handle the signaling in WebRTC we use a web server, this web server will exchange the message between the peers in multiple different ways. Even this system provides high flexibility for developers to allow multiple scenarios, it also has some important security concerns~\cite{WebRTCcasesIETF}. Figure~\ref{fig:webrtcExample} represents the simple topology for a WebRTC call, web server handles the signaling messages to the peers and the media transport is done between them and provided by the browser.
+To handle the signaling process in WebRTC we use a web server, peers exchange messages to each other through the web server in multiple different ways. By using this system WebRTC provides high flexibility for developers to allow multiple scenarios, on the other side, it also has some important security concerns~\cite{WebRTCcasesIETF}. Figure~\ref{fig:webrtcExample} represents the simple topology for a WebRTC call, web server handles the signaling messages to the peers and the media transport is done between them and provided by the browser.
 
 Obviously, this system poses a range of new security and privacy challenges different from traditional VoIP systems. It has to avoid malicious calling when having a call established without user knowledge, considering that those APIs are able to bypass Firewalls and NAT, Denial of Services (DoS) \nomenclature{DoS}{Denial of Service} attacks can also become a threat.
 
@@ -325,7 +328,7 @@ Actual browsers execute JavaScript scripts provided by the accessed web sites, t
 
 In web services, issues such as Cross-site scripting (XSS) \nomenclature{XSS}{Cross-site scripting} provide high risk of privacy vulnerability. Those situations, shown in Figure~\ref{fig:xss}, are given when a third-party server provides JavaScript scripts to a different domain, this script cannot be trusted by the original domain that the user is accessing and could trigger browser actions that could harm the privacy. For example, in WebRTC, we could load a malicious script from a third-party entity that builds a WebRTC call to an undesired receiver without the user noticing this problem. Nowadays, browsers provide some degree of protection against XSS and do not let some scripting actions to be performed.
 
-Other related vulnerabilities in WebRTC APIs is the possibility to establish media forwarding to a third peer, for example, once the user has accepted the access to the media, the provided JavaScript will build one {\it PeerConnection} to the receiver and one to a remote peer that could store the call without the user noticing this behavior. Those problems are not only related to WebRTC and tend to happen in related protocols.
+Other related vulnerabilities in WebRTC APIs is the possibility to establish media forwarding to a third peer, for example, once the user has accepted the access to the media, the provided JavaScript could build one {\it PeerConnection} to the receiver and an extra one to a remote peer that could store the call without the user noticing this behavior. Those problems are not only related to WebRTC and tend to happen in related protocols.
 
 WebRTC calling procedure is done by the JavaScript provided by the server, this may be a problem as the user must trust an unknown authority server. Calling services commonly use Hypertext Transfer Protocol Secure (HTTPS) \nomenclature{HTTPS}{Hypertext Transfer Protocol Secure} for authentication whose origin can be verified and users are verified cryptographically (DTLS-SRTP). Browser peers should be authorized before starting the media flow, this can be done by the {\it PeerConnection} itself using some Identity Provider (IdP) that supports OpenID or BrowserID to demonstrate their identity~\cite{rtcwebSecurityArchIETF}. Usually this problem is not particularly important in a closed domain, cases where both peers are in the same social network and provide their profiles to the system, those are exchanged previous to the call, but it arises as a big issue when having federated calls from different domains such in Figure~\ref{fig:idpWebRTCcall}.
 
@@ -336,9 +339,9 @@ WebRTC calling procedure is done by the JavaScript provided by the server, this 
 	\label{fig:idpWebRTCcall}
 \end{figure}
 
-If the web service is running over a trusted HTTPS certificate and has been authorized access to the media, this action will be automatic after the first time under the same domain, otherwise, the user will have to verify the access for each call. Once the media is acquired, the actual API builds the ICE candidates for media verification. Authentication and verification in WebRTC is an ongoing discussion in the working groups.
+If the web service is running over a trusted HTTPS certificate and has been authorized access to the media, {\it GetUserMedia} access becomes automatic after the first time under the same domain, otherwise, the user has to verify the access for each call. Once the media is acquired, the actual API builds the ICE candidates for media verification. Authentication and verification in WebRTC is an ongoing discussion in the working groups.
 
-Security an privacy issues in WebRTC can be given in multiple layers of the protocol, the increment of trust for the provider gives some vulnerability issues that sometimes cannot be easily solved if the aim is to keep a flexible and open sourced real time protocol. Some use cases for WebRTC also incorporate some level of vulnerability as the JavaScript will be provided by a third-party, in the use case of media streaming, advertisement or call centers those providers could pick data form the users and store them for further usage~\cite{WebRTCcasesIETF}.
+Security an privacy issues in WebRTC can be given in multiple layers of the protocol, the increment of trust for the provider gives some vulnerability issues that sometimes cannot be easily solved if the aim is to keep a flexible and open sourced real time protocol. Some use cases for WebRTC also incorporate some level of vulnerability as the JavaScript is going to be provided by a third-party, in the use case of media streaming, advertisement or call centers where service providers could pick data form the users and store them for further usage~\cite{WebRTCcasesIETF}.
 
 \subsection{Comparison between SIP, RTMFP and WebRTC}
 
@@ -385,5 +388,5 @@ From the mobile perspective, SIP is used in mobile technology and WebRTC has ann
 
 All three protocols provide NAT traversal solutions but RTMFP is the only one that provides a proprietary solution that is not standardized, SIP and WebRTC use a conjunction of TURN, STUN and ICE mechanisms.
 	
-All of them are valid options, in this thesis we will work with WebRTC and its related mechanisms.
+All of them are valid options, in this thesis we basically work with WebRTC and its related mechanisms.
 	
