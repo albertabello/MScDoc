@@ -1,0 +1,163 @@
+\documentclass[first=red,second=purple,logo=yellowexc]{aaltoslides}
+%\documentclass{aaltoslides} % DEFAULT
+%\documentclass[first=purple,second=lgreen,logo=redque,normaltitle,nofoot]{aaltoslides} % SOME OPTION EXAMPLES
+
+\usepackage[latin9]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage{url}
+\usepackage{lastpage}
+
+\title{Performance analysis of topologies for Web-based Real-Time Communication}
+
+\author[Albert Abello Lozano]{Albert Abello Lozano}
+\institute[COMNET]{Supervisor: J\"{o}rg Ott\\Instructor: Varun Singh\\Communication and Networking Department\\
+Aalto University, School of Science and Technology\\albert.abello.lozano@aalto.fi}
+
+\aaltofootertext{Performance analysis of topologies for Web-based Real-Time Communication (WebRTC)}{May 22, 2013}{\arabic{page}/\pageref{LastPage}\ }
+
+\date{Espoo , May 22, 2013}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\aaltotitleframe
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Introduction}
+\begin{itemize}
+\item The purpose of \texttt{aaltoslides} is to allow us who use Beamer to easily produce slides that somewhat look like the official Aalto slides
+\item \texttt{aaltoslides} has \alert{not} been approved by anybody responsible of the Aalto visual style
+\item \texttt{aaltoslides} only resembles the official Aalto Powerpoint templates: font (Helvetica, not Nimbus Sans), sizes of the logos, footer bars, etc. may differ from the official ones
+\item All comments are welcome! (kimmo.jarvinen@tkk.fi)
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Title Page}
+
+\begin{itemize}
+\item The largest difference to normal Beamer slides is that the title page is produced with a special command \texttt{\textbackslash aaltotitleframe}; this command should be used as it is. \alert{Don't put it in a frame environment!!!} See \texttt{example.tex}.
+\item By default, \texttt{aaltoslides} uses a title page similar to the one in the Aalto Powerpoint templates
+\item A more traditional looking title page can be selected with the option: \texttt{normaltitle}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Aalto Colors}
+
+\begin{itemize}
+
+\item Colors are defined with options: \texttt{first=$\star$} and \texttt{second=$\star$} where $\star$ is one of the following:\\
+{\color{aaltoyellow}yellow}, 
+{\color{aaltored}red}, 
+{\color{aaltoblue}blue}, 
+{\color{aaltogray}gray}, 
+{\color{aaltolgreen}lgreen}, 
+{\color{aaltodgreen}dgreen}, 
+{\color{aaltocyan}cyan}, 
+{\color{aaltopurple}purple}, 
+{\color{aaltomagenta}magenta}, or
+{\color{aaltoorange}orange}
+
+\item The first color is the primary color (titles, the footer bar, \ldots) and the second color is used in alerted texts and examples
+
+\item Default colors are: {\color{aaltoblue}blue} and {\color{aaltored}red}
+
+\item Colors can be used also with the command: \texttt{\textbackslash color\{aalto}$\star$\texttt{\}}. For example, 
+\texttt{\{\textbackslash color\{aaltocyan\}some text\}} 
+gives {\color{aaltocyan}some text}
+
+\item The rules for choosing colors from the Aalto color circle are not checked (two adjacent colors should not be used)
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Logo}
+
+\begin{itemize}
+\item \texttt{aaltoslides} supports all variations of the logo:\\[0.2cm]
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_y1.pdf} \hspace{10pt}
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_y2.pdf} \hspace{10pt}
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_y3.pdf} \\[0.2cm]
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_r1.pdf} \hspace{10pt}
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_r2.pdf} \hspace{10pt}
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_r3.pdf} \\[0.2cm]
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_b1.pdf} \hspace{10pt}
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_b2.pdf} \hspace{10pt}
+\includegraphics[width=3cm]{Aalto_EN_ScienceandTech_13_RGB_b3.pdf} \\
+\item The logo is selected with the option: \texttt{logo=$\star\circ$} where $\star$ is {\color{aaltoyellow}yellow}, {\color{aaltored}red}, or {\color{aaltoblue}blue}, and $\circ$ is either exc, quo, or que for !, ", or ?, respectively; For example, \texttt{logo=yellowquo}
+\item The title page uses a larger variation of the selected logo
+\item By default, the logo is \texttt{logo=redexc}
+\item All logos can be removed with the option: \texttt{nologo}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Footer}
+
+\begin{itemize}
+
+\item By default, the slides have a footer with a logo on the left and an optional three row text\footnote{The first row is highlighted with black by default. To remove this, simply change the color of the first argument of  \texttt{\textbackslash aaltofootertext\{\}\{\}\{\}} with \texttt{\textbackslash color\{aaltogray\}}} on the right
+\item The footer text is set up with the command: \texttt{\textbackslash aaltofootertext\{\}\{\}\{\}}
+\item The footer can be removed with the option: \texttt{nofoot}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Lengths}
+
+\begin{itemize}
+\item \texttt{aaltoslides} defines the following lengths: 
+\texttt{\textbackslash aaltofooterplace}, 
+\texttt{\textbackslash aaltofooterruleheight}, 
+\texttt{\textbackslash aaltofooterrulewidth}, 
+\texttt{\textbackslash aaltotitleboxplace},  
+\texttt{\textbackslash aaltotitleboxheight}, 
+\texttt{\textbackslash aaltotitleboxwidth}, 
+\texttt{\textbackslash aaltotitlesep}, 
+\texttt{\textbackslash aaltotitleentrysep}, 
+\texttt{\textbackslash largelogoheight}, and
+\texttt{\textbackslash smalllogoheight} 
+\item The appearance of the slides can be changed by modifying the lengths with \texttt{\textbackslash setlength} or \texttt{\textbackslash addtolength}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}{Some Examples}
+
+\begin{itemize}
+\item Normal text
+\item \alert{Alerted text}
+\end{itemize}
+
+\begin{block}{Block 1}
+Text
+\end{block}
+
+\begin{example}
+Text
+\end{example}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

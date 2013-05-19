@@ -1,0 +1,295 @@
+\pdfminorversion=4
+\documentclass[first=red,second=purple,logo=yellowexc]{aaltoslides}
+%\documentclass{aaltoslides} % DEFAULT
+%\documentclass[first=purple,second=lgreen,logo=redque,normaltitle,nofoot]{aaltoslides} % SOME OPTION EXAMPLES
+\usepackage{listings}
+\usepackage{booktabs}
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+\lstset{frame=tb,
+  language=JavaScript,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+\usepackage[latin9]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage{url}
+\usepackage{lastpage}
+
+\title{Performance analysis of topologies for Web-based Real-Time Communication}
+
+\author[Albert Abello Lozano]{Albert Abello Lozano}
+\institute[COMNET]{Supervisor: J\"{o}rg Ott\\Instructor: Varun Singh\\Communication and Networking Department\\
+Aalto University, School of Science and Technology\\albert.abello.lozano@aalto.fi}
+
+\aaltofootertext{Performance analysis of topologies for Web-based Real-Time Communication (WebRTC)}{May 22, 2013}{\arabic{page}/\pageref{LastPage}\ }
+
+\date{Espoo , May 22, 2013}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\aaltotitleframe
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Outline}
+\begin{itemize}
+\item Introduction
+\item Background
+\item WebRTC
+\item Topologies
+%\item Metrics
+\item Evaluation environment
+\item Tests and results
+\item Conclusions
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Introduction}
+
+\begin{itemize}
+\item Need of connectivity between people
+\item Real-time communication is in our daily life
+\item Complex interactive web applications are everywhere 
+\item Developers need a way to handle real-time cross-interoperable apps in the web
+\end{itemize}
+
+%\begin{block}
+%\alert{WebRTC}
+%\end{block}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=5cm]{customLogo}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Background}
+
+\begin{itemize}
+\item Open sourced by Google
+\item First introduced in May 2011
+\item Designed in conjunction by the IETF and W3C
+\item Still in ongoing discussion
+\item Works using high level JavaScript APIs 
+\item First version to be delivered by Q4 2013
+\item Uses existing technologies derived from SIP
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Support}
+\includegraphics[width=3cm]{Google-eps-converted-to.pdf}\hspace{10pt}
+\includegraphics[width=3cm]{Opera-eps-converted-to.pdf}\hspace{10pt}
+\includegraphics[width=3cm]{Mozilla_Firefox-eps-converted-to.pdf}\\[0.2cm]
+\includegraphics[trim=0cm 5cm 0cm 0cm, clip=true, width=3cm]{cisco-logo-eps-converted-to.pdf}\hspace{10pt}
+\includegraphics[width=3cm]{Internet_Explorer_4-eps-converted-to.pdf}\hspace{10pt}
+\includegraphics[trim=9cm 9cm 9cm 9cm, clip=true,width=3cm]{ericsson_logo-eps-converted-to.pdf}\\[0.2cm]
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{WebRTC}
+
+\begin{itemize}
+\item Provides real-time peer-to-peer media and data transport using browsers
+\item Plugin-free, mechanisms are integrated on the browsers
+\item Interoperable between vendors
+\item Uses JavaScript APIs to enable the features
+\item Federated domain video calls
+%\item Combines two high-level JavaScript APIs:
+%\begin{itemize}
+%\item {\it GetUserMedia()}
+%\item {\it PeerConnection()}
+%\end{itemize}
+%\item Uses different specific objects:
+%\begin{itemize}
+%\item {\it MediaSream}
+%\item {\it MediaStreamTrack}
+%\item {\it DataChannel}
+%\end{itemize}
+\item {\it Google Chrome} and {\it Mozilla Firefox} implement all the APIs
+\item {\it Opera} only includes {\it GetUserMedia}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{WebRTC network internals}
+\begin{itemize}
+\item RTP and RTCP multiplexed over the same port
+\item SDP for signaling content
+\item SCTP and DTLS for secure data
+\item SRTP for media
+\item STUN, TURN and ICE for NAT reversal
+\item {\color{red}All traffic over UDP}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{WebRTC protocol stack}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{protocolStack.pdf}
+\end{figure}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{WebRTC implementation}
+
+\begin{itemize}
+\item VP8 as de facto video codec
+\item G711 and Opus as audio codec
+\item H.264 video codec in some browser vendors
+\item Uses {\color{blue} JSEP} for signaling
+\end{itemize}
+\alert{Media codecs are still on an ongoing discussion}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{JSEP signaling model}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{JSEP.pdf}
+\end{figure}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{WebRTC APIs}
+
+\begin{itemize}
+\item Combines two high-level JavaScript APIs:
+\begin{itemize}
+\item {\it GetUserMedia()}
+\item {\it PeerConnection()}
+\end{itemize}
+\item Uses different specific objects:
+\begin{itemize}
+\item {\it MediaSream}
+\item {\it MediaStreamTrack}
+\item {\it DataChannel}
+\end{itemize}
+\item Control and monitoring:
+\begin{itemize}
+\item {\it getStats()} method is used for monitoring
+\item JSON objects change the constraints for video and networking
+\end{itemize}
+\item {\it Google Chrome} and {\it Mozilla Firefox} implement all the APIs
+\item {\it Opera} only includes {\it GetUserMedia}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]{{\it GetUserMedia()}}
+
+Provides access to media devices and returns a {\it MediaStream} object.
+
+\lstset{language=JavaScript}
+\begin{lstlisting}
+navigator.webkitGetUserMedia(cameraConstraints(), gotStream, function() {
+   console.log("GetUserMedia failed");
+});
+    
+function gotStream(stream) {
+   //Stream is the MediaStream object returned by the API and played in HTML local-video element
+   console.log("GetUserMedia succeeded");
+   document.getElementById("local-video").src = webkitURL.createObjectURL(stream);
+}
+\end{lstlisting}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{{\it MediaStream} and {\it MediaStreamTrack}}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{mediastreamAPI.png}
+\end{figure}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]{{\it PeerConnection()}}
+
+Builds a point-to-point connection
+\lstset{language=JavaScript}
+\begin{lstlisting}
+pc = new webkitRTCPeerConnection(pc_config);
+pc.onicecandidate = iceCallback;
+pc.addStream(localstream);
+function iceCallback(event){
+   if (event.candidate) {
+      sendMessage(event.candidate);
+   }
+}
+pc.addIceCandidate(new RTCIceCandidate(event.candidate));
+pc.onaddstream = gotRemoteStream; 
+function gotRemoteStream(e){
+   document.getElementById("remote-video").src = URL.createObjectURL(e.stream);
+}
+\end{lstlisting}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Security in WebRTC}
+
+JavaScript libraries can provide cross-scripting and trust vulnerabilities
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{xss.pdf}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{}
+
+\centering Thank you!
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\end{document}

@@ -4,128 +4,7 @@
 
 In this chapter we will study how WebRTC performs in different use cases and topologies previously described in chapter~\ref{sec:topologies}. All tests will be done using a real working environment combining the tools mentioned in chapter~\ref{sec:testingEnv}.
 
-\subsection{Interoperability}
-
-One of the main goals of WebRTC is that it should be interoperable between different browser vendors. In this chapter, we will analyze if it is possible for all browsers to be interoperable.
-
-Actually, three different browsers carry native implementations for WebRTC: Google Chrome, Mozilla Firefox and Opera. Of those, two of them include the {\it GetUserMedia} and {\it PeerConnection} APIs: Mozilla Firefox and Google Chrome, they should be interoperable between them. Google Chrome has included WebRTC {\it PeerConnection} API for long time, but Mozilla Firefox came up with the {\it PeerConnection} API much later~\cite{chromefirefoxinterop}. Making both browsers compatible required work from the vendors, because the SDP messages provided by them are different but rely on the IETF standard. Both engines should be able to understand those signaling messages and respond with the adequate SDP negotiation.
-
-However, there are some differences in the SDP signaling messages, in the Firefox implementation, the implementation provides the STUN/TURN candidates bundled on the message meanwhile the API from Chrome provides the candidates separately by default, at the same time, the signaling messages from Chrome include some extra information about the streams that is not given in the Firefox version~\cite{interopnotes}.
-
-Furthermore, both browsers must implement cross-compatible codecs to send the stream and be able to handle the proper incoming RTP packets. Even though, most compatibility issues are solved, there are still some ongoing problems with the actual JavaScript method calls in both browsers~\cite{interopnotes}.
-
-One of the goals when checking the interoperability of the browsers, is to evaluate the enabled congestion mechanisms already implemented in both APIs. They should be able to manage the different environments in the same way as they rely on top of the same standards. At the time of this document, not all congestion control mechanisms are included in Mozilla Firefox.
-
-For this test we have executed a point-to-point call between a Firefox and Chrome in different machines. We are more interested in seeing the behavior of the call rate and other metrics between the peers than the possible overall averaged result.
-
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/firefoxvschrome1.pdf}
-      \caption[Remote stream rate for a point-to-point call between Mozilla Firefox and Google Chrome]{Remote stream rate for a point-to-point call between Mozilla Firefox and Google Chrome.}
-	\label{fig:firefoxvschrome1}
-\end{figure}
-
-Figure~\ref{fig:firefoxvschrome1} illustrates the rate given by the streams of both vendors captured at each receiver. We can observe that congestion mechanism is not triggered for the Firefox stream when some congestion occur on the path, Chrome applies some rate adaptation meanwhile Firefox maintains the same stream rate over the link.
-
-%Considering that we haven't applied any constraint on the link for this scenario, we could consider this as a misunderstanding between both %transport layers, the delay over the path is barely inexistent and there is no packet loss on the reported metrics.
-
-We should consider that WebRTC should RTCP message with Receiver Estimated Maximum Bitrate (REMB) \nomenclature{REMB}{Receiver Estimated Maximum Bitrate} for rate adaptation~\cite{alvestrandCongestion2012}~\cite{alvestrandCongestionREMB}. This mechanism provides an extra field in the WebRTC RTCP messages with the estimated total available bandwidth for the session. 
-
-%Considering that Firefox has not fully implemented it's congestion mechanism, this mechanism would fail to establish an available rate for both %ends giving this type of unstable output for Chrome which expects this parameter to be available.
-
-%\begin{figure}[h]
-%  \centering
-%    \includegraphics[scale=0.7]{./figures/rtcpchrome.png}
-%      \caption[RTCP packet content sent by a Google Chrome WebRTC call]{RTCP packet content sent by a Google Chrome WebRTC call.}
-%	\label{fig:rtcpchrometochrome}
-%\end{figure}
-
-To check the behavior of the RTCP feedback mechanism in WebRTC, we have captured different samples using a network sniffer. However, it is important to advise that some of the congestion mechanisms are still in ongoing discussion in the working groups and have not reached full consensus.
-
-Firstly, we obtained a capture from a call between two Chrome browsers, after analyzing the data, we can observe that both peers where exchanging {\it Sender Reports} control packets. In WebRTC, the RTT measurement of the RTCP packets is made by using the same RTP media flow timing, this avoids the usage of {\it Receiver Reports} in most point-to-point or single {\it PeerConnection} topologies. WebRTC multiplexes the RTP and RTCP packets in the same port to avoid extra usage of network resources~\cite{rtpusageIETF}.
-
-Those messages carry important data required by the WebRTC internals to build the {\it Stats API}. The following fields (\ref{lst:rtcpchrometochrome}) are extracted from a RTCP packet sent by a Google Chrome browser in our test. We can see that most of the metrics are available in the packet, other required metrics which are not fully standardized as REMB are not able to be decoded by our packet sniffer~\cite{rtpusageIETF}.
-
-\lstset{language=sh}
-\begin{lstlisting}[caption={RTCP message exchange between Chrome and Firefox},label={lst:rtcpchrometochrome}]
-Real-time Transport Control Protocol (Sender Report)
-    10.. .... = Version: RFC 1889 Version (2)
-    ..0. .... = Padding: False
-    ...0 0001 = Reception report count: 1
-    Packet type: Sender Report (200)
-    Length: 12 (52 bytes)
-    Sender SSRC: 0xdf1a474d (3743041357)
-    Timestamp, MSW: 3026830625 (0xb469c521)
-    Timestamp, LSW: 653452974 (0x26f2e6ae)
-    [MSW and LSW as NTP timestamp: Dec  1, 1995 18:17:05.152143000 UTC]
-    RTP timestamp: 973093429
-    Sender's packet count: 4236773172
-    Sender's octet count: 3803919253
-    Source 1
-        Identifier: 0x9046a1ac (2420548012)
-        SSRC contents
-            Fraction lost: 102 / 256
-            Cumulative number of packets lost: 4832630
-        Extended highest sequence number received: 1896484047
-            Sequence number cycles count: 28938
-            Highest sequence number received: 3279
-        Interarrival jitter: 1420789294
-        Last SR timestamp: 2622976836 (0x9c577344)
-        Delay since last SR timestamp: 2032955356 (31020436 milliseconds)
-
-Real-time Transport Control Protocol (Receiver Report)
-    10.. .... = Version: RFC 1889 Version (2)
-    ..0. .... = Padding: False
-    ...0 0001 = Reception report count: 1
-    Packet type: Receiver Report (201)
-    Length: 7 (32 bytes)
-    Sender SSRC: 0xf46245fb (4100081147)
-    Source 1
-        Identifier: 0x7f3343fb (2134066171)
-        SSRC contents
-            Fraction lost: 217 / 256
-            Cumulative number of packets lost: 3472040
-        Extended highest sequence number received: 4229724701
-            Sequence number cycles count: 64540
-            Highest sequence number received: 31261
-        Interarrival jitter: 1181356458
-        Last SR timestamp: 2930563385 (0xaeacd939)
-        Delay since last SR timestamp: 3634988546 (55465523 milliseconds)
-\end{lstlisting}
-
-Furthermore, some other features are required to be answered by the WebRTC RTCP engine, but might not be asked by the {\it PeerConnection} if they are not necessary or implemented in one of the peers. This is why features such as REMB may still not provided the RTCP {\it Sender Report}, if this field is not available, the congestion mechanism of Chrome calculates the estimated rate by using the mechanisms provided in the RMCAT Internet-Draft~\cite{alvestrandCongestion2012}, those mechanisms use the information extracted from the RTCP report (\ref{lst:rtcpchrometochrome}). 
-
-During the capture with different vendors we have observed a different behavior in the RTCP mechanisms between Chrome and Firefox. Meanwhile Chrome continuously provide the {\it Sender Report} metrics in the RTP/RTCP channel, Firefox is only reporting {\it Receiver Reports} back to the source, this message exchange procedure is seen in the previous description(\ref{lst:rtcpchrometochrome}). No metrics from the outgoing stream of Firefox are being sent to Chrome, this forces Chrome not to provide any feedback control messages to Firefox that would trigger congestion control mechanisms. This behavior may affect the rate adaptation mechanisms in Firefox which could lead to an output similar to Figure~\ref{fig:firefoxvschrome1}.
-
-We can state that congestion mechanisms on Firefox are still not available and this reject any rate adaptation in Firefox, in conclusion, using Firefox in multiple scenarios would lead to unexpected rate response and poor call quality. Apart from the congestion control mechanisms, Firefox and Chrome APIs are fully interoperable to perform calls even though some features, such as statistics, are still not available. 
-
-\subsection{WiFi scenario}
-
-To check the performance of WebRTC in a wireless scenario we have stablished a simple call between two peers that handle video and audio in an open WiFi network. This network does not carry any UDP packet filter or Firewall, the connection is performed without the need of STUN or TURN, we could easily say it is a straight forward host peer-to-peer connection. The aim of this test is to observe how the captures differ between origin and receiver between {\it StatsAPI} and {\it ConMon}.
-
- \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/onetoone_wifi_statsconmon.pdf}
-      \caption[Point-to-point video stream plot using StatsAPI and ConMon data over WiFi]{Point-to-point video stream plot using StatsAPI and ConMon data over WiFi.}
-	\label{fig:onetooneWifistatsconmon}
-\end{figure}
-
-Figure~\ref{fig:onetooneWifistatsconmon} represents the throughput rate on the same video stream, the three lines are the comparison between local video stream on the source, remote video stream at the receiver and {\it ConMon} capture of the remote video stream at the receiver. The same stream has been measured from three different perspectives, this will help us to understand the difference of rate that the overhead of the RTP is consuming and the disruption caused by the WiFi network.
-
-Notice that red and black colors represent the Local Video (LV) and Remote Video (RV) from with same SSRC captured using {\it Stats API}, the grey line illustrates the capture performed using {\it ConMon} of the same stream. It is easy to observe that both {\it StatsAPI} captures are similar, some offset is given due to the processing time between the network layer and the browser API that returns all values. Besides this, the capture is smooth and the outgoing and incoming rate of the origin client and input of the receiver are similar. Capture in the network layer using {\it ConMon} is more abrupt as all packets are captured over the WiFi and the period used when plotting affects the moment when value is stored, when having two peaks with opposite they should balance each other, meaning that the transmission in most of the period is stable and the peaks when plotting are a result of post-processing accuracy. Call duration in this test has been around five minutes. Some areas, mostly between 13.15.30 and 13.16.00, show a strange oscillation of the rate that could be produced by the WiFi, this throughput distortion is balanced on the WebRTC layer as the rate delivered to the API does not change.
-
-When we try to measure the quality of the call, one important indicator is the delay of the stream, to calculate the delay we can either use the RTT measured by our {\it Stats API} or the captures performed on the network layer by {\it ConMon}. The {\it ConMon} procedure will give us higher accuracy by subtracting the timestamps from both captures of the same stream in each peer, to obtain a good result in this procedure we might have to reduce the internal clock drift of both peers by using systems such as Network Time Protocol daemon (NTPd) \nomenclature{NTPd}{Network Time Protocol daemon}.
-
- \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/delay_116_646227.pdf}
-      \caption[Delay calculated on the same stream captured using ConMon in both ends over WiFi]{Delay calculated on the same stream captured using ConMon in both ends over WiFi.}
-	\label{fig:delay_116_646227}
-\end{figure}
-
-Figure~\ref{fig:delay_116_646227} represents the delay of the stream plotted in~\ref{fig:onetooneWifistatsconmon}. We can see that the quality of the call is affected by the network distortion at Figure~\ref{fig:onetooneWifistatsconmon}, this variation of the rate delivers a high delay of more than 4 seconds during some periods of the call and an average of approximately 1 second globally, the media received in those periods will not render correctly and the user experience of the call is going to be worst than at the beginning of the call.
-
-WebRTC haven't performed as expected on this scenario providing big delays and low quality media when the status of the link is not optimal.
+\subsection{Network Performance Evaluation}
 
 \subsection{Point-to-point}
 
@@ -863,6 +742,130 @@ For environments such as mesh, the usage of MCU should be considered as a good a
 %\subsection{CPU performance}
 %
 %After running all the tests we can see that WebRTC is facing a big problem when it comes to CPU and memory consumption. Averaged computers could have problems when handling multiple peer connections in WebRTC, we have also tested the CPU usage in all those different scenarios. 
+
+\subsection{Wireless scenario}
+
+To check the performance of WebRTC in a wireless scenario we have stablished a simple call between two peers that handle video and audio in an open WiFi network. This network does not carry any UDP packet filter or Firewall, the connection is performed without the need of STUN or TURN, we could easily say it is a straight forward host peer-to-peer connection. The aim of this test is to observe how the captures differ between origin and receiver between {\it StatsAPI} and {\it ConMon}.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/onetoone_wifi_statsconmon.pdf}
+      \caption[Point-to-point video stream plot using StatsAPI and ConMon data over WiFi]{Point-to-point video stream plot using StatsAPI and ConMon data over WiFi.}
+	\label{fig:onetooneWifistatsconmon}
+\end{figure}
+
+Figure~\ref{fig:onetooneWifistatsconmon} represents the throughput rate on the same video stream, the three lines are the comparison between local video stream on the source, remote video stream at the receiver and {\it ConMon} capture of the remote video stream at the receiver. The same stream has been measured from three different perspectives, this will help us to understand the difference of rate that the overhead of the RTP is consuming and the disruption caused by the WiFi network.
+
+Notice that red and black colors represent the Local Video (LV) and Remote Video (RV) from with same SSRC captured using {\it Stats API}, the grey line illustrates the capture performed using {\it ConMon} of the same stream. It is easy to observe that both {\it StatsAPI} captures are similar, some offset is given due to the processing time between the network layer and the browser API that returns all values. Besides this, the capture is smooth and the outgoing and incoming rate of the origin client and input of the receiver are similar. Capture in the network layer using {\it ConMon} is more abrupt as all packets are captured over the WiFi and the period used when plotting affects the moment when value is stored, when having two peaks with opposite they should balance each other, meaning that the transmission in most of the period is stable and the peaks when plotting are a result of post-processing accuracy. Call duration in this test has been around five minutes. Some areas, mostly between 13.15.30 and 13.16.00, show a strange oscillation of the rate that could be produced by the WiFi, this throughput distortion is balanced on the WebRTC layer as the rate delivered to the API does not change.
+
+When we try to measure the quality of the call, one important indicator is the delay of the stream, to calculate the delay we can either use the RTT measured by our {\it Stats API} or the captures performed on the network layer by {\it ConMon}. The {\it ConMon} procedure will give us higher accuracy by subtracting the timestamps from both captures of the same stream in each peer, to obtain a good result in this procedure we might have to reduce the internal clock drift of both peers by using systems such as Network Time Protocol daemon (NTPd) \nomenclature{NTPd}{Network Time Protocol daemon}.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/delay_116_646227.pdf}
+      \caption[Delay calculated on the same stream captured using ConMon in both ends over WiFi]{Delay calculated on the same stream captured using ConMon in both ends over WiFi.}
+	\label{fig:delay_116_646227}
+\end{figure}
+
+Figure~\ref{fig:delay_116_646227} represents the delay of the stream plotted in~\ref{fig:onetooneWifistatsconmon}. We can see that the quality of the call is affected by the network distortion at Figure~\ref{fig:onetooneWifistatsconmon}, this variation of the rate delivers a high delay of more than 4 seconds during some periods of the call and an average of approximately 1 second globally, the media received in those periods will not render correctly and the user experience of the call is going to be worst than at the beginning of the call.
+
+WebRTC haven't performed as expected on this scenario providing big delays and low quality media when the status of the link is not optimal.
+
+\subsection{Interoperability}
+
+One of the main goals of WebRTC is that it should be interoperable between different browser vendors. In this chapter, we will analyze if it is possible for all browsers to be interoperable.
+
+Actually, three different browsers carry native implementations for WebRTC: Google Chrome, Mozilla Firefox and Opera. Of those, two of them include the {\it GetUserMedia} and {\it PeerConnection} APIs: Mozilla Firefox and Google Chrome, they should be interoperable between them. Google Chrome has included WebRTC {\it PeerConnection} API for long time, but Mozilla Firefox came up with the {\it PeerConnection} API much later~\cite{chromefirefoxinterop}. Making both browsers compatible required work from the vendors, because the SDP messages provided by them are different but rely on the IETF standard. Both engines should be able to understand those signaling messages and respond with the adequate SDP negotiation.
+
+However, there are some differences in the SDP signaling messages, in the Firefox implementation, the implementation provides the STUN/TURN candidates bundled on the message meanwhile the API from Chrome provides the candidates separately by default, at the same time, the signaling messages from Chrome include some extra information about the streams that is not given in the Firefox version~\cite{interopnotes}.
+
+Furthermore, both browsers must implement cross-compatible codecs to send the stream and be able to handle the proper incoming RTP packets. Even though, most compatibility issues are solved, there are still some ongoing problems with the actual JavaScript method calls in both browsers~\cite{interopnotes}.
+
+One of the goals when checking the interoperability of the browsers, is to evaluate the enabled congestion mechanisms already implemented in both APIs. They should be able to manage the different environments in the same way as they rely on top of the same standards. At the time of this document, not all congestion control mechanisms are included in Mozilla Firefox.
+
+For this test we have executed a point-to-point call between a Firefox and Chrome in different machines. We are more interested in seeing the behavior of the call rate and other metrics between the peers than the possible overall averaged result.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/firefoxvschrome1.pdf}
+      \caption[Remote stream rate for a point-to-point call between Mozilla Firefox and Google Chrome]{Remote stream rate for a point-to-point call between Mozilla Firefox and Google Chrome.}
+	\label{fig:firefoxvschrome1}
+\end{figure}
+
+Figure~\ref{fig:firefoxvschrome1} illustrates the rate given by the streams of both vendors captured at each receiver. We can observe that congestion mechanism is not triggered for the Firefox stream when some congestion occur on the path, Chrome applies some rate adaptation meanwhile Firefox maintains the same stream rate over the link.
+
+%Considering that we haven't applied any constraint on the link for this scenario, we could consider this as a misunderstanding between both %transport layers, the delay over the path is barely inexistent and there is no packet loss on the reported metrics.
+
+We should consider that WebRTC should RTCP message with Receiver Estimated Maximum Bitrate (REMB) \nomenclature{REMB}{Receiver Estimated Maximum Bitrate} for rate adaptation~\cite{alvestrandCongestion2012}~\cite{alvestrandCongestionREMB}. This mechanism provides an extra field in the WebRTC RTCP messages with the estimated total available bandwidth for the session. 
+
+%Considering that Firefox has not fully implemented it's congestion mechanism, this mechanism would fail to establish an available rate for both %ends giving this type of unstable output for Chrome which expects this parameter to be available.
+
+%\begin{figure}[h]
+%  \centering
+%    \includegraphics[scale=0.7]{./figures/rtcpchrome.png}
+%      \caption[RTCP packet content sent by a Google Chrome WebRTC call]{RTCP packet content sent by a Google Chrome WebRTC call.}
+%	\label{fig:rtcpchrometochrome}
+%\end{figure}
+
+To check the behavior of the RTCP feedback mechanism in WebRTC, we have captured different samples using a network sniffer. However, it is important to advise that some of the congestion mechanisms are still in ongoing discussion in the working groups and have not reached full consensus.
+
+Firstly, we obtained a capture from a call between two Chrome browsers, after analyzing the data, we can observe that both peers where exchanging {\it Sender Reports} control packets. In WebRTC, the RTT measurement of the RTCP packets is made by using the same RTP media flow timing, this avoids the usage of {\it Receiver Reports} in most point-to-point or single {\it PeerConnection} topologies. WebRTC multiplexes the RTP and RTCP packets in the same port to avoid extra usage of network resources~\cite{rtpusageIETF}.
+
+Those messages carry important data required by the WebRTC internals to build the {\it Stats API}. The following fields (\ref{lst:rtcpchrometochrome}) are extracted from a RTCP packet sent by a Google Chrome browser in our test. We can see that most of the metrics are available in the packet, other required metrics which are not fully standardized as REMB are not able to be decoded by our packet sniffer~\cite{rtpusageIETF}.
+
+\lstset{language=sh}
+\begin{lstlisting}[caption={RTCP message exchange between Chrome and Firefox},label={lst:rtcpchrometochrome}]
+Real-time Transport Control Protocol (Sender Report)
+    10.. .... = Version: RFC 1889 Version (2)
+    ..0. .... = Padding: False
+    ...0 0001 = Reception report count: 1
+    Packet type: Sender Report (200)
+    Length: 12 (52 bytes)
+    Sender SSRC: 0xdf1a474d (3743041357)
+    Timestamp, MSW: 3026830625 (0xb469c521)
+    Timestamp, LSW: 653452974 (0x26f2e6ae)
+    [MSW and LSW as NTP timestamp: Dec  1, 1995 18:17:05.152143000 UTC]
+    RTP timestamp: 973093429
+    Sender's packet count: 4236773172
+    Sender's octet count: 3803919253
+    Source 1
+        Identifier: 0x9046a1ac (2420548012)
+        SSRC contents
+            Fraction lost: 102 / 256
+            Cumulative number of packets lost: 4832630
+        Extended highest sequence number received: 1896484047
+            Sequence number cycles count: 28938
+            Highest sequence number received: 3279
+        Interarrival jitter: 1420789294
+        Last SR timestamp: 2622976836 (0x9c577344)
+        Delay since last SR timestamp: 2032955356 (31020436 milliseconds)
+
+Real-time Transport Control Protocol (Receiver Report)
+    10.. .... = Version: RFC 1889 Version (2)
+    ..0. .... = Padding: False
+    ...0 0001 = Reception report count: 1
+    Packet type: Receiver Report (201)
+    Length: 7 (32 bytes)
+    Sender SSRC: 0xf46245fb (4100081147)
+    Source 1
+        Identifier: 0x7f3343fb (2134066171)
+        SSRC contents
+            Fraction lost: 217 / 256
+            Cumulative number of packets lost: 3472040
+        Extended highest sequence number received: 4229724701
+            Sequence number cycles count: 64540
+            Highest sequence number received: 31261
+        Interarrival jitter: 1181356458
+        Last SR timestamp: 2930563385 (0xaeacd939)
+        Delay since last SR timestamp: 3634988546 (55465523 milliseconds)
+\end{lstlisting}
+
+Furthermore, some other features are required to be answered by the WebRTC RTCP engine, but might not be asked by the {\it PeerConnection} if they are not necessary or implemented in one of the peers. This is why features such as REMB may still not provided the RTCP {\it Sender Report}, if this field is not available, the congestion mechanism of Chrome calculates the estimated rate by using the mechanisms provided in the RMCAT Internet-Draft~\cite{alvestrandCongestion2012}, those mechanisms use the information extracted from the RTCP report (\ref{lst:rtcpchrometochrome}). 
+
+During the capture with different vendors we have observed a different behavior in the RTCP mechanisms between Chrome and Firefox. Meanwhile Chrome continuously provide the {\it Sender Report} metrics in the RTP/RTCP channel, Firefox is only reporting {\it Receiver Reports} back to the source, this message exchange procedure is seen in the previous description(\ref{lst:rtcpchrometochrome}). No metrics from the outgoing stream of Firefox are being sent to Chrome, this forces Chrome not to provide any feedback control messages to Firefox that would trigger congestion control mechanisms. This behavior may affect the rate adaptation mechanisms in Firefox which could lead to an output similar to Figure~\ref{fig:firefoxvschrome1}.
+
+We can state that congestion mechanisms on Firefox are still not available and this reject any rate adaptation in Firefox, in conclusion, using Firefox in multiple scenarios would lead to unexpected rate response and poor call quality. Apart from the congestion control mechanisms, Firefox and Chrome APIs are fully interoperable to perform calls even though some features, such as statistics, are still not available. 
+
 
 \subsection{Summary of results}
 
