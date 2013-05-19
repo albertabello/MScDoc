@@ -40,6 +40,8 @@
 \usepackage{amssymb,amsmath}
 \usepackage{url}
 \usepackage{lastpage}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \title{Performance analysis of topologies for Web-based Real-Time Communication}
 
@@ -47,7 +49,7 @@
 \institute[COMNET]{Supervisor: J\"{o}rg Ott\\Instructor: Varun Singh\\Communication and Networking Department\\
 Aalto University, School of Science and Technology\\albert.abello.lozano@aalto.fi}
 
-\aaltofootertext{Performance analysis of topologies for Web-based Real-Time Communication (WebRTC)}{May 22, 2013}{\arabic{page}/\pageref{LastPage}\ }
+\aaltofootertext{Performance analysis of topologies for WebRTC}{May 22, 2013}{\arabic{page}/\pageref{LastPage}\ }
 
 \date{Espoo , May 22, 2013}
 
@@ -61,7 +63,6 @@ Aalto University, School of Science and Technology\\albert.abello.lozano@aalto.f
 
 \begin{frame}{Outline}
 \begin{itemize}
-\item Introduction
 \item Background
 \item WebRTC
 \item Topologies
@@ -74,23 +75,23 @@ Aalto University, School of Science and Technology\\albert.abello.lozano@aalto.f
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Introduction}
-
-\begin{itemize}
-\item Need of connectivity between people
-\item Real-time communication is in our daily life
-\item Complex interactive web applications are everywhere 
-\item Developers need a way to handle real-time cross-interoperable apps in the web
-\end{itemize}
-
-%\begin{block}
-%\alert{WebRTC}
-%\end{block}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=5cm]{customLogo}
-\end{figure}
-\end{frame}
+%\begin{frame}{Introduction}
+%
+%\begin{itemize}
+%\item Need of connectivity between people
+%\item Real-time communication is in our daily life
+%\item Complex interactive web applications are everywhere 
+%\item Developers need a way to handle real-time cross-interoperable apps in the web
+%\end{itemize}
+%
+%%\begin{block}
+%%\alert{WebRTC}
+%%\end{block}
+%\begin{figure}[h]
+%  \centering
+%  \includegraphics[width=5cm]{customLogo}
+%\end{figure}
+%\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -108,23 +109,39 @@ Aalto University, School of Science and Technology\\albert.abello.lozano@aalto.f
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{frame}{Support}
-\includegraphics[width=3cm]{Google-eps-converted-to.pdf}\hspace{10pt}
-\includegraphics[width=3cm]{Opera-eps-converted-to.pdf}\hspace{10pt}
-\includegraphics[width=3cm]{Mozilla_Firefox-eps-converted-to.pdf}\\[0.2cm]
-\includegraphics[trim=0cm 5cm 0cm 0cm, clip=true, width=3cm]{cisco-logo-eps-converted-to.pdf}\hspace{10pt}
-\includegraphics[width=3cm]{Internet_Explorer_4-eps-converted-to.pdf}\hspace{10pt}
-\includegraphics[trim=9cm 9cm 9cm 9cm, clip=true,width=3cm]{ericsson_logo-eps-converted-to.pdf}\\[0.2cm]
 
+Browser vendors that are actively supporting WebRTC:
+\begin{itemize}
+\item Google
+\item Mozilla Foundation
+\item Opera
+\item Microsoft (separate spec)
+\end{itemize}
+Equipment and service providers involved:
+\begin{itemize}
+\item Ericsson
+\item Cisco
+\end{itemize}
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}{Support}
+%\includegraphics[width=3cm]{Google-eps-converted-to.pdf}\hspace{10pt}
+%\includegraphics[width=3cm]{Opera-eps-converted-to.pdf}\hspace{10pt}
+%\includegraphics[width=3cm]{Mozilla_Firefox-eps-converted-to.pdf}\\[0.2cm]
+%\includegraphics[trim=0cm 5cm 0cm 0cm, clip=true, width=3cm]{cisco-logo-eps-converted-to.pdf}\hspace{10pt}
+%\includegraphics[width=3cm]{Internet_Explorer_4-eps-converted-to.pdf}\hspace{10pt}
+%\includegraphics[trim=9cm 9cm 9cm 9cm, clip=true,width=3cm]{ericsson_logo-eps-converted-to.pdf}\\[0.2cm]
+%
+%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{WebRTC}
 
 \begin{itemize}
 \item Provides real-time peer-to-peer media and data transport using browsers
-\item Plugin-free, mechanisms are integrated on the browsers
+\item {\color{red}Plugin-free}, mechanisms are integrated on the browsers
 \item Interoperable between vendors
 \item Uses JavaScript APIs to enable the features
 \item Federated domain video calls
@@ -146,16 +163,16 @@ Aalto University, School of Science and Technology\\albert.abello.lozano@aalto.f
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{WebRTC network internals}
-\begin{itemize}
-\item RTP and RTCP multiplexed over the same port
-\item SDP for signaling content
-\item SCTP and DTLS for secure data
-\item SRTP for media
-\item STUN, TURN and ICE for NAT reversal
-\item {\color{red}All traffic over UDP}
-\end{itemize}
-\end{frame}
+%\begin{frame}{WebRTC network internals}
+%\begin{itemize}
+%\item RTP and RTCP multiplexed over the same port
+%\item SDP for signaling content
+%\item SCTP and DTLS for secure data
+%\item SRTP for media
+%\item STUN, TURN and ICE for NAT reversal
+%\item {\color{blue}All traffic over UDP}
+%\end{itemize}
+%\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -273,16 +290,324 @@ function gotRemoteStream(e){
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Security in WebRTC}
+%\begin{frame}{Security in WebRTC}
+%
+%JavaScript libraries can provide cross-scripting and trust vulnerabilities
+%\begin{figure}[h]
+%  \centering
+%  \includegraphics[width=1\textwidth]{xss.pdf}
+%\end{figure}
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-JavaScript libraries can provide cross-scripting and trust vulnerabilities
+\begin{frame}{Topologies}
+
+Possible topologies for real-time communication:
+\begin{itemize}
+\item Point-to-Point
+\item One-to-Many
+\item Many-to-Many
+\item MCU
+\item Overlay
+\begin{itemize}
+\item Spoke-hub
+\item Tree
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Point-to-Point}
+
 \begin{figure}[h]
   \centering
-  \includegraphics[width=1\textwidth]{xss.pdf}
+  \includegraphics[width=1\textwidth]{webrtcExample.pdf}
 \end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Topologies}
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{star.pdf}
+                \caption{One-to-Many}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{mesh.pdf}
+                 \caption{Many-to-Many}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{three.pdf}
+                \caption{Tree}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{hubandspoke.pdf}
+                 \caption{Spoke-Hub}
+        \end{subfigure}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Overlay}
+%
+%\begin{figure}[h]
+%        \centering
+%        \begin{subfigure}[b]{0.5\textwidth}
+%                \centering
+%                \includegraphics[width=\textwidth]{three.pdf}
+%                \caption{Tree}
+%        \end{subfigure}%
+%        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+%          %(or a blank line to force the subfigure onto a new line)
+%        \begin{subfigure}[b]{0.5\textwidth}
+%                \centering
+%                \includegraphics[width=\textwidth]{hubandspoke.pdf}
+%                 \caption{Spoke-Hub}
+%        \end{subfigure}
+%\end{figure}
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Performance Metrics}
+
+%\begin{itemize}
+Network:
+\begin{itemize}
+\item Packet loss
+\item Round-Trip Time and One-Way Delay
+\item Throughput
+\item Inter-Arrival Time and Jitter
+\end{itemize}
+
+Host:
+\begin{itemize}
+\item Resources
+\item Setup time
+\item Call failure rate
+\item Encoding and decoding
+\end{itemize}
+
+%\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Tools used}
+%
+%Client:
+%\begin{itemize}
+%\item Google Chrome
+%\item Connection Monitor (ConMon)
+%\item Statistics API (Stats API)
+%\item Fake video device for Chrome
+%\end{itemize}
+%Server:
+%\begin{itemize}
+%\item Restund
+%\item Dummynet
+%\item Application server (Node.js)
+%\end{itemize}
+%
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Evaluation Environment}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{evaluation_arch.pdf}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{ConMon vs StatsAPI}
+\begin{itemize}
+\item Incoming stream
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{p2p_incomming_cable_sample.pdf}
+  %\caption{Incoming stream}
+\end{figure}
+\begin{itemize}
+\item Outgoing stream
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{p2p_outgoing_cable_sample.pdf}
+  %\caption{Outgoing stream}
+\end{figure}
+%\begin{figure}[h]
+%        \centering
+%        \begin{subfigure}[b]{0.5\textwidth}
+%                \centering
+%                \includegraphics[width=\textwidth]{p2p_incomming_cable_sample.pdf}
+%                \caption{Incoming stream}
+%        \end{subfigure}%
+%        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+%          %(or a blank line to force the subfigure onto a new line)
+%        \begin{subfigure}[b]{0.5\textwidth}
+%                \centering
+%                \includegraphics[width=\textwidth]{p2p_outgoing_cable_sample.pdf}
+%                 \caption{Outgoing stream}
+%        \end{subfigure}
+%\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Congestion mechanisms in WebRTC}
+
+\begin{itemize}
+\item UDP has difficulties for rate adaption 
+\item Sender and Receiver RTCP reports used for rate adjustment
+\item Receiver Estimated Maximum Bitrate (REMB) extension for RTCP
+\item Utilizes specific {\color{red}Google algorithm} for rate adaption based on packet loss
+\begin{itemize}
+\item Under 2\% increases rate
+\item 2-10\% reminds unchanged
+\item +10\% adapts rate based on packet loss ratio
+\end{itemize}
+\item Rate limit by the TCP Friendly Rate Control (TFRC) formula
+\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}{Benchmarks}
+
+\begin{itemize}
+\item Evaluation
+\begin{itemize}
+\item Lossy environment
+\item Delayed networks
+\item Loss and delay combination
+\item Varying bandwidth and queue size
+\end{itemize}
+
+\item Real scenarios
+\begin{itemize}
+\item Loaded networks
+\item Parallel calls
+\item Mesh topology
+\item Mobile environments
+\item Interoperability between browsers
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Delayed network}
+
+\begin{itemize}
+\item 100ms
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{100ms_bw.pdf}
+  %\caption{Incoming stream}
+\end{figure}
+\begin{itemize}
+\item 200ms
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{200ms_bw.pdf}
+  %\caption{Outgoing stream}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}{Three parallel calls - topology}
+%
+%\begin{figure}[h]
+%  \centering
+%  \includegraphics[width=1\textwidth]{ParallelCalls.pdf}
+%\end{figure}
+%
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Three parallel calls - rate}
+
+\begin{itemize}
+\item Asynchronous
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{async_three-calls.pdf}
+  %\caption{Incoming stream}
+\end{figure}
+\begin{itemize}
+\item Synchronous
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{sync3_three-calls20130504_195405.pdf}
+  %\caption{Outgoing stream}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Three parallel calls - delay}
+
+\begin{itemize}
+\item Asynchronous
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{async_total_delay_distribution.pdf}
+  %\caption{Incoming stream}
+\end{figure}
+\begin{itemize}
+\item Synchronous
+\end{itemize}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{three_parallel_total_delay_distribution.pdf}
+  %\caption{Outgoing stream}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Interoperability}
+
+This test evaluates the congestion mechanisms between {\it Chrome} and {\it Firefox}. 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{firefoxvschrome1.pdf}
+\end{figure}
+{\it Firefox} is not running any congestion mechanisms to adapt the rate based on the RTCP feedback, thus is only sending Receiver Reports to the sender.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+\item Congestion mechanisms have very bad response in delayed networks
+\item Interoperability cannot be achieved for low latency scenarios until {\it Firefox} enables all congestion mechanisms 
+\item WebRTC has a very bad performance in multiple {\it PeerConnection} scenario regarding CPU managment
+\item Different features should be enabled in the existing APIs (overlay and media track forwarding)
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{}
 
 \centering Thank you!
