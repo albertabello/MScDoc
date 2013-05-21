@@ -189,10 +189,10 @@ Equipment and service providers involved:
 \begin{frame}{WebRTC implementation}
 
 \begin{itemize}
-\item VP8 as de facto video codec
+\item VP8 and H.264 video codec
 \item G711 and Opus as audio codec
-\item H.264 video codec in some browser vendors
-\item Uses {\color{blue} JSEP} for signaling
+%\item H.264 video codec in some browser vendors
+\item {\color{blue} JSEP} is the protocol between the application and the browser
 \end{itemize}
 \alert{Media codecs are still on an ongoing discussion}
 \end{frame}
@@ -466,22 +466,22 @@ Host:
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}{Congestion mechanisms in WebRTC}
-
-\begin{itemize}
-\item UDP has difficulties for rate adaption 
-\item Sender and Receiver RTCP reports used for rate adjustment
-\item Receiver Estimated Maximum Bitrate (REMB) extension for RTCP
-\item Utilizes specific {\color{red}Google algorithm} for rate adaption based on packet loss
-\begin{itemize}
-\item Under 2\% increases rate
-\item 2-10\% reminds unchanged
-\item +10\% adapts rate based on packet loss ratio
-\end{itemize}
-\item Rate limit by the TCP Friendly Rate Control (TFRC) formula
-\end{itemize}
-\end{frame}
+%
+%\begin{frame}{Congestion mechanisms in WebRTC}
+%
+%\begin{itemize}
+%\item UDP has difficulties for rate adaption 
+%\item Sender and Receiver RTCP reports used for rate adjustment
+%\item Receiver Estimated Maximum Bitrate (REMB) extension for RTCP
+%\item Utilizes specific {\color{red}Google algorithm} for rate adaption based on packet loss
+%\begin{itemize}
+%\item Under 2\% increases rate
+%\item 2-10\% reminds unchanged
+%\item +10\% adapts rate based on packet loss ratio
+%\end{itemize}
+%\item Rate limit by the TCP Friendly Rate Control (TFRC) formula
+%\end{itemize}
+%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Benchmarks}
@@ -616,5 +616,30 @@ This test evaluates the congestion mechanisms between {\it Chrome} and {\it Fire
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+\begin{frame}{Simple Feedback Loop}
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{simplefeedback.pdf}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Congestion mechanisms in WebRTC}
+
+\begin{itemize}
+\item UDP has difficulties for rate adaption 
+\item Sender and Receiver RTCP reports used for rate adjustment
+\item Receiver Estimated Maximum Bitrate (REMB) extension for RTCP
+\item Utilizes specific {\color{red}Google algorithm} for rate adaption based on packet loss
+\begin{itemize}
+\item Under 2\% increases rate
+\item 2-10\% reminds unchanged
+\item +10\% adapts rate based on packet loss ratio
+\end{itemize}
+\item Rate limit by the TCP Friendly Rate Control (TFRC) formula
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
