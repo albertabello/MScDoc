@@ -2,101 +2,149 @@
 
 \thispagestyle{empty}
 
-In this chapter we will study how WebRTC performs in different use cases and topologies previously described in chapter~\ref{sec:topologies}. All tests will be done using a real working environment combining the tools mentioned in chapter~\ref{sec:testingEnv}.
+In this chapter we study how WebRTC performs in different network environment using topologies previously described in chapter~\ref{sec:topologies}. All tests are deployed using a real working environment combining the tools mentioned in chapter~\ref{sec:testingEnv}.
 
 \subsection{Network Performance Evaluation}
 
-\subsection{Point-to-point}
+%\subsection{Point-to-point}
 
-In a point-to-point scenario we have performed different tests to calculate how the application performs. 
+We have performed different tests in a point-to-point scenario to study how the WebRTC applications handles different network constraints. 
 
-\subsubsection{Non-constrained link test}
+\subsubsection{Non-constrained link}
 
-After seeing how WebRTC performs in WiFi  we are going to proceed with all tests in a controlled wired scenario adding different constraints to the link. This tests will be automated running ten iterations every time in order to get as much accurate results as possible.
+Firstly, we are going to proceed with a sample test in a non-constrained link to check the capacity of WebRTC in an open scenario.
  
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/no_ipfw.pdf}
-      \caption[Bandwidth results for non-conditioned link]{Bandwidth results for non-conditioned link.}
+      \caption[Rate average and deviation for non-constrained link]{Rate average and deviation for non-constrained link.}
 	\label{fig:no_ipfw}
 \end{figure}
 
-Figure~\ref{fig:no_ipfw} plots the average bandwidth of every call in a wired network without any link condition, the average bandwidth obtained in the test is 1949.7 Kbit/s with 233 Kbit/s of deviation which gives the conclusion of having approximately 1 Mbit/s standard bandwidth in a video stream for a non-conditioned link in WebRTC. Delay result in 5.1 ms with 1.5 ms deviation and RTT about 9.5 ms. Those results can be taken as standard for a non-conditioned WebRTC with high bandwidth resources. A summary of results is shown in Table~\ref{fig:p2p_no_ipfw}. Some interesting results to track is the amount of calls failed in every test, considering all those calls go through a TURN server we might be able to approximate the success rate when establishing calls. All results go along with the deviation being this an important factor, in this test without any link conditioner we might have small deviation values such as milliseconds, but when adding conditions to the link those values will grow carrying less accuracy.
-Setup time is stablished as the time it take since the start of the PeerConnection object until the media stream from the other peer arrives, this value directly affects the time it takes for a user to be able to start talking, in the optimal environment it takes about 1.5 seconds to start the call. We also had zero packet losses and two calls that failed to succeed using TURN in the standard environment.
+Figure~\ref{fig:no_ipfw} represents the average rate of every iteration of the test in a wired network without any link condition, the average rate obtained in the test is 1949.7$\pm233$ Kbit/s, we can conclude that a standard rate for a video call in a non-constrained link using WebRTC is approximately 2 Mbit/s. Furthermore, obtained delay is 5.1$\pm1.5$ ms and RTT is approximately 9.5 ms, those results can be taken as standard for a non-conditioned WebRTC call. 
+
+A summary of results is available in Table~\ref{fig:p2p_no_ipfw}, besides the network performance we are also tracking the call failure rate, considering all those calls go through a TURN server we might be able to approximate the success rate when establishing calls in WebRTC. 
+
+Setup time is evaluated with the time it takes since the creation of the {\it PeerConnection} object until the media stream from the other peer arrives, this value defines the time it takes for the user to start the communication, in an optimal environment it takes approximately 1.5 seconds to start the call. We also had zero packet losses and two calls that failed to succeed using TURN in the standard environment.
 
 \begin{table}[h]
 \begin{center}
-    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
-   	 \toprule
-	\textit{}
-	& \multicolumn{1}{c}{\textit{Machine A}}
-	& \multicolumn{1}{c}{\textit{Machine B}}
-	& \multicolumn{1}{c}{\textit{Overall}}\\
-	\midrule
-	\textbf{CPU (\%)} & 48.76 ,2.76 & 48.83 ,2.78 & 48.79 ,2.77\\
-	\textbf{Memory (\%)} & 35.98 ,0.3 & 36.43 ,0.29 & 36.21 ,0.29\\
-	\textbf{Bandwidth (Kbit/s)} & 1947.61 ,232.75 & 1951.76 ,234.5 & 1949.7 ,233.62\\
-	\textbf{Setup time (ms)} & 1436.33 ,25 & 1447.44 ,22.71 & 1441.88 ,24.04\\
-	\textbf{RTT (ms)} & 9.49 ,2.11 & 9.64 ,2.71 & 9.57 ,2.41\\
-	\textbf{Delay (ms)} & 4.84 ,1.5 & 5.4 ,1.53 & 5.12 ,1.52\\
-	\bottomrule
-    \end{tabular}
-    \caption[P2P test with no link conditions]{P2P test with no link conditions.}
+	\begin{tabular}{| l | c | c | c |}
+	\hline
+    	 & Machine A & Machine B & Overall \\ \hline
+	%\textbf{CPU (\%)} & 48.76$\pm2.76$ & 48.83 ,2.78 & 48.79 ,2.77\\
+	%\textbf{Memory (\%)} & 35.98 ,0.3 & 36.43 ,0.29 & 36.21 ,0.29\\
+	\textbf{Rate (Kbit/s)} & 1947.61$\pm232.75$ & 1951.76$\pm234.5$ & 1949.7$\pm233.62$\\
+	\textbf{RTT (ms)} & 9.49$\pm2.11$ & 9.64$\pm2.71$ & 9.57$\pm2.41$\\
+	\textbf{OWD (ms)} & 4.84$\pm1.5$ & 5.4$\pm1.53$ & 5.12$\pm1.52$\\
+	\textbf{Loss (\%)} & 0.005 & 0.007 & 0.006\\
+	\textbf{Setup time (ms)} & 1436.33$\pm25$ & 1447.44$\pm22.71$ & 1441.88$\pm24.04$\\
+	\hline
+	\end{tabular}
+    \caption[P2P metrics output for WebRTC call with no link restriction]{P2P metrics output for WebRTC call with no link restriction.}
     \label{fig:p2p_no_ipfw}
 \end{center}
 \end{table}
 
-Delay values in Table~\ref{fig:p2p_no_ipfw} are represented as a mean calculation of all the delay obtained in the link, thus this value is not representative of what happened in the call. Considering the example in Figure~\ref{fig:delay_116_646227} we can see that the delay can variate during the call being the mean not appropriate to measure the response against the conditions of the link. In order to observe the behavior of WebRTC in delay we have two different approaches, the mean delay with deviation and delay distribution of all calls. 
+Delay values in Table~\ref{fig:p2p_no_ipfw} are averaged using all the {\it ConMon} data obtained for each stream in all iterations, thus it is an approximate delay value it might not be representative of the exact delay occurred during the call. Considering the example in Figure~\ref{fig:delay_116_646227} we can see that the delay can variate during the call, this means that the averaged OWD may not be the most appropriate metric to measure the time response in all the different link conditions. In order to evaluate the behavior of WebRTC in delay, we have two different approaches, the mean delay with deviation and delay distribution of all calls. 
 
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/total_delay_distribution_no_ipfw.pdf}
-      \caption[Delay distribution in each P2P iterations with no link constraints]{Delay distribution in each P2P iterations with no link constraints.}
+      \caption[Delay distribution for each P2P iterations with no link constraints]{Delay distribution for each P2P iterations with no link constraints.}
 	\label{fig:total_delay_distribution_no_ipfw}
 \end{figure}
 
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/mean_deviation_delay_no_ipfw.pdf}
-      \caption[Bandwidth mean and deviation for delay in each P2P iterations with no link constraints]{Mean and deviation for delay in each P2P iterations with no link constraints.}
+      \caption[Mean and deviation for OWD in each P2P iteration with no link constraints]{Mean and deviation for OWD in each P2P iteration with no link constraints.}
 	\label{fig:mean_deviation_delay_no_ipfw}
 \end{figure}
 
-Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the mean and deviation of delay calculated for all iterations, this delay is calculated on basis with the arrival timestamp for each packet with the captures performed in both sides by {\it ConMon}. We run an NTPD daemon to calculate the drift on the time and sync both machines.  There is small amount of drift of maximum 3ms in the worst case and as small as 1ms in the best one. In Figure~\ref{fig:total_delay_distribution_no_ipfw}, the distribution is given by the amount of packets that have some specific amount of delay, they are counted by batches of 10ms with a maximum range of 300ms. Most of the packets run with less than 25ms delay in all the iterations. The user experience with this small amount of delay with no aggressive steps in the plot will be barely negligible. Figures~\ref{fig:mean_deviation_delay_no_ipfw} and~\ref{fig:total_delay_distribution_no_ipfw} differentiate from Figure~\ref{fig:delay_116_646227} in the measurement of a global delay for an specific constraint scenario instead of just plotting a single call case, many aspects may affect the delay and the an optimal way to observe it is to plot the distribution and deviation of each iteration and try to guess a patron that repeats, Figure~\ref{fig:delay_116_646227} is good to observe just one call if we add some conditions to the link meanwhile the call is going on.
+Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the mean and deviation for the delay calculated in each iteration, this delay is calculated by using the arrival timestamp for each packet with the capture done in both peers with {\it ConMon}. We run a NTPD daemon to adjust the drift on the clock and sync both machines. This Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the delay output in a clearer way than the averaged result between all iterations, the difference in each iteration is small resulting in about 10ms difference between the best and worst case.
 
-\subsubsection{Behavior in lossy environments}
+In Figure~\ref{fig:total_delay_distribution_no_ipfw}, the distribution is given by the amount of packets whose delay is in a certain range of time, they are counted by batches of 10ms with an adaptable maximum range for each scenario. Most of the packets run with less than 25ms delay in all the iterations for the non-constrained test. The user experience with this small amount of delay that do not vary on time is barely negligible. Figures~\ref{fig:mean_deviation_delay_no_ipfw} and~\ref{fig:total_delay_distribution_no_ipfw} try to evaluate the delay response for a specific scenario, this can be difficult as the real time response changes in all iterations depending on the actual of the link, we use the delay distribution and OWD mean to evaluate the delay response.
 
-We have performed some tests regarding lossy environments to see how WebRTC behaves in those, lossy situations can be given with some mobile environments with low coverage or just by having a busy link with no resources available.
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/delay_2_116_111e8a13-delay_old.pdf}
+      \caption[OWD response during the call for one video stream for a non-constrained link call]{OWD response during the call for one video stream for a non-constrained link call.}
+	\label{fig:delay_stream_no_constraints}
+\end{figure}
 
-We have tested the topology with 1, 5, 10 and 20\% of packet loss, according to the results in Table~\ref{fig:p2p_packet_bw} we are seeing a pretty good response from the internal algorithm up to 5\% with small effect to the bandwidth and delay. When running with 10\% loss the bandwidth drops to an average of 1140.8 Kbit/s and 162 Kbit/s deviation which is half of the corresponding amount for an standard call, this affects the quality of the link and video, 20\% loss will affect to the performance dropping the bandwidth to an average of 314.4 Kbit/s with 62 Kbit/s deviation. We can say that the video quality will be worst with lossy networks but the delay is not affected, having a delay distribution response that matches the standard case without affecting the way users will talk, quality will be worst but the call will be correct in terms of usage. All metrics are in the normal range except bandwidth.
+However, with the captures performed in {\it ConMon} and {\it Stats API} we cal also study one specific stream delay response if we need more information regarding an specific iteration. Figure~\ref{fig:delay_stream_no_constraints} represents the OWD response along the call of one specific video stream, is easy to see that there is some small variations that may affect the call but the global average is quite stable.
 
-The algorithm used in WebRTC regarding to packet loss is proven to work fine in lossy environments with the results obtained, but there is a big gap of performance in the 10\% loss network compared to the results with 20\%, it is obviously a big amount of packets but the response with 20\% is significantly better than the one with 10\%.
+\subsubsection{Lossy environments}
 
+This chapter evaluates the response of WebRTC calls in lossy environments, those situations can be easily reproduced in mobile environments with low coverage or when having packet drops in any link due to high congestion. Discarding packets in the peers for large delay also produces losses that can affect the call.
+
+Losses in WebRTC directly affect the quality of the media that is sent over the path, when having heavy loss artifacts appear on the video and the user experience degrades exponentially. Google Chrome uses VP8 as de facto video codec, this codec is specifically designed to gracefully degrade the video quality to adapt it to the link conditions, by doing this the video aspect should not influence directly in the user experience.
+
+We have tested the point-to-point topology with 1, 5, 10 and 20\% of packet loss, according to the results in Table~\ref{fig:p2p_packet_bw}, we can see a pretty good response in rate adaptation using the internal Google algorithm, rate adaptation response matches the expected output designed in the draft~\cite{alvestrandCongestion2012} in most cases. 
+
+%The delay response is within the normal results, compared with the Table~\ref{fig:p2p_no_ipfw}, we obtain a similar delay with a little more deviation. Figure represents the averaged delay for 
+%
+%
+%When running with 10\% loss the bandwidth drops to an average of 1140.8 Kbit/s and 162 Kbit/s deviation which is half of the corresponding amount for an standard call, this affects the quality of the link and video, 20\% loss will affect to the performance dropping the bandwidth to an average of 314.4 Kbit/s with 62 Kbit/s deviation. We can say that the video quality will be worst with lossy networks but the delay is not affected, having a delay distribution response that matches the standard case without affecting the way users will talk, quality will be worst but the call will be correct in terms of usage. All metrics are in the normal range except bandwidth.
+%
+%The algorithm used in WebRTC regarding to packet loss is proven to work fine in lossy environments with the results obtained, but there is a big gap of performance in the 10\% loss network compared to the results with 20\%, it is obviously a big amount of packets but the response with 20\% is significantly better than the one with 10\%.
+
+%Table for all tests
 \begin{table}[h]
 \begin{center}
-    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
-   	 \toprule
-	\textit{}
-	& \multicolumn{1}{c}{\textit{Machine A}}
-	& \multicolumn{1}{c}{\textit{Machine B}}
-	& \multicolumn{1}{c}{\textit{Overall}}\\
-	\midrule
-	\textbf{1\% (Kbit/s)} & 1913.59 ,252.11 & 1880.24 ,261.46 & 1896.91 ,256.78\\
-	\textbf{5\% (Kbit/s)} & 1609.65 ,158.46 & 1527.84 ,198.59 & 1568.74  ,178.52\\
-	\textbf{10\% (Kbit/s)} & 1166.70 ,145.96 & 1114.94 ,177.88 & 1140.82 ,161.92\\
-	\textbf{20\% (Kbit/s)} & 333.34 ,65.99 & 295.46 ,57.98 & 314.4 ,61.98\\
-	\bottomrule
-    \end{tabular}
-    \caption[Averaged bandwidth with different packet loss conditions]{Averaged bandwidth with different packet loss conditions.}
-    \label{fig:p2p_packet_bw}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+Constraints & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{3}{*}{1\%} & Rate (Kbit/s) & 1913.59$\pm252.11$ & 1880.24$\pm261.46$ & 1986.91$\pm256.78$\\ \cline{2-5}
+ & OWD (ms) & 4.08$\pm1.79$ & 4.03$\pm1.93$ & 4.06$\pm1.86$ \\ \cline{2-5}
+ & Loss (\%) & 2.04 & 1.96 & 2 \\ \hline
+\multirow{3}{*}{5\%} & Rate (Kbit/s) & 1609.65$\pm158.46$ & 1527.74$\pm178.52$ & 1568.74$\pm178.52$\\ \cline{2-5}
+ & OWD (ms) & 3.72$\pm1.82$ & 3.26$\pm1.76$ & 3.49$\pm1.79$ \\ \cline{2-5}
+ & Loss (\%) & 9.72 & 9.82 & 9.77 \\ \hline
+\multirow{3}{*}{10\%} & Rate (Kbit/s) & 1166.7$\pm145.96$ & 1114.94$\pm177.88$ & 1140.82$\pm161.92$\\ \cline{2-5}
+ & OWD (ms) & 3.17$\pm3.8$ & 3.12$\pm2.67$ & 3.14$\pm3.24$ \\ \cline{2-5}
+ & Loss (\%) & 18.98 & 19.05 & 19.02 \\ \hline
+\multirow{3}{*}{20\%} & Rate (Kbit/s) & 333.34$\pm65.99$ & 295.46$\pm57.98$ & 314.4$\pm61.98$\\ \cline{2-5}
+ & OWD (ms) & 2.65$\pm4$ & 2.78$\pm4.06$ & 2.71$\pm4.03$ \\ \cline{2-5}
+ & Loss (\%) & 36.08 & 35.95 & 36.01 \\ \hline
+\end{tabular}
+\caption[Rate, OWD and loss averaged results for different packet loss constraints on the link]{Rate, OWD and loss averaged results for different packet loss constraints on the link.}
+\label{fig:p2p_packet_bw}
 \end{center}
 \end{table}
 
-The amount of packets lost in every test is slightly lower than the exact percentage of loss because the use of Forward Error Correction in WebRTC in Chrome, this mechanism is used to control errors in data connection with noisy channels that led to packet losses. FEC is not a must feature to implement in WebRTC but Chrome carries it as default.
+%\begin{table}[h]
+%\begin{center}
+%    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+%   	 \toprule
+%	\textit{}
+%	& \multicolumn{1}{c}{\textit{Machine A}}
+%	& \multicolumn{1}{c}{\textit{Machine B}}
+%	& \multicolumn{1}{c}{\textit{Overall}}\\
+%	\midrule
+%	\textbf{1\% (Kbit/s)} & 1913.59 ,252.11 & 1880.24 ,261.46 & 1896.91 ,256.78\\
+%	\textbf{5\% (Kbit/s)} & 1609.65 ,158.46 & 1527.84 ,198.59 & 1568.74  ,178.52\\
+%	\textbf{10\% (Kbit/s)} & 1166.70 ,145.96 & 1114.94 ,177.88 & 1140.82 ,161.92\\
+%	\textbf{20\% (Kbit/s)} & 333.34 ,65.99 & 295.46 ,57.98 & 314.4 ,61.98\\
+%	\bottomrule
+%    \end{tabular}
+%    \caption[Averaged bandwidth with different packet loss conditions]{Averaged bandwidth with different packet loss conditions.}
+%    \label{fig:p2p_packet_bw}
+%\end{center}
+%\end{table}
 
-When using FEC the sender encodes the message in a redundant way, by having this redundancy the receiver is able to detect a limited number of errors and autocorrect those errors without requiring retransmission.
+Looking at Table~\ref{fig:p2p_packet_bw} we can see that the packet loss in the transport layer, where {\it ConMon} is capturing the RTP packets, is higher than the configured in {\it Dummynet}. This happens due to the probabilistic model of {\it Dummynet} for packet drop, this mechanism is totally random being not a good approach to reality in some cases and could led to unexpected behavior~\cite{dummynetRevisited}. However in wired environments, packet drops are usually due to queue overﬂows, queue management schemes, or routing problems. Radio links add noise and interference as other potential causes of drops.  Those circumstances are not easily reproducible in testing environments.
 
-On the other side, the sender calculates its rate based on the receive report that arrives from the receiver, if this report is not received within two times the maximum interval WebRTC congestion mechanism will consider that all packets during that period have been lost halving the rate in the sender. In order to improve response in lossy environments we could consider calculating the optimal value for this interval considering all the possible situations. Considering the congestion algorithm in WebRTC~\cite{alvestrandCongestion2012}, the rate should not vary when having between 2-10\% of packet losses. Table~\ref{fig:p2p_packet_bw} proves that this mechanism is not working properly as we are noticing reduction of rate with 5\% of packet losses, the mechanism should start modifying the rate above 10\% of packet lost calculating a new sender available bandwidth (A$_{\textrm{s}}$) using Equation~\ref{eq:RateCalc} being {\it p} the packet loss ratio.
+The amount of packets lost in the upper WebRTC browser layer is slightly lower than the expected percentage of loss thank to Forward Error Correction (FEC) \nomenclature{FEC}{Forward Error Correction} in WebRTC congestion mechanism on Chrome, this technique is used to control errors in data connection with noisy channels that led to packet losses. FEC is not a must feature to implement in WebRTC but Chrome carries it as default.
+
+When using FEC, the sender encodes the message in a redundant way, by having this redundancy the receiver is able to detect a limited number of errors and autocorrect those errors without requiring retransmission. 
+
+On the other side, the sender calculates its rate based on the receive report that arrives from the receiver, if this report is not received within two times the maximum interval WebRTC congestion mechanism will consider that all packets during that period have been lost halving the rate in the sender. 
+
+%In order to improve response in lossy environments, we could consider calculating the optimal value for this interval in all the possible situations. 
+
+Considering the congestion algorithm in WebRTC~\cite{alvestrandCongestion2012}, the rate should not vary when having between 2-10\% of packet losses. Table~\ref{fig:p2p_packet_bw} proves that this mechanism is not working properly in some scenarios as we are noticing reduction of rate with the 10\%  barrier of packet losses, the mechanism should start modifying the rate above 10\% of packet lost calculating a new sender available bandwidth (A$_{\textrm{s}}$) using Equation~\ref{eq:RateCalc} being {\it p} the packet loss ratio. This 10\% value indicates the borderline where the mechanism starts working but it cannot be triggered in an accurate way.
 
 \begin{equation}
 	A_s ( i ) = A_s ( i - 1 ) \times (1 - \frac{p}{2}) 
@@ -110,7 +158,9 @@ If the packet loss is less than 2\% the increase of bandwidth will be given by E
 	\label{eq:RateCalc2}
 \end{equation}
 
-\subsubsection{Delayed networks}
+We can conclude saying that the mechanism does work in most cases but should be improved to better adapt the borderline of the 10\%. It is also important to mention that the rate adaption is also limited by the TCP Friendly Rate Control (TFRC) \nomenclature{TFRC}{TCP Friendly Rate Control} mechanism that sets a maximum level for the rate considering more metrics than only packet loss~\cite{tfrc}. TFRC is triggered when the internal Google algorithm is not capable to properly adapt the rate.
+
+\subsubsection{Delay varying networks}
 
 Another interesting situation that are given in mobile environments and queued networks is delay, we have also tested the performance of WebRTC in those conditions. We have benchmarked tests in different one-way delays, 50, 100, 200 and 500ms. In our case, the RTT results should be multiplied by two.
 
