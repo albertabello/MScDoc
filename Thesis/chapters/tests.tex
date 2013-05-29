@@ -34,10 +34,11 @@ Setup time is evaluated with the time it takes since the creation of the {\it Pe
     	 & Machine A & Machine B & Overall \\ \hline
 	%\textbf{CPU (\%)} & 48.76$\pm2.76$ & 48.83 ,2.78 & 48.79 ,2.77\\
 	%\textbf{Memory (\%)} & 35.98 ,0.3 & 36.43 ,0.29 & 36.21 ,0.29\\
-	\textbf{Rate (Kbit/s)} & 1947.61$\pm232.75$ & 1951.76$\pm234.5$ & 1949.7$\pm233.62$\\
-	\textbf{RTT (ms)} & 9.49$\pm2.11$ & 9.64$\pm2.71$ & 9.57$\pm2.41$\\
-	\textbf{OWD (ms)} & 4.84$\pm1.5$ & 5.4$\pm1.53$ & 5.12$\pm1.52$\\
-	\textbf{Loss (\%)} & 0.005 & 0.007 & 0.006\\
+	\textbf{Rate (Kbit/s)} & 1947.61$\pm232.75$ & 1951.76$\pm234.5$ & 1949.7$\pm233.62$\\\hline
+	\textbf{RTT (ms)} & 9.49$\pm2.11$ & 9.64$\pm2.71$ & 9.57$\pm2.41$\\\hline
+	\textbf{OWD (ms)} & 4.84$\pm1.5$ & 5.4$\pm1.53$ & 5.12$\pm1.52$\\\hline
+	\textbf{Residual Loss (\%)} & 0.012 & 0.01 & 0.011\\\hline
+	\textbf{Packet Loss (\%)} & 0.012 & 0.01 & 0.011\\\hline
 	\textbf{Setup time (ms)} & 1436.33$\pm25$ & 1447.44$\pm22.71$ & 1441.88$\pm24.04$\\
 	\hline
 	\end{tabular}
@@ -83,6 +84,8 @@ Losses in WebRTC directly affect the quality of the media that is sent over the 
 
 We have tested the point-to-point topology with 1, 5, 10 and 20\% of packet loss, according to the results in Table~\ref{fig:p2p_packet_bw}, we can see a pretty good response in rate adaptation using the internal Google algorithm, rate adaptation response matches the expected output designed in the draft~\cite{alvestrandCongestion2012} in most cases. 
 
+In the output Table~\ref{fig:p2p_packet_bw} there are two different packet loss rate, the {\it Packet Loss} indicates the packet loss along the link, meanwhile {\it Residual Loss} refers to the losses after the error correction performed by RTP. When having losses in a RTP transfer, the system may ask for a retransmission of the lost packet in some occasions, if the delay is small it can be possible to forward them in real time, this metric is then referenced as {\it Residual Loss}. Those type of losses will be the ones affecting directly the data received on the peer so a low value will barely affect the quality of the call~\cite{residualLoss}. 
+
 %The delay response is within the normal results, compared with the Table~\ref{fig:p2p_no_ipfw}, we obtain a similar delay with a little more deviation. Figure represents the averaged delay for 
 %
 %
@@ -95,19 +98,23 @@ We have tested the point-to-point topology with 1, 5, 10 and 20\% of packet loss
 \begin{center}
 \begin{tabular}{ |c|c|c|c|c| }
 \hline
-Constraints & Metrics & Machine A & Machine B & Overall\\ \hline
-\multirow{3}{*}{1\%} & Rate (Kbit/s) & 1913.59$\pm252.11$ & 1880.24$\pm261.46$ & 1986.91$\pm256.78$\\ \cline{2-5}
- & OWD (ms) & 4.08$\pm1.79$ & 4.03$\pm1.93$ & 4.06$\pm1.86$ \\ \cline{2-5}
- & Loss (\%) & 2.04 & 1.96 & 2 \\ \hline
-\multirow{3}{*}{5\%} & Rate (Kbit/s) & 1609.65$\pm158.46$ & 1527.74$\pm178.52$ & 1568.74$\pm178.52$\\ \cline{2-5}
- & OWD (ms) & 3.72$\pm1.82$ & 3.26$\pm1.76$ & 3.49$\pm1.79$ \\ \cline{2-5}
- & Loss (\%) & 9.72 & 9.82 & 9.77 \\ \hline
-\multirow{3}{*}{10\%} & Rate (Kbit/s) & 1166.7$\pm145.96$ & 1114.94$\pm177.88$ & 1140.82$\pm161.92$\\ \cline{2-5}
- & OWD (ms) & 3.17$\pm3.8$ & 3.12$\pm2.67$ & 3.14$\pm3.24$ \\ \cline{2-5}
- & Loss (\%) & 18.98 & 19.05 & 19.02 \\ \hline
-\multirow{3}{*}{20\%} & Rate (Kbit/s) & 333.34$\pm65.99$ & 295.46$\pm57.98$ & 314.4$\pm61.98$\\ \cline{2-5}
- & OWD (ms) & 2.65$\pm4$ & 2.78$\pm4.06$ & 2.71$\pm4.03$ \\ \cline{2-5}
- & Loss (\%) & 36.08 & 35.95 & 36.01 \\ \hline
+ & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{4}{*}{1\%} & \textbf{Rate (Kbit/s)} & 1913.59$\pm252.11$ & 1880.24$\pm261.46$ & 1986.91$\pm256.78$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 4.08$\pm1.79$ & 4.03$\pm1.93$ & 4.06$\pm1.86$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.13 & 0.05 & 0.09 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 2.04 & 1.96 & 2 \\ \hline
+\multirow{4}{*}{5\%} & \textbf{Rate (Kbit/s)} & 1609.65$\pm158.46$ & 1527.74$\pm178.52$ & 1568.74$\pm178.52$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 3.72$\pm1.82$ & 3.26$\pm1.76$ & 3.49$\pm1.79$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.2 & 0.27 & 0.23 \\ \cline{2-5}
+ & \textbf{Loss (\%)} & 9.72 & 9.82 & 9.77 \\ \hline
+\multirow{4}{*}{10\%} & \textbf{Rate (Kbit/s)} & 1166.7$\pm145.96$ & 1114.94$\pm177.88$ & 1140.82$\pm161.92$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 3.17$\pm3.8$ & 3.12$\pm2.67$ & 3.14$\pm3.24$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.58 & 0.41 & 0.49 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 18.98 & 19.05 & 19.02 \\ \hline
+\multirow{4}{*}{20\%} & \textbf{Rate (Kbit/s)} & 333.34$\pm65.99$ & 295.46$\pm57.98$ & 314.4$\pm61.98$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 2.65$\pm4$ & 2.78$\pm4.06$ & 2.71$\pm4.03$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 2.69 & 2.17 & 2.43 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 36.08 & 35.95 & 36.01 \\ \hline
 \end{tabular}
 \caption[Rate, OWD and loss averaged results for different packet loss constraints on the link]{Rate, OWD and loss averaged results for different packet loss constraints on the link.}
 \label{fig:p2p_packet_bw}
