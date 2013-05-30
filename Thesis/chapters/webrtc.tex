@@ -4,9 +4,9 @@
 %% Leave first page empty
 \thispagestyle{empty}
 
-Real-time Communication can be defined as any method of communication where users can exchange information and media with low latency, real-time aspect of it can be also defined as live. The purpose of RTC is widely seen as a way to intercommunicate between people or software. This can be done in a two-way scenario where data is transmitted between both sides, being both users receivers and senders, or in a one-way configuration with one unique source of data and one or multiple receivers. In the first configuration, latency is very important in order to achieve good quality communication between both users whereas the second scenario can tolerate some latency in the link but data transmission must be constant. In two-way communication data can be transmitted using multiple technologies, the topologies used can be either peer-to-peer or using a centralized relay. Some other ways of transmitting data include multicast or broadcast.
+Real-time Communication is defined as any method of communication where users can exchange data packets (e.g media, text, etc.) with low latency in both direction. The purpose of RTC is widely seen as a way to intercommunicate between people. This is done in a two-way scenario where both users are senders and receivers of media packets, live video is a one-way configuration with one unique source of data and one or multiple receivers. In the first RTC configuration, latency is very important in order to achieve good quality for bidirectional communication between both users whereas the live scenario can tolerate some latency in the link. In two-way communication data can be transmitted using multiple topologies, they are either peer-to-peer or using a centralized relay. 
 
-In broadcast and multicast mode data is transferred to multiple peers in a network but does not require real time response in most cases.
+Some other ways of transmitting data include multicast or broadcast. In the development of this thesis we do not study multicast and broadcast streaming.
 
 \begin{figure}[h]
   \centering
@@ -15,13 +15,15 @@ In broadcast and multicast mode data is transferred to multiple peers in a netwo
 	\label{fig:RTC}
 \end{figure}
 
-Figure~\ref{fig:RTC} describes an RTC scenario for two users, the technology providing the communication may differ in each situation but the goal is always the same. RTC has a common characteristic that is always common in all technologies, there must be a signaling or agreement between the two entities, either with the central node or with the other user. This procedure is used by the protocols to check the capabilities of the two entities before proceeding to send the media. In the signaling part, codec agreement and keep-alive methods are decided at the same time as all the multiple features that will be enabled in the new session, making it crucial to configure the media and data to be transmitted.
+Figure~\ref{fig:RTC} describes an RTC scenario for two users, the technology providing the communication may differ in each situation but the goal is always the same. 
 
-On the other hand, once signaling is done data flow can be sent to the receiver, this flow may include media (audio or video) and data. The transmission may require also some extra signaling messages to be exchanged in order to maintain the link or adapt the constraints to the actual network conditions, at the same time, features might change during the session. 
+RTC has a characteristic that is always common in all technologies, there must be a signaling or agreement between the two entities, either with the central node or with the other user. This procedure is used by the protocols to check the capabilities of the two entities before proceeding to send the media. In the signaling part, codec agreement and NAT traversal methods are decided at the same time as all the multiple features that will be enabled in the new session, making it crucial to configure the media and data to be transmitted.
 
-RTC scenarios can be given either over the Internet or using traditional techniques, some real-time scenarios are: telephony, mobile phone communication, radio, instant messaging (IM) \nomenclature{IM}{Instant Messaging}, Voice over IP (VoIP) \nomenclature{VoIP}{Voice over IP},  Video and Voice over IP (VVoIP) \nomenclature{VVoIP}{Video and Voice over IP}, Internet Relay Chat (IRC) \nomenclature{IRC}{Internet Relay Chat} and videoconferencing. 
+On the other hand, once signaling is done data starts to flow to the receiver, this stream may include media (audio or video) and different types of data (e.g binary, text, blobs, etc.). During the transmission we may require also some extra signaling messages to be exchanged in order to maintain the link or adapt the constraints to the actual network conditions, at the same time, features might change during the session. Those  messages are used for Offer/Answer model, congestion control adaptation or NAT traversal issues.
 
-All the previous ways of communication work in real time and rely in Figure~\ref{fig:RTC} topology but with different technologies. In this thesis we manly work with Internet RTC using media and data.
+Some RTC technologies and protocols are: telephony, mobile phone communication, radio, instant messaging (IM) \nomenclature{IM}{Instant Messaging}, Voice over IP (VoIP) \nomenclature{VoIP}{Voice over IP},  Video and Voice over IP (VVoIP) \nomenclature{VVoIP}{Video and Voice over IP}, Internet Relay Chat (IRC) \nomenclature{IRC}{Internet Relay Chat} and videoconferencing. 
+
+All the previous ways of communication work in real time and rely in Figure~\ref{fig:RTC} topology but with different technologies (e.g SIP, RTFMP and WebRTC). In this thesis we manly work with Internet RTC using media and data.
 %Web Real-Time Communication is a technology that builds P2P applications by using a defined JavaScript API. The first announcement went public in a WG of the World Wide Web Consortium (W3C) in May 2011~\cite{webrtcW3cgroup} and started the official mailing list in April 2011~\cite{welcomeW3C}. During the first stage of discussion, the main goal was to define a public draft for the version 1 API implementation and a route timeline with the goal to publish the first version by March 2013. The first public draft of W3C came public the 27th of October 2011~\cite{originalW3Cdraft}. During this first W3C draft, only media (audio and video) could be sent over the network to other peers, it is focused in the way browsers are able to access the media devices without using any plugin or external software.
 %
 %Alongside to the W3C working group, the WebRTC project also joined the IETF with a WG in May 2011~\cite{webrtcIETFgroup} with the first public announcement charter done the 3th of May 2011~\cite{webrtcIETFcharter}. Milestones of the WG initially marked December 2011 as deadline to provide the information and elements required to the W3C for the API design input. On the other side, the main goals of the WG covered the definition of the communication model, session management, security, NAT traversal solution, media formats, codec agreement and data transport~\cite{webrtcIETFcharter}.
@@ -34,11 +36,13 @@ All the previous ways of communication work in real time and rely in Figure~\ref
 
 \subsection{Session Initiation Protocol (SIP)}
 
-SIP \nomenclature{SIP}{Session Initiation Protocol} allows communication between two different users with audio/video support in real-time. SIP final Request for Comments (RFC) \nomenclature{RFC}{Request for Comments} was published in June 2004, this document describes the original functionalities and mechanisms of SIP~\cite{sipRFC}. From an overview perspective, SIP is an application-layer control protocol for multimedia sessions which can establish, maintain and terminate media sessions. During the development of the standard, different new functionalities were added to the drafts such as conferencing and the possibility of adding/removing media from existing sessions. 
+SIP \nomenclature{SIP}{Session Initiation Protocol} allows communication between two different users with audio/video support in real-time. SIP final Request for Comments (RFC) \nomenclature{RFC}{Request for Comments} was published in June 2004, this document describes the original functionalities and mechanisms of SIP~\cite{sipRFC}. 
+
+From an overview perspective, SIP is an application-layer control protocol for multimedia sessions which can establish, maintain and terminate media sessions. During the development of the standard, different new functionalities were added such as conferencing and the possibility of adding/removing media from existing sessions. 
 
 %SIP differentiates from RTMFP/WebRTC by locating the end user to be used for communication, this feature allows SIP to be closely related to traditional PSTN networks as it allow cross-domain communication which is not possible when using RTMFP/WebRTC. SIP is not a complete toolkit for communications. <<-- SUMMARY OF RTC
 
-This protocol works alongside with other existing technologies such as Real-time Transport Protocol (RTP) \nomenclature{RTP}{Real-time Transport Protocol}, Session Description Protocol (SDP) \nomenclature{SDP}{Session Description Protocol} and Media Gateway Control Protocol (MEGACO) \nomenclature{MEGACO}{Media Gateway Control Protocol}. Using SDP for the session negotiation between the end-points and RTP for the media transport, all these protocols are widely used in other technologies and usually provide legacy for older devices and outdated versions. Meanwhile SIP can locate and deliver a message to a user, SDP can provide the required information for the session establishment and RTP can transport the data.
+This protocol works alongside with other existing technologies such as Real-time Transport Protocol (RTP) \nomenclature{RTP}{Real-time Transport Protocol}, Session Description Protocol (SDP) \nomenclature{SDP}{Session Description Protocol} and Media Gateway Control Protocol (MEGACO) \nomenclature{MEGACO}{Media Gateway Control Protocol}. SIP uses SDP Offer/Answer model for the session description or capabilities negotiation between the end-points and RTP for the media transport, all these technologies are widely used in other protocols and usually provide legacy for older devices and outdated versions. Meanwhile SIP can locate and deliver a message to a user, SDP can provide the required capability for the session establishment and RTP can transport the data. Something remarkable when using SIP is the ability to perform federated calls between different domains.
 
 \begin{figure}[h]
   \centering
@@ -47,21 +51,25 @@ This protocol works alongside with other existing technologies such as Real-time
 	\label{fig:SIParchitecture}
 \end{figure}
 
-SIP architecture relies in a trapezoid form where the Domain Name System (DNS) \nomenclature{DNS}{Domain Name System} is used to locate the other peers of the system. Once that peer is located and session is negotiated, media flows peer-to-peer to the endpoint. In order to build this system different agents are needed, SIP Proxies, SIP Redirect and SIP Registrar. SIP Proxies transmit the SDP and SIP messages from one peer to the other to establish the signaling (Figure~\ref{fig:SIParchitecture}). SIP Registrar are the machines that collect and save all the user information from the end points.
+SIP architecture relies in a trapezoid form where the Domain Name System (DNS) \nomenclature{DNS}{Domain Name System} is used to locate the other peers of the system. Once that peer is located and session is negotiated, media flows peer-to-peer to the endpoint. In order to build this system different agents are needed, SIP Proxies, SIP Redirect and SIP Registrar. SIP Proxies transmit the messages containing the SDP from one peer to the other to establish the signaling (Figure~\ref{fig:SIParchitecture}). SIP Registrar are the machines that collect and save all the user information from the end points.
 
-DNS provides the IP address for both proxy servers and allows the messages to be exchanged between both peers, SIP uses the following three-way handshake: INVITE, 200OK and ACK. Those messages carry the SDP data inside in an object format, when ray@upc.cat receives the INVITE message from bob@aalto.fi builds the 200OK response carrying the SDP object that provides compatibility check between both peers and which options and codecs to use. SIP provides some more messages to update the already existing session or to close it. The media transport is done using RTP and RTCP over User Datagram Protocol (UDP) \nomenclature{UDP}{User Datagram Protocol}~\cite{sipRFC}.
+DNS provides the IP address for both proxy servers and allows the messages to be exchanged between both peers, SIP uses the following three-way handshake: INVITE, 200OK and ACK. Those messages carry the SDP data inside in an object format, when ray@upc.cat receives the INVITE message from bob@aalto.fi, with the different capabilities of the caller, builds the 200OK response carrying the response with the chosen capabilities or the failure to establish the call. The media transport is done using RTP and RTCP over User Datagram Protocol (UDP) \nomenclature{UDP}{User Datagram Protocol}~\cite{sipRFC}.
 
-SIP is a pure VoIP confederated technology that helped the community to learn about real-time P2P communication.
+SIP is a pure VoIP confederated technology that helped the community to develop multiple protocols that are used in other real-time P2P communication scenarios.
 
 \subsection{Real Time Media Flow Protocol (RTMFP) and Adobe Flash}
 
 RTMFP  \nomenclature{RTMFP}{Real Time Media Flow Protocol} and Adobe Flash are proprietary technologies provided by Adobe, both services work together to deliver multimedia and RTC between users.
 
-Adobe Flash is a media software that uses a plugin to work on top of the browser, it is used to build multimedia experiences for end users such as graphics, animation, games and Rich Internet Applications (RIA) \nomenclature{RIA}{Rich Internet Application}. It is widely used to stream video or audio in web applications, in order to enable this content we need to install Adobe Flash plugin in our computer. It also uses a different programming language that do not comply with any standards called JavaScript Flash Language (JSFL) \nomenclature{JSFL}{JavaScript Flash Language} and ActionScript. RTMFP and Adobe Flash require a plugin to work with any device, this obliges the user to install extra software that is not included in the browser, these two technologies are not standardized and are difficult to enable in some mobile devices. Adobe Flash Player is available in most platforms, except iOS devices, and is present in about 98\% of all internet-enabled desktop devices. This plugin allows developers to access media streams from external devices such as cameras and microphones to be used along with RTMFP.
+Adobe Flash is a media software that uses a plugin to work on top of the browser, it is used to build multimedia experiences for end users such as graphics, animation, games and Rich Internet Applications (RIA) \nomenclature{RIA}{Rich Internet Application}. It is widely used to stream video or audio in web applications, in order to enable this content we need to install Adobe Flash plugin on the computer. 
 
-RTMFP uses Adobe Flash to provide media and data transfer between two end points. This system works over UDP~\cite{rtmfpDraft}. RTMFP provides a full suite of methods and functions that allow the browser to access the necessary mechanisms to run real-time media communication, those methods are included into the plugin that must be installed prior usage. RTMFP is a private and licensed protocol. It also handles congestion control on the packets and NAT transversal issues. One of the biggest differences is that, compared with SIP, RTMFP does not provide inter-domain connectivity and both peers must be in the same working domain to be able to communicate. This protocol is implemented by using Flash Player, Adobe Integrated Runtime (AIR) and Adobe Media Server (AMS) \nomenclature{AMS}{Adobe Media Server}~\cite{rtmfpDraft}. 
+Adobe uses a proprietary programming language called JavaScript Flash Language (JSFL) \nomenclature{JSFL}{JavaScript Flash Language} and ActionScript. RTMFP and Adobe Flash require a plugin to work with any device, this obliges the user to install extra software that is not included in the browser, these two technologies are not standardized and are difficult to enable in some mobile devices. Adobe Flash Player is available in most platforms, except iOS devices, and is present in about 98\% of all internet-enabled desktop devices. This plugin allows developers to access media streams from external devices such as cameras and microphones to be used along with RTMFP.
 
-Media transfer in this protocol is encrypted, this issue has been addressed clearly in RTMFP by using proprietary algorithms and different encryption methods. The RTMFP architecture is similar to WebRTC concept, it also allows reconnection in case of connectivity issues and works by multiplexing different media streams over the same media channel when handling conferences or multiple streams. For the signaling part, Adobe uses a service called Cirrus (Figure~\ref{fig:RTMFParchitecture}), this service allows architectures such as: end-to-end, many-to-many and multicast~\cite{cirrusFAQ}.
+This protocol is implemented by using Flash Player, Adobe Integrated Runtime (AIR) and Adobe Media Server (AMS) \nomenclature{AMS}{Adobe Media Server}~\cite{rtmfpDraft}. 
+
+RTMFP uses Adobe Flash to provide media and data transfer between two end points over UDP~\cite{rtmfpDraft}. RTMFP provides a full suite of methods and functions that allow the browser to access the necessary mechanisms to run real-time media communication, those methods are included into the plugin that must be installed prior usage. RTMFP is a private and licensed protocol. It also handles congestion control on the packets and NAT transversal issues. One of the biggest differences is that, compared with SIP, RTMFP does not provide inter-domain connectivity and both peers must be in the same working domain to be able to communicate.
+
+Media transfer is encrypted, this issue has been addressed in RTMFP by using proprietary algorithms and different encryption methods. The RTMFP architecture also allows reconnection in case of connectivity issues and works by multiplexing different media streams over the same media channel when handling conferences or multiple streams. For the signaling part, Adobe uses a service called Cirrus (Figure~\ref{fig:RTMFParchitecture}), this service allows architectures such as: end-to-end, many-to-many and multicast~\cite{cirrusFAQ}. Those structures rely in the use of overlay techniques in multicast and mesh scenarios. 
  
  \begin{figure}[h]
   \centering
@@ -72,11 +80,13 @@ Media transfer in this protocol is encrypted, this issue has been addressed clea
  
 Some of the most valuable features is the possibility to easily integrate P2P multicast topologies where one source sends a video to a group of receivers.
 
-\subsection{WebRTC}
+\subsection{Web Real-Time Communication (WebRTC)}
 
-WebRTC is part of the HTML5 proposal, it is defined in a W3C draft~\cite{webrtcW3cgroup}, and enables RTC capabilities between Internet browsers using simple JavaScript APIs. Providing video, audio and data P2P without any plugins. This API replaces the need of any plugin for P2P communications in browsers, WebRTC uses already existing standardized protocols, inherited from SIP, to perform RTC. The project was open sourced by Google to keep working with the IETF in order to standardize the technology~\cite{haraldpublicWebRTC}.
+WebRTC is part of the HTML5 proposal, it is defined in the W3C~\cite{webrtcW3cgroup}~\cite{getusermediaDraft}, and enables RTC capabilities between Internet browsers using simple JavaScript APIs. Providing video, audio and data P2P without any plugins. This API replaces the need of installing a plugin to enable P2P communications between browsers, WebRTC uses existing standardized protocols, inherited from SIP, to perform RTC. 
 
-WebRTC provides interoperability between different browser vendors, this allow the APIs to be accessible by the developers assuring high degree of compatibility (Figure~\ref{fig:marketshare}). Some of the major browsers that actively implement WebRTC APIs are: Google Chrome, Mozilla Firefox and Opera. 
+%The project was open sourced by Google to keep working with the IETF in order to standardize the technology~\cite{haraldpublicWebRTC}.
+
+WebRTC provides interoperability between different browser vendors, this allow the APIs to be accessible by the developers assuring high degree of compatibility (Figure~\ref{fig:marketshare}). Some of the major browsers that actively implement WebRTC APIs are: Google Chrome, Mozilla Firefox and Opera. Other providers, such as Internet Explorer, are building prototypes for WebRTC~\cite{IEwebRTC}. 
 
  \begin{figure}[h]
   \centering
@@ -85,21 +95,27 @@ WebRTC provides interoperability between different browser vendors, this allow t
 	\label{fig:marketshare}
 \end{figure}
 
-With WebRTC, developers can provide applications for nearly half of the desktop devices available, mobile devices will integrate WebRTC as part of their HTML5 package to also enable RTC soon~\cite{ericssonbowser}.
+With WebRTC, developers can provide applications for most of the desktop devices available, mobile devices will integrate WebRTC as part of their HTML5 package to also enable RTC soon~\cite{ericssonbowser}.
 
-WebRTC is composed by two important APIs that enable real-time features, GetUserMedia and PeerConnection. Both of them are accessible by JavaScript on the browser. WebRTC APIs rely on the top of the {\it WebKit} rendering engine in Chrome and Opera, in April 2013 Google announced that is going to stop using {\it WebKit} as the rendering engine that is behind displaying web pages in Chrome. Instead, it's creating its own rendering engine named {\it Blink}~\cite{movingtoBlink}.
+WebRTC is composed by two important APIs that enable real-time features, GetUserMedia and PeerConnection. Both of them are accessible by JavaScript on the browser. 
+
+%WebRTC APIs rely on the top of the {\it WebKit} rendering engine in Chrome and Opera, in April 2013 Google announced that is going to stop using {\it WebKit} as the rendering engine that is behind displaying web pages in Chrome. Instead, it's creating its own rendering engine named {\it Blink}~\cite{movingtoBlink}.
 %It is able to solve NAT transversal environments by using a mixtures of ICE, TURN and STUN technologies. For the session description it uses a modified bundled version of SDP. The format used for packet transport is RTP and SRTP, modified WebSockets are in use for P2P DataChannel implementation to provide data transport multiplexed over the same stream. All the traffic is sent over UDP or TCP over the same port~\cite{alvestrandOverview2012}.
 %
 %WebRTC is part of the HTML5 package, both combined are an open cross-platform standard that aims to replace the Adobe proprietary proposal for P2P Real-Time Communication (RTC).
 %
 %By using HTML5 features we avoid the need of installing any extra software to be able to use real-time multimedia applications on the browser.
 
-\subsubsection{Device Access API}
+\subsubsection{GetUserMedia API}
 \label{sec:gum}
 
-WebRTC uses an API called {\it GetUserMedia} to access media streams from local devices (video cameras and microphones). This API itself does not provide RTC, furthermore, provides the media to be used as simple HTML elements in any web application. {\it GetUserMedia} allows developers to access local media devices using JavaScript code and generates media streams to be used either with the rest of the WebRTC APIs or with the HTML5 video element~\cite{getusermediaDraft}. {\it GetUserMedia} is already interoperable between Google Chrome, Firefox and Opera~\cite{chromefirefoxinterop}.
+WebRTC uses {\it GetUserMedia} API to access media streams from local devices (video cameras and microphones). 
 
-{\it GetUserMedia} proposal was first attached directly to the WebRTC working group but has been published in a different draft, the usage of this API removes the need of using Adobe Flash to access the media device and also the plugin requirement.
+This API itself does not provide RTC, but provides the media to be used as simple HTML elements in any web application. 
+
+{\it GetUserMedia} API allows developers to access local media devices using JavaScript code and generates media streams to be used either with the rest of the {\it PeerConnection}ÊAPI or with the HTML5 video element for playback purposes~\cite{getusermediaDraft}. {\it GetUserMedia} is already interoperable between Google Chrome, Firefox and Opera~\cite{chromefirefoxinterop}.
+
+{\it GetUserMedia} proposal removes the need of using Adobe Flash to access the media device and also the plugin requirement.
 
  \begin{figure}[h]
   \centering
@@ -108,39 +124,41 @@ WebRTC uses an API called {\it GetUserMedia} to access media streams from local 
 	\label{fig:mediastreamAPI}
 \end{figure}
 
-Figure~\ref{fig:mediastreamAPI} illustrates how the browser access the media and delivers the output to JavaScript. We use this function to build WebRTC enabled applications for RTC video conferencing. The video tag is an HTML5 a Document Object Model (DOM) \nomenclature{DOM}{Document Object Model} element that reproduces local and remote media streams.
+Figure~\ref{fig:mediastreamAPI} illustrates how the browser access the media and delivers the output to JavaScript. We use the {\it GetUserMedia} API to build WebRTC enabled applications for RTC video conferencing. The video tag is an HTML5 a Document Object Model (DOM) \nomenclature{DOM}{Document Object Model} element that reproduces local and remote media streams.
 
-{\it MediaStreams} are objects returned by the {\it GetUserMedia} API, those objects are composed by {\it MediaStreamTracks} that carry the actual data for the media. The goal of using this architecture is to be able, in a near future, to include multiple sources of video and audio over the same stream. {\it MediaStreams} handle the synchronization between all the {\it MediaStreamTracks} included for proper playback in the application level.
+In Figure~\ref{fig:mediastreamAPI} {\it MediaStream} is the object returned by the {\it GetUserMedia} API methods, this object is contains {\it MediaStreamTracks} that carry the actual video and audio media. The goal of using this architecture is to be able, in a close future, to include multiple sources of video and audio over the same stream from different devices. Other options include the design of overlay topologies by forwarding media from one peer to the other by including different {\it MediaStreamTracks} into the same {\it MediaStream}. Furthermore, {\it MediaStreams} handle the synchronization between all the {\it MediaStreamTracks} included for proper playback in the application level, by this it assures that audio and video will be always synchronized.
 
-{\it GetUserMedia} API works using a fallback model, this means than the JavaScript method returns an object that can be played in an HTML web application, a simple example of this method can be seen in the following code.
+{\it GetUserMedia} API works using a JavaScript fallback method, this method returns a {\it MediaStream} object to the application that is played in the HTML web application or used in the {\it PeerConnection} API. A sample example of this method can be seen in the following code.
 
 \lstset{language=JavaScript}
 \begin{lstlisting}[caption=Simple example of video and audio access using JavaScript]
-navigator.webkitGetUserMedia(cameraConstraints(), gotStream, function() {
+GetUserMedia(cameraConstraints(), gotStream, function() {
 	console.log("GetUserMedia failed");
 });
     
 function gotStream(stream) {
 	//Stream is the MediaStream object returned by the API
 	console.log("GetUserMedia succeeded");
-  	document.getElementById("local-video").src = webkitURL.createObjectURL(stream);
+  	document.getElementById("local-video").src = createObjectURL(stream);
 }
 \end{lstlisting}
 
 With the previous code, we are using the video and audio media from our devices to be played in an video HTML element identified as {\it local-video}. 
 
-{\it GetUserMedia} also allow developers to set some specific constraints to the media acquisition. This help applications to better adapt the stream to their requirements, those {\it cameraConstraints()} are stored into a JavaScript Object Notation (JSON) \nomenclature{JSON}{JavaScript Object Notation} library and provided to the API through the {\it navigator.webkitGetUserMedia} method.
+{\it GetUserMedia} API also allow developers to set some specific constraints to the media acquisition. This help applications to better adapt the stream to their requirements, those {\it cameraConstraints()} are stored into a JavaScript Object Notation (JSON) \nomenclature{JSON}{JavaScript Object Notation} library and provided to the API through the {\it GetUserMedia} method.
 
-\subsubsection{Networking API}
+\subsubsection{PeerConnection API}
 \label{sec:pcAPI}
 
-WebRTC uses a separate API to provide the networking support to transfer media to the other peers, this API is named {\it PeerConnection}~\cite{editorWebRTCdraft}. {\it PeerConnection} API bundles all the internal mechanisms of the browser that enable media and data transfer, at the same time it also handles all the exchange signaling messages with specific JavaScript methods. 
+WebRTC uses a separate API to provide the networking support to transfer media and data to the other peers, this API is named {\it PeerConnection}~\cite{editorWebRTCdraft}. {\it PeerConnection} API bundles all the internal mechanisms of the browser that enable media and data transfer, at the same time it also handles all the exchange signaling messages with specific JavaScript methods. 
 
-Signaling messages are exchanged using a topology similar to Figure~\ref{fig:webrtcExample}, with the messages being sent either by WebSockets or other similar HTTP polling protocols. Messages are built using a modified bundled version of SDP, WebRTC signaling messages are similar to SIP as they use SDP bodies for the agreement.
+Signaling messages are exchanged using a topology similar to Figure~\ref{fig:webrtcExample}, with the messages being sent either by WebSockets or by HTTP long polling. Messages are built using a modified bundled version of SDP, WebRTC signaling messages are similar to SIP as they use SDP bodies for the agreement.
 
-WebRTC uses multiplexing over one port when sending the traffic, this means that media, data and monitoring messages are sent over the same port from peer to peer, traffic is sent over UDP or TCP~\cite{alvestrandOverview2012}. {\it PeerConnection} API provides signaling and NAT transversal techniques to bypass routers and firewalls, this part is very important to guarantee a high degree of success when establishing calls in different scenarios.
+WebRTC uses multiplexing over one port when sending the traffic, this means that media, data and monitoring messages are sent over the same port from peer to peer, traffic is sent over UDP or TCP~\cite{alvestrandOverview2012}. {\it PeerConnection} API provides signaling and NAT transversal techniques, this part is very important to guarantee a high degree of success when establishing calls in different environments.
 
-{\it PeerConnection} P2P session establishment system works in a constrained environment similar to RTMFP but it has been designed to provide some degree of legacy for other SDP based technologies such as SIP. Figure~\ref{fig:webrtcExample} shows how a WebRTC simple P2P scenario works, the server used for signaling is a web server.
+{\it PeerConnection} P2P session establishment system works in a constrained environment designed to provide some degree of legacy for other SDP based technologies. Figure~\ref{fig:webrtcExample} shows how a WebRTC simple P2P scenario works, the server used for signaling is a web server. Consider that WebRTC works usually in a single domain and not in a federated environment as SIP. 
+
+On the other side, signaling is not standardized in WebRTC and has to be provided in the application level by the developer.
 
  \begin{figure}[h]
   \centering
@@ -149,7 +167,7 @@ WebRTC uses multiplexing over one port when sending the traffic, this means that
 	\label{fig:webrtcExample}
 \end{figure}
 
-Figure~\ref{fig:webrtcExample} does not show relay machines that help to provide NAT transversal solutions. In a real application we could host those relay machines either in the same web server or using external services, those servers must be introduced into the WebRTC {\it PeerConnection} configuration when starting a new call.
+Figure~\ref{fig:webrtcExample} does not show relay machines that help to provide NAT transversal solutions. In a real application cover this requirement using external services, those servers must be introduced into the WebRTC {\it PeerConnection} configuration when starting a new call.
 
 \lstset{language=JavaScript}
 \begin{lstlisting}[caption=Simple example of {\it PeerConnection} using JavaScript]
@@ -181,11 +199,13 @@ The previous code describes a simple example on how to use the {\it PeerConnecti
 
 \subsubsection{Control and Monitoring}
 
-Control and monitoring is an important part of all RTC protocols, this part is usually handled by the software that may adapt the media constraints and configurations to the available resources on the link. 
+Control and monitoring is an important part of all RTC protocols, this part is usually handled by the JavaScript that may adapt the media constraints and configurations to the available resources on the link. 
 
-In WebRTC, this is done through the Statistics Model and Constraints defined in the W3C draft~\cite{editorWebRTCdraft}, these methods are part of the actual {\itÊPeerConnection} API defined in section~\ref{sec:pcAPI}. Once the {\it PeerConnection} is made and media is flowing we need to measure the quality of the connection, this is done by retrieving the stats provided in the Real Time Control Protocol (RTCP) \nomenclature{RTCP}{Real Time Control Protocol} messages that are being sent over the link. The  Audio Video Profile with Feedback (AVPF) \nomenclature{AVPF}{Audio Video Profile with Feedback} provides significant improvements in the transmission of RTCP messages that are event driven rather than periodic~\cite{salvatore} like in other RTP based technologies.
+In WebRTC, this is done through the Statistics Model and Constraints defined in the W3C draft~\cite{editorWebRTCdraft}, these methods are part of the actual {\it PeerConnection} API defined in section~\ref{sec:pcAPI}. Once the {\it PeerConnection} is made and media is flowing we need to measure the quality of the connection, this is done by retrieving the stats provided in the Real Time Control Protocol (RTCP) \nomenclature{RTCP}{Real Time Control Protocol} messages that are being sent over the link form the remote side. We focus in those remote stats to study the status of the path and to obtain the desired metrics for monitoring. 
 
-To access the statistical data retrieved from the control messages we need to use the {\it getStats()} method in the {\it PeerConnection}, this method allow the developers to access that data in a JSON format that might require some post-processing. Statistical models are useful for the developers to monitor the status of their WebRTC applications and adjust the attributes of the {\it PeerConnection}.
+%The  Audio Video Profile with Feedback (AVPF) \nomenclature{AVPF}{Audio Video Profile with Feedback} provides significant improvements in the transmission of RTCP messages that are event driven rather than periodic~\cite{salvatore} like in other RTP based technologies.
+
+To access the statistical data retrieved from the control messages we need to use the {\it getStats()} method of the {\it PeerConnection} object defined in the draftt~\cite{editorWebRTCdraft}, this method allow the application to access that data in a JSON format that might require some post-processing. Statistical models are useful for the developers to monitor the status of their WebRTC applications and adjust the attributes of the {\it PeerConnection}. 
 
 With constraints developers are able to change media capture configuration by setting  Frames per Second (FPS) \nomenclature{FPS}{Frames per Second} and video resolution. Other attributes can be set on the {\it PeerConnection} such as bandwidth requirements, transfer rate is automatically adjusted in WebRTC using its internal mechanisms but we can set a maximum value. 
 
@@ -229,6 +249,8 @@ One of the difficult parts in the standardization process has been to decide the
 
 The media process is done in the browser but most of the signaling is handled in the JavaScript plane by using JSEP methods and functions. Figure~\ref{fig:JSEP} represents the JSEP signaling model, this system extracts the signaling part leaving media transmission to the browser. However, JSEP provides mechanisms to create offers and answers, as well to apply them to a session. The way those messages are communicated to the remote side is left entirely up to the application.
 
+Furthermore, JSEP also handles the state management of the session by building the specific SDP message that is forwarded to the other peer. NAT traversal mechanisms are activated in JSEP that provides the different candidates that are required by the other peer in order to build the connection, those mechanisms are defined in chapter~\ref{sec:internals}
+
 One interesting feature that JSEP provides is called {\it rehydration}, this process is used whenever a page that contains an existing WebRTC session is reloaded keeping the existing session alive. This technique avoid session cuts when accidentally reloading the page or with any automatic update from the web application. With {\it rehydration}, the current signaling state is stored somewhere outside the page, either on the server or in browser local storage~\cite{jsepIETF}.
  
  \begin{figure}[h]
@@ -240,25 +262,24 @@ One interesting feature that JSEP provides is called {\it rehydration}, this pro
 
 Low level APIs allow developers to build their own high level APIs that handle all the WebRTC protocol from media access to signaling. Those high level methods are useful to simplify the way JavaScript developers build their applications, building object oriented calls we can have JavaScript libraries that set up and maintain multiple calls at the same time. The benefits of having low level JSEP API for WebRTC are the multiple possibilities to adapt WebRTC to the requirements of each specific application.
 
-In this thesis we use some high level APIs that handle signaling over WebSockets and statistics.
+We have developed our own high level API to create and handle RTC sessions and monitoring using WebRTC.
 
 \subsubsection{Internals of WebRTC}
+\label{sec:internals}
 
 WebRTC has multiple internal mechanisms that enable the RTC on the browser level by using APIs. Those mechanisms work together to accomplish all the needs for WebRTC features, some of them are related to the network level and others to video acquisition.
 
-One of WebRTC main issues is NAT transversal, this problem usually affect all RTC related technologies. Real-time P2P protocols cannot success in all environments without a NAT transversal solution, in SIP and WebRTC, this problem is addressed with the usage of Simple Transversal Utilities for NAT (STUN) \nomenclature{STUN}{Simple Transversal Utilities for NAT} and Traversal Using Relays around NAT (TURN) \nomenclature{TURN}{Traversal Using Relays around NAT}~\cite{stunIETF}~\cite{turnIETF}. Both of these methods are combined with Interactive Connectivity Establishment (ICE) \nomenclature{ICE}{Interactive Connectivity Establishment} technique that helps WebRTC to decide which is the best way to bypass NATs and firewalls, ICE is widely used in P2P media communications and has proven to be reliable when choosing the best option to succeed with the connexion~\cite{iceIETF}.
+One of WebRTC main issues is NAT transversal, this problem usually affect all RTC related technologies. Interactive Connectivity Establishment (ICE) \nomenclature{ICE}{Interactive Connectivity Establishment} is a technique that helps WebRTC to decide which is the best way to bypass NATs and firewalls, ICE is widely used in P2P media communications and has proven to be reliable when choosing the best option to establish communication~\cite{iceIETF}.The enablers that work together with ICE for Real-time P2P protocols are Simple Transversal Utilities for NAT (STUN) \nomenclature{STUN}{Simple Transversal Utilities for NAT} and Traversal Using Relays around NAT (TURN) \nomenclature{TURN}{Traversal Using Relays around NAT}~\cite{stunIETF}~\cite{turnIETF}.
 
-TURN and STUN machines are usually placed outside the local network of the clients and help them to find the way to communicate each other by discovering new open paths, the final decision is taken by the ICE mechanism in WebRTC. STUN server provide different IP and port configurations that allow a direct connection to the peer behind the firewall, those configurations are named {\it candidates}, this information is given to the sender that process the information and tries to choose the best {\it candidate}. On the other side, TURN works as a relay, this option should be always stated as the last resort when there is no valid STUN {\it candidate} for connectivity. TURNs work by rerouting the traffic from one peer to the other. 
+TURN and STUN servers are usually placed outside the local network of the clients and help them to find the way to communicate each other by discovering new open paths, the final decision is taken by the ICE mechanism. STUN server provides mechanisms to discover the endpoints multiple IPs and ports that allow a direct connection to the peer behind the firewall, those interfaces are named {\it candidates}, this information is given to the sender that process the information and tries to choose the best {\it candidate}. On the other side, TURN works as a relay, this option should be always stated as the last resort when connection to no other {\it candidate} was established. TURNs work by rerouting the traffic from one peer to the other. 
 
-All traffic in WebRTC is done over UDP and multiplexed over the same port except the case of TURN that might use TCP.
+All traffic in WebRTC is done over UDP and multiplexed over the same port except the case of TURN that might use TCP or UDP.
 
-Media encoding in WebRTC is done through codecs implemented in the browser internals, those codecs are decided in the IETF working group and have been discussed for long time.
+Media encoding in WebRTC is done through codecs implemented in the browser internals. Mandatory-to-Implement codecs for audio are G711 and Opus. G711 is an International Telecommunication Union (ITU) \nomenclature{ITU}{International Telecommunication Union} standard audio codec that has been used in multiple real time applications such as SIP. In real-time media applications, Opus is also a good alternative for G711, Opus is a lossy audio compression format codec developed by the IETF and that is designed to work in real-time media applications on the Internet~\cite{opusIETF}. Opus can be easily adjusted for high and low encoding rates, applications can use additional codecs.
 
-Defined codecs for audio are G711 and Opus. G711 is an International Telecommunication Union (ITU) \nomenclature{ITU}{International Telecommunication Union} standard audio codec that has been used in multiple real time applications such as SIP. In real-time media applications, Opus is also a good alternative for G711, Opus is a lossy audio compression format codec developed by the IETF and that is designed to work in real-time media applications on the Internet~\cite{opusIETF}. Opus can be easily adjusted for high and low encoding rates being a good candidate for the needs of WebRTC.
+Along with the codecs, the audio engine for WebRTC also includes some features such as Acoustic Echo Canceler (AEC) \nomenclature{AEC}{Acoustic Echo Canceler} and Noise Reduction (NR) \nomenclature{NR}{Noise Reduction}. The first mechanism is a software based signal processing component that removes, in real time, the acoustic echo resulting from the voice being played out coming into the microphone (local loop), with this, WebRTC solves the issue of the audio loops with the output and input sound devices of computers. NR is a component that removes background noise associated to real time audio communications. When both mechanisms are functioning the amount of rate required by the audio channel is reduced as the unnecessary noise is removed form the spectrum. AEC and NR mechanisms provide a smooth audio input for WebRTC protocol.
 
-Along with the codecs, the audio engine for WebRTC also includes some interesting mechanisms such as Acoustic Echo Canceler (AEC) \nomenclature{AEC}{Acoustic Echo Canceler} and Noise Reduction (NR) \nomenclature{NR}{Noise Reduction}. The first mechanism is a software based signal processing component that removes, in real time, the acoustic echo resulting from the voice being played out coming into the microphone, with this, WebRTC solves the issue of the audio loops with the output and input sound devices of computers. NR is a component that removes background noise associated to real time audio communications. When both mechanisms are functioning the amount of rate required by the audio channel is reduced as the unnecessary noise is removed form the spectrum. AEC and NR mechanisms provide a smooth audio input for WebRTC protocol.
-
-There has been a lot of discussion regarding video codec, two of the proposed codecs are H.264 and VP8. H.264 is a standard codec for video compression, this codec is widely used for recording and transmission of high definition video. Originally it was also selected due its high compatibility with existing devices and software, H.264 has made some controversy as it is patented and licensed by MPEG LA and may add some royalty problem for WebRTC. VP8 is a video compression codec owned by Google released and released in May 2010, VP8 is supported by Chrome, Opera and Firefox by default and is the de facto codec for WebRTC by May 2013. Later on, Google announced a VP8 patent cross-license agreement to provide royalty-free license to allow developers to implement VP8 video in their web applications~\cite{vp8Google}. This video codec is adaptive and performs well in low bandwidth links at the same time as providing royalty-free implementation.
+%There has been a lot of discussion regarding video codec, two of the proposed codecs are H.264 and VP8. H.264 is a standard codec for video compression, this codec is widely used for recording and transmission of high definition video. Originally it was also selected due its high compatibility with existing devices and software, H.264 has made some controversy as it is patented and licensed by MPEG LA and may add some royalty problem for WebRTC. VP8 is a video compression codec owned by Google released and released in May 2010, VP8 is supported by Chrome, Opera and Firefox by default and is the de facto codec for WebRTC by May 2013. Later on, Google announced a VP8 patent cross-license agreement to provide royalty-free license to allow developers to implement VP8 video in their web applications~\cite{vp8Google}. This video codec is adaptive and performs well in low bandwidth links at the same time as providing royalty-free implementation.
 
 WebRTC is not only useful for sending media, it can also provide P2P data transfer. This feature is named {\it Data Channel} and provides real time data transfer, this can be used with multiple purposes, from real time IM service to gaming, but it is interesting as {\it Data Channel} allows generic data exchange in a bidirectional way between two peers~\cite{datachanIETF}. Non-media data in WebRTC is handled by System Control Transmission Protocol (SCTP) \nomenclature{SCTP}{System Control Transmission Protocol} encapsulated over Datagram Transport Layer Security (DTLS) \nomenclature{DTLS}{Datagram Transport Layer Security}~\cite{sctpIETF}~\cite{dtlsIETF}~\cite{datachanIETF}. 
 
@@ -273,9 +294,10 @@ WebRTC provides Secure Real-time Transport Protocol (SRTP) \nomenclature{SRTP}{S
 	\label{fig:stack}
 \end{figure}
 
-Quality of Service (QoS) \nomenclature{QoS}{Quality of Service} for WebRTC is also being discussed in the IETF and a draft is available with some proposals~\cite{qosWebRTCIETF}. WebRTC uses DiffServ packet marking for QoS but this is not sufficient to help prevent congestion in some environments. When using DiffServ, the problem arises from the Internet Service Providers (ISPs) as they might be using their own packet marking with different DiffServ code-points, those packets are not going to be interoperable between ISPs, there is an ongoing proposal to solve this problem by building consistent code-points~\cite{diffservIETF}. Audio/video packets shall be marked as priority using DSCP mappings with audio being more important than video or data~\cite{qosWebRTCIETF}. 
+Quality of Service (QoS) \nomenclature{QoS}{Quality of Service} for WebRTC is also being discussed in the IETF and a draft is available with some proposals~\cite{qosWebRTCIETF}. WebRTC uses DiffServ packet marking for QoS but this is not sufficient to help prevent congestion in some environments. When using DiffServ, the problem arises from the Internet Service Providers (ISPs) as they might be using their own packet marking with different DiffServ code-points, those packets are not interoperable between ISPs, there is an ongoing proposal to solve this problem by building consistent code-points~\cite{diffservIETF}. Each specific application will mark Audio/video packets with the designed priority using DSCP mappings~\cite{qosWebRTCIETF}. 
 
-WebRTC also uses a Google congestion control algorithm that enables proper congestion control mechanisms for rate adaptation~\cite{alvestrandCongestion2012}. The aim of this algorithm is to provide performance and bandwidth sharing with other ongoing conferences and applications that share the same link.
+Officially, there is no congestion control mechanisms for WebRTC, the only mechanism actively used is circuit breakers for RTP~\cite{circuitbreakers}.
+Chrome specifically uses a Google congestion control algorithm that enables congestion control mechanisms for rate adaptation~\cite{alvestrandCongestion2012}. The aim of this algorithm is to provide performance and bandwidth sharing with other ongoing conferences and applications that share the same link.
 
 %\subsection{Support}
 %The following companies and organizations have supported and are actively working in the development of WebRTC standard in the W3C: Google, Mozilla and Opera~\cite{googleAnnouncement}. Other companies such as Microsoft have supported browser-to-browser solution but have published their own proposal which differs with the one published in the WebRTC WG, called CU-RTC-Web~\cite{curtcweb} which is a lower level API that claims to do everything that JSEP does.
@@ -330,14 +352,14 @@ In web services, issues such as Cross-site scripting (XSS) \nomenclature{XSS}{Cr
 
 Other related vulnerabilities in WebRTC APIs is the possibility to establish media forwarding to a third peer, for example, once the user has accepted the access to the media, the provided JavaScript could build one {\it PeerConnection} to the receiver and an extra one to a remote peer that could store the call without the user noticing this behavior. Those problems are not only related to WebRTC and tend to happen in related protocols.
 
-WebRTC calling procedure is done by the JavaScript provided by the server, this may be a problem as the user must trust an unknown authority server. Calling services commonly use Hypertext Transfer Protocol Secure (HTTPS) \nomenclature{HTTPS}{Hypertext Transfer Protocol Secure} for authentication whose origin can be verified and users are verified cryptographically (DTLS-SRTP). Browser peers should be authorized before starting the media flow, this can be done by the {\it PeerConnection} itself using some Identity Provider (IdP) that supports OpenID or BrowserID to demonstrate their identity~\cite{rtcwebSecurityArchIETF}. Usually this problem is not particularly important in a closed domain, cases where both peers are in the same social network and provide their profiles to the system, those are exchanged previous to the call, but it arises as a big issue when having federated calls from different domains such in Figure~\ref{fig:idpWebRTCcall}.
-
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/idpWebRTCcall.pdf}
       \caption[WebRTC cross-domain call with Identity Provider authentication]{WebRTC cross-domain call with Identity Provider authentication.}
 	\label{fig:idpWebRTCcall}
 \end{figure}
+
+WebRTC calling procedure is done by the JavaScript provided by the server, this may be a problem as the user must trust an unknown authority server. Calling services commonly use Hypertext Transfer Protocol Secure (HTTPS) \nomenclature{HTTPS}{Hypertext Transfer Protocol Secure} for authentication whose origin can be verified and users are verified cryptographically (DTLS-SRTP). Browser peers should be authorized before starting the media flow, this can be done by the {\it PeerConnection} itself using some Identity Provider (IdP) that supports OpenID or BrowserID to demonstrate their identity~\cite{rtcwebSecurityArchIETF}. Usually this problem is not particularly important in a closed domain, cases where both peers are in the same social network and provide their profiles to the system, those are exchanged previous to the call, but it arises as a big issue when having federated calls from different domains such in Figure~\ref{fig:idpWebRTCcall}.
 
 If the web service is running over a trusted HTTPS certificate and has been authorized access to the media, {\it GetUserMedia} access becomes automatic after the first time under the same domain, otherwise, the user has to verify the access for each call. Once the media is acquired, the actual API builds the ICE candidates for media verification. Authentication and verification in WebRTC is an ongoing discussion in the working groups.
 
@@ -353,12 +375,14 @@ After describing various RTC technologies and all the similar alternatives for W
 	\hline
     	 & SIP & RTMFP & WebRTC \\ \hline
     	Plugin-enabled & No &Yes & No \\ \hline
-    	Cross-domain & Yes & No & No \\ \hline
+    	Cross-domain & Yes & No & Maybe \\ \hline
     	Licensed & No & Yes & No \\ \hline
-    	Mobile & Yes & Partially & Yes \\ \hline
+    	Android & Yes & Yes & Yes \\ \hline
+    	iOS & Yes & No & Yes \\ \hline
     	Audio & Yes & Yes & Yes \\ \hline
     	Video & Yes & Yes & Yes \\ \hline
     	Data & No & No & Yes \\ \hline
+	NAT Traversal & Yes & Yes & Yes \\ \hline
 	\hline \hline
 	TURN & Yes & No & Yes \\ \hline
     	STUN & Yes & No & Yes \\ \hline
@@ -367,13 +391,7 @@ After describing various RTC technologies and all the similar alternatives for W
     	SRTP & Yes & No & Yes \\ \hline
     	UDP & Yes & Yes & Yes \\ \hline
     	TCP & No & No & Yes \\ \hline
-    	SCTP & No & No & Yes \\ \hline
-	\hline \hline
-    	VP8 & No & No & Yes \\ \hline
-    	H.264 & Yes & No & Yes \\ \hline
-    	G711 & Yes & No & Yes \\ \hline
-    	Opus & No & No & Yes \\
-	\hline
+    	SCTP & Yes & No & Yes \\ \hline
 	\end{tabular}
       \caption[Feature comparison between SIP, RTMFP and WebRTC]{Feature comparison between SIP, RTMFP and WebRTC.}
 	\label{fig:CompareRTC}
