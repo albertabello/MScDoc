@@ -177,22 +177,49 @@ We have noticed that the system performs badly when having even small delays up 
 
 Table~\ref{fig:p2p_delay_bw} represents the bandwidth response to the delay conditions, it is interesting to see that the deviation with the biggest delay is smaller than expected. Only with 50ms the system will output a good quality call, when increasing delay the performance of the video will decrease. WebRTC uses VP8 codec which degrades gracefully the quality in packet loss and delay conditions but the response in this case should be better if the congestion mechanisms worked properly.
 
+%\begin{table}[h]
+%\begin{center}
+%    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+%   	 \toprule
+%	\textit{}
+%	& \multicolumn{1}{c}{\textit{Machine A}}
+%	& \multicolumn{1}{c}{\textit{Machine B}}
+%	& \multicolumn{1}{c}{\textit{Overall}}\\
+%	\midrule
+%	\textbf{50ms (Kbit/s)} & 1909.31 ,258.09 & 1917.81 ,251.62 & 1913.56 ,254.86\\
+%	\textbf{100ms (Kbit/s)} & 1516.07 ,263.43 & 1453.94 ,272.79 & 1485 ,268.11\\
+%	\textbf{200ms (Kbit/s)} & 503.71 ,116.45 & 617.92 ,142.69 & 560.82 ,129.57\\
+%	\textbf{500ms (Kbit/s)} & 303.58 ,59.22 & 207.77 ,32.48 & 255.67 ,45.85\\
+%	\bottomrule
+%    \end{tabular}
+%    \caption[Summary of averaged bandwidth with different delay conditions]{Summary of averaged bandwidth with different delay conditions.}
+%    \label{fig:p2p_delay_bw}
+%\end{center}
+%\end{table}
+
 \begin{table}[h]
 \begin{center}
-    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
-   	 \toprule
-	\textit{}
-	& \multicolumn{1}{c}{\textit{Machine A}}
-	& \multicolumn{1}{c}{\textit{Machine B}}
-	& \multicolumn{1}{c}{\textit{Overall}}\\
-	\midrule
-	\textbf{50ms (Kbit/s)} & 1909.31 ,258.09 & 1917.81 ,251.62 & 1913.56 ,254.86\\
-	\textbf{100ms (Kbit/s)} & 1516.07 ,263.43 & 1453.94 ,272.79 & 1485 ,268.11\\
-	\textbf{200ms (Kbit/s)} & 503.71 ,116.45 & 617.92 ,142.69 & 560.82 ,129.57\\
-	\textbf{500ms (Kbit/s)} & 303.58 ,59.22 & 207.77 ,32.48 & 255.67 ,45.85\\
-	\bottomrule
-    \end{tabular}
-    \caption[Summary of averaged bandwidth with different delay conditions]{Summary of averaged bandwidth with different delay conditions.}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+ & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{4}{*}{50 ms} & \textbf{Rate (Kbit/s)} & 1909.31$\pm258.09$ & 1917.81$\pm251.62$ & 1913.56$\pm254.86$\\ \cline{2-5}
+ & \textbf{OWD (ms)} &  102.35$\pm1.29$ & 102.67$\pm1.58$ & 102.51$\pm1.44$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.02 & 0.09 & 0.05 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.02 & 0.09 & 0.05 \\ \hline
+\multirow{4}{*}{100 ms} & \textbf{Rate (Kbit/s)} & 1516.07$\pm263.43$ & 1453.94$\pm272.79$ & 1485$\pm268.11$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 202.82$\pm2.94$ & 202.32$\pm3.05$ & 202.57$\pm3$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.1 & 0.02 & 0.06 \\ \cline{2-5}
+ & \textbf{Loss (\%)} & 0.1 & 0.02 & 0.06 \\ \hline
+\multirow{4}{*}{200 ms} & \textbf{Rate (Kbit/s)} & 503.71$\pm116.45$ & 617.92$\pm142.69$ & 560.82$\pm129.57$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 402.06$\pm3.3$ & 401.75$\pm3.31$ & 401.91$\pm3.33$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.3 & 0.35 & 0.33 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.36 & 0.43 & 0.4 \\ \hline
+\multirow{4}{*}{500 ms} & \textbf{Rate (Kbit/s)} & 303.58$\pm59.22$ & 207.77$\pm32.48$ & 255.67$\pm45.85$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 1001.3$\pm3.8$ & 1001.41$\pm4.09$ & 1001.36$\pm3.99$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.6 & 0.09 & 0.35 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.63 & 0.1 & 0.37 \\ \hline
+\end{tabular}
+    \caption[Summary of averaged results with different delay conditions]{Summary of averaged results with different delay conditions.}
     \label{fig:p2p_delay_bw}
 \end{center}
 \end{table}
@@ -214,22 +241,49 @@ Low latency networks will play a big role when WebRTC extends to mobile devices 
 
 Regarding P2P scenario we also tested the possibility of having a combined lossy network with delay added to it, this kind of environment could be easily found in mobile applications in low coverage areas. We have set 10\% packet loss with different delays such as 25ms, 50ms, 100ms and 200ms. In Table~\ref{fig:p2p_packet_bw} we saw an average of over 1 Mbit/s of bandwidth usage in 10\% loss environments, the result when adding delay to the constraint is  an average of barely 60 Kbit/s. Those results differ due to the difficulty of WebRTC to handle congestion in those environments. 
 
+%\begin{table}[h]
+%\begin{center}
+%    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+%   	 \toprule
+%	\textit{}
+%	& \multicolumn{1}{c}{\textit{Machine A}}
+%	& \multicolumn{1}{c}{\textit{Machine B}}
+%	& \multicolumn{1}{c}{\textit{Overall}}\\
+%	\midrule
+%	\textbf{25ms (Kbit/s)} & 72.59 ,18.54 & 70.69 ,18.09 & 71.78 ,18.32\\
+%	\textbf{50ms (Kbit/s)} & 59.7 ,16.84 & 60.36 ,18 & 60.03 ,17.42\\
+%	\textbf{100ms (Kbit/s)} & 63.3 ,19.29 & 64.82 ,20.95 & 64.06 ,20.12\\
+%	\textbf{200ms (Kbit/s)} & 66.89 ,20.12 & 65.66 ,19.63 & 66.27 ,19.87\\
+%	\bottomrule
+%    \end{tabular}
+%    \caption[Averaged bandwidth with different delay conditions with 10\% packet loss]{Averaged bandwidth with different delay conditions with 10\% packet loss.}
+%    \label{fig:p2p_delay_loss_bw}
+%\end{center}
+%\end{table}
+
 \begin{table}[h]
 \begin{center}
-    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
-   	 \toprule
-	\textit{}
-	& \multicolumn{1}{c}{\textit{Machine A}}
-	& \multicolumn{1}{c}{\textit{Machine B}}
-	& \multicolumn{1}{c}{\textit{Overall}}\\
-	\midrule
-	\textbf{25ms (Kbit/s)} & 72.59 ,18.54 & 70.69 ,18.09 & 71.78 ,18.32\\
-	\textbf{50ms (Kbit/s)} & 59.7 ,16.84 & 60.36 ,18 & 60.03 ,17.42\\
-	\textbf{100ms (Kbit/s)} & 63.3 ,19.29 & 64.82 ,20.95 & 64.06 ,20.12\\
-	\textbf{200ms (Kbit/s)} & 66.89 ,20.12 & 65.66 ,19.63 & 66.27 ,19.87\\
-	\bottomrule
-    \end{tabular}
-    \caption[Averaged bandwidth with different delay conditions with 10\% packet loss]{Averaged bandwidth with different delay conditions with 10\% packet loss.}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+ & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{4}{*}{25 ms} & \textbf{Rate (Kbit/s)} & 72.59$\pm18.54$ & 70.96$\pm18.09$ & 71.78$\pm18.32$\\ \cline{2-5}
+ & \textbf{OWD (ms)} &  87.64$\pm16.12$ & 77.67$\pm16.15$ & 82.66$\pm16.14$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 6.5 & 7.02 & 6.77 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 18,7 & 19.12 & 18.91 \\ \hline
+\multirow{4}{*}{50 ms} & \textbf{Rate (Kbit/s)} & 50.32$\pm15.39$ & 60.36$\pm18$ & 57.19$\pm16.63$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 101.16$\pm0.56$ & 101.36$\pm0.56$ & 101.26$\pm0.56$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 19.29 & 11.32 & 15.49 \\ \cline{2-5}
+ & \textbf{Loss (\%)} & 26.46 & 19.13 & 22.97 \\ \hline
+\multirow{4}{*}{100 ms} & \textbf{Rate (Kbit/s)} & 63.3$\pm19.29$ & 64.82$\pm20.95$ & 64.06$\pm20.12$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 201.59$\pm3.03$ & 201.36$\pm6.09$ & 201.48$\pm4.56$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 10.91 & 10.82 & 10.87 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 18.81 & 18.67 & 18.77 \\ \hline
+\multirow{4}{*}{200 ms} & \textbf{Rate (Kbit/s)} & 66.89$\pm20.12$ & 65.66$\pm19.63$ & 66.27$\pm19.87$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 403.73$\pm25.67$ & 403.93$\pm31.71$ & 403.83$\pm28.69$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 11.35 & 12.01 & 11.68 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 18.59 & 19.07 & 18.83 \\ \hline
+\end{tabular}
+    \caption[Averaged results with different delay conditions and 10\% packet loss]{Averaged results with different delay conditions and 10\% packet loss.}
     \label{fig:p2p_delay_loss_bw}
 \end{center}
 \end{table}
@@ -292,22 +346,114 @@ Studying the way the sender takes decisions about rate constraints we can observ
 
 
 %Table for all tests
+%\begin{table}[h]
+%\begin{center}
+%\begin{tabular}{ |c|c|c|c|c|c| }
+%\hline
+%\textbf{Throughput} & \textbf{Queue} & \textbf{Rate (Kbit/s)} & \textbf{Delay (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+%\multirow{4}{*}{500 Kbit/s} & 100ms & blah & blah & blah & blah\\ \cline{2-5}
+% & 500ms & blah & blah & blah & blah \\ \cline{2-5}
+% & 1s & blah & blah & blah & blah \\ \cline{2-5}
+% & 10s & blah & blah & blah & \\ \hline
+%\multirow{4}{*}{1 Mbit/s} & 100ms & blah & blah & blah &\\ \cline{2-5}
+% & 500ms & blah & blah & blah & \\ \cline{2-5}
+% & 1s & blah & blah & blah & \\ \cline{2-5}
+% & 10s & blah & blah & blah & \\ \hline
+%\multirow{4}{*}{5 Mbit/s} & 100ms & Lucus Radebe & blah & blah &\\ \cline{2-5}
+% & 500ms & blahb & blah & blah & \\ \cline{2-5}
+% & 1s & bñah & blah & blah & \\ \cline{2-5}
+% & 10s & blah & blah & blah & \\ \hline
+%\end{tabular}
+%    \caption[XXX]{XXXX.}
+%    \label{fig:p2p_delay_loss_bw}
+%\end{center}
+%\end{table}
+
+
+\begin{table}[h]
+\begin{center}
 \begin{tabular}{ |c|c|c|c|c| }
 \hline
-Throughput & Queue & Bandwidht (Kbit/s) & Delay (ms) & Packet Loss (\%)\\ \hline
-\multirow{4}{*}{500 Kbit/s} & 100ms & Lucus Radebe & blah & blah\\ \cline{2-5}
- & 500ms & Michael Duberry & blah & blah \\ \cline{2-5}
- & 1s & Dominic Matteo & blah & blah \\ \cline{2-5}
- & 10s & Didier Domi & blah & blah \\ \hline
-\multirow{4}{*}{1 Mbit/s} & 100ms & Lucus Radebe & blah & blah\\ \cline{2-5}
- & 500ms & Michael Duberry & blah & blah \\ \cline{2-5}
- & 1s & Dominic Matteo & blah & blah \\ \cline{2-5}
- & 10s & Didier Domi & blah & blah \\ \hline
-\multirow{4}{*}{5 Mbit/s} & 100ms & Lucus Radebe & blah & blah\\ \cline{2-5}
- & 500ms & Michael Duberry & blah & blah \\ \cline{2-5}
- & 1s & Dominic Matteo & blah & blah \\ \cline{2-5}
- & 10s & Didier Domi & blah & blah \\ \hline
+\multicolumn{5}{|c|}{\textbf{500 Kbit/s}} \\ \hline
+ Queue & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{4}{*}{100 ms} & \textbf{Rate (Kbit/s)} & 243.17$\pm35.59$ & 154.85$\pm30.41$ & 199.01$\pm33$\\ \cline{2-5}
+ & \textbf{OWD (ms)} &  39.19$\pm11.85$ & 39.69$\pm17.34$ & 39.44$\pm14.59$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 1.94 & 1.87 & 1.91 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 3.4 & 4.57 & 3.99 \\ \hline
+\multirow{4}{*}{500 ms} & \textbf{Rate (Kbit/s)} & 203.71$\pm26.81$ & 175.1$\pm20.84$ & 189.41$\pm23.83$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 35.92$\pm30.57$ & 35.43$\pm30.34$ & 35.67$\pm30.34$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.34 & 0.24 & 0.29 \\ \cline{2-5}
+ & \textbf{Loss (\%)} & 0.78 & 0.74 & 0.76 \\ \hline
+\multirow{4}{*}{1 s} & \textbf{Rate (Kbit/s)} & 214.81$\pm16.69$ & 211.59$\pm15.74$ & 213.2$\pm16.22$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 47.43$\pm61.2$ & 48.18$\pm62.23$ & 47.8$\pm62.23$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.33 & 0.43 & 0.38 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.59 & 0.63 & 0.61 \\ \hline
+\multirow{4}{*}{10 s} & \textbf{Rate (Kbit/s)} & 210.54$\pm14.92$ & 218.56$\pm13.84$ & 214.55$\pm14.38$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 86.42$\pm148.97$ & 89.34$\pm150.5$ & 87.88$\pm149.73$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.07 & 0.06 & 0.06 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.06 & 0.05 & 0.06 \\ \hline
 \end{tabular}
+    \caption[Averaged results with different queue configurations and 500 Kbit/s bandwidth constraint]{Averaged results with different queue configurations and 500 Kbit/s bandwidth constraint.}
+    \label{fig:500kbit_queue}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+\multicolumn{5}{|c|}{\textbf{1 Mbit/s}} \\ \hline
+ Queue & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{4}{*}{100 ms} & \textbf{Rate (Kbit/s)} & 436.72$\pm72.7$ & 289.02$\pm63.66$ & 362.87$\pm68.18$\\ \cline{2-5}
+ & \textbf{OWD (ms)} &  30.91$\pm11.75$ & 31.94$\pm12.05$ & 31.42$\pm11.9$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 1.22 & 0.37 & 0.79 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 1.77 & 1.07 & 1.42 \\ \hline
+\multirow{4}{*}{500 ms} & \textbf{Rate (Kbit/s)} & 323.59$\pm82.33$ & 285.21$\pm73.71$ & 304.4$\pm78.02$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 24.72$\pm10.69$ & 28.55$\pm11.04$ & 26.63$\pm10.86$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.16 & 0.08 & 0.12 \\ \cline{2-5}
+ & \textbf{Loss (\%)} & 0.16 & 0.08 & 0.12 \\ \hline
+\multirow{4}{*}{1 s} & \textbf{Rate (Kbit/s)} & 401.41$\pm58.14$ & 347.86$\pm59.15$ & 374.64$\pm58.64$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 28.94$\pm8.7$ & 26.02$\pm8.9$ & 27.48$\pm8.8$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.06 & 0.04 & 0.05 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.06 & 0.04 & 0.05 \\ \hline
+\multirow{4}{*}{10 s} & \textbf{Rate (Kbit/s)} & 481.08$\pm31.01$ & 395.55$\pm32.15$ & 438.31$\pm31.58$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 26.83$\pm7.08$ & 27.5$\pm7.56$ & 27.16$\pm7.32$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.04 & 0.05 & 0.04 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.04 & 0.05 & 0.04 \\ \hline
+\end{tabular}
+    \caption[Averaged results with different queue configurations and 1 Mbit/s bandwidth constraint]{Averaged results with different queue configurations and 1 Mbit/s bandwidth constraint.}
+    \label{fig:1mbit_queue}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+\multicolumn{5}{|c|}{\textbf{5 Mbit/s}} \\ \hline
+ Queue & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{4}{*}{100 ms} & \textbf{Rate (Kbit/s)} & 1963.15$\pm227.1$ & 1979$\pm211.46$ & 1965.95$\pm224.02$\\ \cline{2-5}
+ & \textbf{OWD (ms)} &  20.38$\pm4.13$ & 19.89$\pm4.19$ & 20.13$\pm4.16$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.02 & 0.01 & 0.02 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.02 & 0.01 & 0.02 \\ \hline
+\multirow{4}{*}{500 ms} & \textbf{Rate (Kbit/s)} & 50.32$\pm15.39$ & 60.36$\pm18$ & 57.19$\pm16.63$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 101.16$\pm0.56$ & 101.36$\pm0.56$ & 101.26$\pm0.56$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 19.29 & 11.32 & 15.49 \\ \cline{2-5}
+ & \textbf{Loss (\%)} & 26.46 & 19.13 & 22.97 \\ \hline
+\multirow{4}{*}{1 s} & \textbf{Rate (Kbit/s)} & 63.3$\pm19.29$ & 64.82$\pm20.95$ & 64.06$\pm20.12$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 201.59$\pm3.03$ & 201.36$\pm6.09$ & 201.48$\pm4.56$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 10.91 & 10.82 & 10.87 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 18.81 & 18.67 & 18.77 \\ \hline
+\multirow{4}{*}{10 s} & \textbf{Rate (Kbit/s)} & 1595.41$\pm266.41$ & 1565.36$\pm264.06$ & 1580.39$\pm264.24$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 18.15$\pm14.06$ & 17.83$\pm12.99$ & 17.99$\pm13.52$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.03 & 0.02 & 0.03 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.03 & 0.02 & 0.03 \\ \hline
+\end{tabular}
+    \caption[Averaged results with different queue configurations and 5 Mbit/s bandwidth constraint]{Averaged results with different queue configurations and 5 Mbit/s bandwidth constraint.}
+    \label{fig:5mbit_queue}
+\end{center}
+\end{table}
+
 
 \begin{figure}[htp]
         \centering
@@ -408,25 +554,67 @@ In the previous command, {\it -t} is the amount of time the test length, {\it -c
 
 Table~\ref{fig:tcp_iperf_no_dummynet} summarizes the results of the 10 Mbit/s TCP packet test without {\it Dummynet} constraints in the link.
 
+%\begin{table}[h]
+%\begin{center}
+%    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+%   	 \toprule
+%	\textit{}
+%	& \multicolumn{1}{c}{\textit{Machine A}}
+%	& \multicolumn{1}{c}{\textit{Machine B}}
+%	& \multicolumn{1}{c}{\textit{Overall}}\\
+%	\midrule
+%	\textbf{CPU (\%)} & 81.06 ,5.2 & 82.15 ,5.23 & 81.16 ,5.22\\
+%	\textbf{Memory (\%)} & 35.65 ,0.43 & 34.27 ,0.39 & 34.96 ,0.41\\
+%	\textbf{Bandwidth (Kbit/s)} & 990.11 ,202.62 & 1250.13 ,264.38 & 1120.12 ,233.506\\
+%	\textbf{Setup time (ms)} & 1533.66 ,11.3 & 1577.66 ,41.89 & 1555 ,32.59\\
+%	\textbf{RTT (ms)} & 25.61 ,16.02 & 24.76 ,14.11 & 25.19 ,15.07\\
+%	\textbf{Delay (ms)} & 81.61 ,11.42 & 83.99 ,11.42 & 81.61 ,11.42\\
+%	\bottomrule
+%    \end{tabular}
+%    \caption[IPERF 10 Mbit/s TCP test without link constraints]{IPERF 10 Mbit/s TCP test without link constraints.}
+%    \label{fig:tcp_iperf_no_dummynet}
+%\end{center}
+%\end{table}
+
 \begin{table}[h]
 \begin{center}
-    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
-   	 \toprule
-	\textit{}
-	& \multicolumn{1}{c}{\textit{Machine A}}
-	& \multicolumn{1}{c}{\textit{Machine B}}
-	& \multicolumn{1}{c}{\textit{Overall}}\\
-	\midrule
-	\textbf{CPU (\%)} & 81.06 ,5.2 & 82.15 ,5.23 & 81.16 ,5.22\\
-	\textbf{Memory (\%)} & 35.65 ,0.43 & 34.27 ,0.39 & 34.96 ,0.41\\
-	\textbf{Bandwidth (Kbit/s)} & 990.11 ,202.62 & 1250.13 ,264.38 & 1120.12 ,233.506\\
-	\textbf{Setup time (ms)} & 1533.66 ,11.3 & 1577.66 ,41.89 & 1555 ,32.59\\
-	\textbf{RTT (ms)} & 25.61 ,16.02 & 24.76 ,14.11 & 25.19 ,15.07\\
-	\textbf{Delay (ms)} & 81.61 ,11.42 & 83.99 ,11.42 & 81.61 ,11.42\\
-	\bottomrule
-    \end{tabular}
-    \caption[IPERF 10 Mbit/s TCP test without link constraints]{IPERF 10 Mbit/s TCP test without link constraints.}
-    \label{fig:tcp_iperf_no_dummynet}
+	\begin{tabular}{| l | c | c | c |}
+	\hline
+    	 & Machine A & Machine B & Overall \\ \hline
+	%\textbf{CPU (\%)} & 48.76$\pm2.76$ & 48.83 ,2.78 & 48.79 ,2.77\\
+	%\textbf{Memory (\%)} & 35.98 ,0.3 & 36.43 ,0.29 & 36.21 ,0.29\\
+	\textbf{Rate (Kbit/s)} & 197.94$\pm78.07$ & 315.92$\pm93.54$ & 256.92$\pm85.81$\\\hline
+	\textbf{OWD (ms)} & 479.18$\pm38.8$ & 482.97$\pm36.39$ & 481.97$\pm37.59$\\\hline
+	\textbf{Residual Loss (\%)} & 0.05 & 0.13 & 0.09\\\hline
+	\textbf{Packet Loss (\%)} & 0.05 & 0.08 & 0.06\\\hline
+	%\textbf{Setup time (ms)} & 3164.33$\pm101.48$ & 3138.33$\pm98.76$ & 3151.33$\pm98.76$\\
+	\end{tabular}
+    \caption[IPERF test without any link constraints and having UDP traffic]{IPERF test without any link constraints and having UDP traffic.}
+    \label{fig:iperf_no_dummynet}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+\multicolumn{5}{|c|}{\textbf{10 Mbit/s incomming - 1 Mbit/s outgoing}} \\ \hline
+ Delay & Metrics & Machine A & Machine B & Overall\\ \hline
+\multirow{4}{*}{0 ms} & \textbf{Rate (Kbit/s)} & 76.16$\pm25.12$ & 74.81$\pm24.93$ & 75.49$\pm25.02$\\ \cline{2-5}
+ & \textbf{OWD (ms)} &  4.71$\pm12.71$ & 5.12$\pm14.9$ & 4.92$\pm13.81$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.23 & 0.44 & 0.26 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.23 & 0.21 & 0.22 \\ \hline
+\multirow{4}{*}{25 ms} & \textbf{Rate (Kbit/s)} & 79.97$\pm25.7$ & 88.07$\pm32.65$ & 84.02$\pm29.17$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 29.56$\pm3.03$ & 27.52$\pm2.92$ & 28.54$\pm2.97$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.13 & 0.38 & 0.24 \\ \cline{2-5}
+ & \textbf{Loss (\%)} & 0.13 & 0.25 & 0.19 \\ \hline
+\multirow{4}{*}{100 s} & \textbf{Rate (Kbit/s)} & 78.2$\pm27.62$ & 82.2$\pm33.57$ & 80.2$\pm30.6$\\ \cline{2-5}
+ & \textbf{OWD (ms)} & 108.29$\pm4.19$ & 108.08$\pm4.04$ & 108.19$\pm4.11$ \\ \cline{2-5}
+ & \textbf{Residual Loss (\%)} & 0.24 & 0.38 & 0.19 \\ \cline{2-5}
+ & \textbf{Packet Loss (\%)} & 0.24 & 0.14 & 0.19.  \\ \hline
+\end{tabular}
+    \caption[IPERF test with 10 Mbit/s incoming and 1 Mbit/s outgoing link constraint and with different delays]{IPERF test with 10 Mbit/s incoming and 1 Mbit/s outgoing link constraint and with different delays.}
+    \label{fig:iperf_10in_1out}
 \end{center}
 \end{table}
 
@@ -450,27 +638,27 @@ We can observe some interesting behavior in all three iterations when looking at
 
 Now we will test the behavior when sending those 10 Mbit/s with UDP and TCP in a constrained link of 100/10 (downlink/uplink), in this test {\it Dummynet} scripts have been executed on the client side instead of in the Relay. Table~\ref{fig:tcp_iperf_100in_10out} shows the different bandwidth responses between TCP and UDP traffic, in both cases the link constraint have been the same but the result varies. We will se an increase of rate with TCP flooded packets but also an increase of delay, this delay might be produced due the need of processing more packets with TCP than the simple mechanism of UDP.
 
-\begin{table}[h]
-\begin{center}
-    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
-   	 \toprule
-	\textit{}
-	& \multicolumn{1}{c}{\textit{Machine A}}
-	& \multicolumn{1}{c}{\textit{Machine B}}
-	& \multicolumn{1}{c}{\textit{Overall}}\\
-	\midrule
-	\textbf{Bandwidth UDP (Kbit/s)} & 159.41 ,28.69 & 149.04 ,25.76 & 159.23 ,27.23 \\
-	\textbf{Delay UDP (ms)} & 98.07 ,3.14 & 98.85 ,2.75 & 96.85 ,2.94 \\
-	\hline
-	\hline
-	\textbf{Bandwidth TCP (Kbit/s)} & 208.97 ,20.64 & 194.41 ,18.9 & 201.69 ,19.77\\
-	\textbf{Delay TCP (ms)} & 146.9 ,4.38 & 147.92 ,4 & 147.41 ,4.23 \\
-	\bottomrule
-    \end{tabular}
-    \caption[IPERF 10 Mbit/s TCP and UDP test with constrained 100/10 Mbit/s link]{IPERF 10 Mbit/s TCP and UDP test with constrained 100/10 Mbit/s link.}
-    \label{fig:tcp_iperf_100in_10out}
-\end{center}
-\end{table}
+%\begin{table}[h]
+%\begin{center}
+%    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+%   	 \toprule
+%	\textit{}
+%	& \multicolumn{1}{c}{\textit{Machine A}}
+%	& \multicolumn{1}{c}{\textit{Machine B}}
+%	& \multicolumn{1}{c}{\textit{Overall}}\\
+%	\midrule
+%	\textbf{Bandwidth UDP (Kbit/s)} & 159.41 ,28.69 & 149.04 ,25.76 & 159.23 ,27.23 \\
+%	\textbf{Delay UDP (ms)} & 98.07 ,3.14 & 98.85 ,2.75 & 96.85 ,2.94 \\
+%	\hline
+%	\hline
+%	\textbf{Bandwidth TCP (Kbit/s)} & 208.97 ,20.64 & 194.41 ,18.9 & 201.69 ,19.77\\
+%	\textbf{Delay TCP (ms)} & 146.9 ,4.38 & 147.92 ,4 & 147.41 ,4.23 \\
+%	\bottomrule
+%    \end{tabular}
+%    \caption[IPERF 10 Mbit/s TCP and UDP test with constrained 100/10 Mbit/s link]{IPERF 10 Mbit/s TCP and UDP test with constrained 100/10 Mbit/s link.}
+%    \label{fig:tcp_iperf_100in_10out}
+%\end{center}
+%\end{table}
 
 Delay distribution response in a constrained environment (Figure~\ref{fig:10m_udp_total_delay_distribution} and \ref{fig:10m_tcp_total_delay_distribution}) is smoother compared to Figure~\ref{fig:iperfTestStdDelay}, the absolute amount of delay is larger but the distribution curve is better for WebRTC needs as it does not have any sudden increase of delay. Delay response when having constraints will output a better delay distribution but with higher RTT in the link.
 
@@ -498,27 +686,27 @@ When testing the 2 Mbit/s TCP and UDP flows with 20/4 Mbit/s constraints results
 
 Table~\ref{fig:tcp_iperf_20in_4out} describes the output we had in terms of rate and delay for the 2 Mbit/s test in a HSDPA type network. Rate adaptation is good even having an small uplink capacity of 4 Mbit/s, the way the rate is adapted to this link confirms that in this kind of not delayed or lossy low latency networks WebRTC could perform properly with simultaneous ongoing traffic. 
 
-\begin{table}[h]
-\begin{center}
-    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
-   	 \toprule
-	\textit{}
-	& \multicolumn{1}{c}{\textit{Machine A}}
-	& \multicolumn{1}{c}{\textit{Machine B}}
-	& \multicolumn{1}{c}{\textit{Overall}}\\
-	\midrule
-	\textbf{Bandwidth UDP (Kbit/s)} & 683.81 ,259.38 & 749.66 ,249.69 & 716.74 ,254.53 \\
-	\textbf{Delay UDP (ms)} & 56.34 ,2.83 & 54.31 ,2.64 & 55.32 ,2.74 \\
-	\hline
-	\hline
-	\textbf{Bandwidth TCP (Kbit/s)} & 760.94 ,238.44 & 1174.95 ,235.12 & 967.94 ,236.78\\
-	\textbf{Delay TCP (ms)} & 85.18 ,2.3 & 80.04 ,2.26 & 82.61 ,2.28 \\
-	\bottomrule
-    \end{tabular}
-    \caption[IPERF 2 Mbit/s TCP and UDP test with constrained 20/4 Mbit/s link]{IPERF 2 Mbit/s TCP and UDP test with constrained 20/4 Mbit/s link.}
-    \label{fig:tcp_iperf_20in_4out}
-\end{center}
-\end{table}
+%\begin{table}[h]
+%\begin{center}
+%    \begin{tabular}{c D{,}{\pm}{-1} D{,}{\pm}{-1} D{,}{\pm}{-1} }
+%   	 \toprule
+%	\textit{}
+%	& \multicolumn{1}{c}{\textit{Machine A}}
+%	& \multicolumn{1}{c}{\textit{Machine B}}
+%	& \multicolumn{1}{c}{\textit{Overall}}\\
+%	\midrule
+%	\textbf{Bandwidth UDP (Kbit/s)} & 683.81 ,259.38 & 749.66 ,249.69 & 716.74 ,254.53 \\
+%	\textbf{Delay UDP (ms)} & 56.34 ,2.83 & 54.31 ,2.64 & 55.32 ,2.74 \\
+%	\hline
+%	\hline
+%	\textbf{Bandwidth TCP (Kbit/s)} & 760.94 ,238.44 & 1174.95 ,235.12 & 967.94 ,236.78\\
+%	\textbf{Delay TCP (ms)} & 85.18 ,2.3 & 80.04 ,2.26 & 82.61 ,2.28 \\
+%	\bottomrule
+%    \end{tabular}
+%    \caption[IPERF 2 Mbit/s TCP and UDP test with constrained 20/4 Mbit/s link]{IPERF 2 Mbit/s TCP and UDP test with constrained 20/4 Mbit/s link.}
+%    \label{fig:tcp_iperf_20in_4out}
+%\end{center}
+%\end{table}
 
 From the delay distribution point of view (Figure~\ref{fig:2m_tcp_udp_distribution}), the output is similar in both tests being TCP slightly better (\ref{fig:2m_tcp_total_delay_distribution}) with less absolute delay and with an acceptable variation.
 
