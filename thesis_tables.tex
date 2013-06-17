@@ -1,0 +1,132 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{subfig} 
+\graphicspath{{../figures/}}
+%%\DeclareGraphicsExtensions{.pdf}{png}{.png}{.jpg}{jpg}{.jpeg}{jpeg}
+\DeclareGraphicsExtensions{.svg,.pdf,.png,.jpeg,.jpg}
+\usepackage{url}
+\usepackage{caption}
+\usepackage{dcolumn}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{booktabs}
+\usepackage{amsfonts,amssymb,amsbsy}  
+\usepackage[titletoc,toc,page]{appendix}
+
+%\title{Brief Article}
+%\author{The Author}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+%\maketitle
+%\section{}
+%\subsection{}
+
+
+%Table for all tests
+%\begin{table}[h]
+%\begin{center}
+%\begin{tabular}{ |c|c|c|c|c| }
+%\hline
+% & Metrics & Machine A & Machine B & Overall\\ \hline
+%\multirow{4}{*}{1\%} & \textbf{Rate (Kbit/s)} & 1913.59$\pm252.11$ & 1880.24$\pm261.46$ & 1986.91$\pm256.78$\\ \cline{2-5}
+% & \textbf{OWD (ms)} & 4.08$\pm1.79$ & 4.03$\pm1.93$ & 4.06$\pm1.86$ \\ \cline{2-5}
+% & \textbf{Residual Loss (\%)} & 0.13 & 0.05 & 0.09 \\ \cline{2-5}
+% & \textbf{Packet Loss (\%)} & 2.04 & 1.96 & 2 \\ \hline
+%\multirow{4}{*}{5\%} & \textbf{Rate (Kbit/s)} & 1609.65$\pm158.46$ & 1527.74$\pm178.52$ & 1568.74$\pm178.52$\\ \cline{2-5}
+% & \textbf{OWD (ms)} & 3.72$\pm1.82$ & 3.26$\pm1.76$ & 3.49$\pm1.79$ \\ \cline{2-5}
+% & \textbf{Residual Loss (\%)} & 0.2 & 0.27 & 0.23 \\ \cline{2-5}
+% & \textbf{Loss (\%)} & 9.72 & 9.82 & 9.77 \\ \hline
+%\multirow{4}{*}{10\%} & \textbf{Rate (Kbit/s)} & 1166.7$\pm145.96$ & 1114.94$\pm177.88$ & 1140.82$\pm161.92$\\ \cline{2-5}
+% & \textbf{OWD (ms)} & 3.17$\pm3.8$ & 3.12$\pm2.67$ & 3.14$\pm3.24$ \\ \cline{2-5}
+% & \textbf{Residual Loss (\%)} & 0.58 & 0.41 & 0.49 \\ \cline{2-5}
+% & \textbf{Packet Loss (\%)} & 18.98 & 19.05 & 19.02 \\ \hline
+%\multirow{4}{*}{20\%} & \textbf{Rate (Kbit/s)} & 333.34$\pm65.99$ & 295.46$\pm57.98$ & 314.4$\pm61.98$\\ \cline{2-5}
+% & \textbf{OWD (ms)} & 2.65$\pm4$ & 2.78$\pm4.06$ & 2.71$\pm4.03$ \\ \cline{2-5}
+% & \textbf{Residual Loss (\%)} & 2.69 & 2.17 & 2.43 \\ \cline{2-5}
+% & \textbf{Packet Loss (\%)} & 36.08 & 35.95 & 36.01 \\ \hline
+%\end{tabular}
+%\caption[Rate, OWD and loss averaged results for different packet loss constraints on the link]{Rate, OWD and loss averaged results for different packet loss constraints on the link.}
+%\end{center}
+%\end{table}
+
+%Table for all tests
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{1\%} & 1986.91$\pm256.78$ & 4.06$\pm1.86$ & 0.09 & 2 \\ \hline
+ \textbf{5\%} & 1568.74$\pm178.52$ &3.49$\pm1.79$ & 0.23 & 9.77 \\ \hline
+ \textbf{10\%} & 1140.82$\pm161.92$ & 3.14$\pm3.24$ & 0.49 & 19.02 \\ \hline
+ \textbf{20\%} & 314.4$\pm61.98$ & 2.71$\pm4.03$ & 2.43 & 36.01 \\ \hline
+\end{tabular}
+\caption[Rate, OWD and loss averaged results for different packet loss constraints on the link]{Rate, OWD and loss averaged results for different packet loss constraints on the link.}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{50 ms} & 1913.56$\pm254.86$ &  102.51$\pm1.44$ & 0.05 & 0.05 \\ \hline
+ \textbf{100 ms} & 1485$\pm268.11$ & 401.91$\pm3.33$ & 0.06 & 0.06 \\ \hline
+ \textbf{200 ms} & 560.82$\pm129.57$ & 3.14$\pm3.24$ & 0.33 & 0.4 \\ \hline
+ \textbf{500 ms} & 255.67$\pm45.85$ & 1001.36$\pm3.99$ & 0.35 & 0.37 \\ \hline
+\end{tabular}
+\caption[Summary of averaged results with different delay conditions]{Summary of averaged results with different delay conditions.}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{25 ms} & 71.78$\pm18.32$ &  82.66$\pm16.14$ & 6.77 & 18.91 \\ \hline
+ \textbf{50 ms} & 57.19$\pm16.63$ & 101.26$\pm0.56$ & 15.49 & 22.97 \\ \hline
+ \textbf{100 ms} &  64.06$\pm20.12$ & 201.48$\pm4.56$ & 10.87 & 18.77 \\ \hline
+ \textbf{200 ms} &  66.27$\pm19.87$ & 403.83$\pm28.69$ & 11.68 & 18.83 \\ \hline
+\end{tabular}
+    \caption[Averaged results with different delay conditions and 10\% packet loss]{Averaged results with different delay conditions and 10\% packet loss.}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+\multicolumn{5}{|c|}{\textbf{500 Kbit/s}} \\ \hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{100 ms} & 199.01$\pm33$ &  35.67$\pm30.34$ & 1.91 & 3.99 \\ \hline
+ \textbf{500 ms} & 189.41$\pm23.83$ & 101.26$\pm0.56$ & 0.29 & 0.76 \\ \hline
+ \textbf{1 s} & 213.2$\pm16.22$ & 47.8$\pm62.23$ & 0.38 & 0.61 \\ \hline
+ \textbf{10 s} & 214.55$\pm14.38$ &  87.88$\pm149.73$ & 0.06 & 0.06 \\ \hline
+ \multicolumn{5}{|c|}{\textbf{1 Mbit/s}} \\ \hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{100 ms} & 362.87$\pm68.18$ & 31.42$\pm11.9$ & 0.79 & 1.42 \\ \hline
+ \textbf{500 ms} & 304.4$\pm78.02$ & 26.63$\pm10.86$ & 0.12 & 0.12 \\ \hline
+ \textbf{1 s} &  374.64$\pm58.64$ &  27.48$\pm8.8$ & 0.05 & 0.05 \\ \hline
+ \textbf{10 s} & 438.31$\pm31.58$ & 27.16$\pm7.32$ & 0.04 & 0.04 \\ \hline
+ \multicolumn{5}{|c|}{\textbf{5 Mbit/s}} \\ \hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{100 ms} & 1965.95$\pm224.02$ &   20.13$\pm4.16$ & 0.02 & 0.02 \\ \hline
+ \textbf{500 ms} & 1580.39$\pm265.24$ & 17.99$\pm15.52$ & 0.03 & 0.03 \\ \hline
+ \textbf{1 s} & 1920.67$\pm243.38$ &18.45$\pm5.57$ & 0.02 & 0.02 \\ \hline
+ \textbf{10 s} &  1580.39$\pm264.24$ & 17.99$\pm13.52$ & 0.03 & 0.03 \\ \hline
+\end{tabular}
+    \caption[Averaged results with different queue and bandwidth configurations]{Averaged results with different queue and bandwidth configurations.}
+\end{center}
+\end{table}
+
+\end{document}  
