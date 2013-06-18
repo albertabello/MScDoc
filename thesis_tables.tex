@@ -129,4 +129,32 @@
 \end{center}
 \end{table}
 
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{0 ms} & 75.49$\pm25.02$ &  4.92$\pm13.81$ & 0.26 & 0.22 \\ \hline
+ \textbf{25 ms} & 84.02$\pm29.17$ & 28.54$\pm2.97$ & 0.24 & 0.19 \\ \hline
+ \textbf{100 ms} & 80.2$\pm30.6$ & 108.19$\pm4.11$ & 0.19 & 0.19 \\ \hline
+\end{tabular}
+    \caption[IPERF test with 10 Mbit/s incoming and 1 Mbit/s outgoing link constraint and with different delays]{PERF test with 10 Mbit/s incoming and 1 Mbit/s outgoing link constraint and with different delays.}
+\end{center}
+\end{table}
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+ & \textbf{Rate (Kbit/s)}  & \textbf{OWD (ms)} & \textbf{Residual Loss (\%)} & \textbf{Packet Loss (\%)}\\ \hline
+ \textbf{-} &  469.01$\pm221.09$ &   5.5$\pm5.26$ & 0.04 & 0.03 \\ \hline
+ \textbf{10 Mbit/s} & 160.24$\pm51.04$ & 8.26$\pm9.72$ & 0.07 & 0.06 \\ \hline
+ \textbf{20 Mbit/s} & 481.85$\pm155.56$ & 20.02$\pm12.16$ & 0.85 & 0.61 \\ \hline
+\end{tabular}
+    \caption[Two parallel simultaneous calls with different bandwidth constraints on the link]{Two parallel simultaneous calls with different bandwidth constraints on the link.}
+\end{center}
+\end{table}
+
 \end{document}  
