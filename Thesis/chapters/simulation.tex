@@ -5,7 +5,9 @@
 %% Leave first page empty
 \thispagestyle{empty}
 
-Our evaluation environment runs tests on WebRTC. Figure~\ref{fig:evaluation_arch} describes the functional blocks used for a simple video call over WebRTC.
+In this chapter we will describe the testbed we use for running all the WebRTC tests, the environment is described in Figure~\ref{fig:evaluation_arch}. 
+
+Some of the nodes carry specific software that enable some extra features or conditions that are required for deep testing.
 
  \begin{figure}[h]
   \centering
@@ -14,11 +16,23 @@ Our evaluation environment runs tests on WebRTC. Figure~\ref{fig:evaluation_arch
 	\label{fig:evaluation_arch}
 \end{figure}
 
+With the testbed described in Figure~\ref{fig:evaluation_arch} we are able to control the bottleneck link capacity, end-to-end latency, link loss rate and the queue size of the intermediate routers.
+
+%By using this testbed we can investigate the following:
+%
+%\begin{itemize}
+%	\item Utilization of bottleneck link capacity
+%	\item (un)friendliness to parallel media or cross-traffic
+%	\item Performance in multiparty calls
+%\end{itemize}
+
 \subsection{WebRTC client}
 
 WebRTC clients are virtual machines that run a lightweight version of Ubuntu (Lubuntu\footnote{https://wiki.ubuntu.com/Lubuntu}) with 2GB of RAM and one CPU. This light version removes graphic acceleration providing better results in performance than compared with other distributions due to the virtualization of the graphic card. 
 
 Clients run Chrome Dev version 27.01453.12 as a WebRTC capable browser. To avoid unexpected results due to a bug in the {\it Pulse Audio} module of Ubuntu that controls audio input in WebRTC\footnote{https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1170313}, calls are done with video only, the amount of audio transferred due to the echo cancelation systems can be neglected.
+
+This client will load the web that runs on the Application Server to handle the WebRTC calls.
 
 \subsubsection{Connection Monitor}
 
@@ -31,7 +45,7 @@ Typically we run the {\it PeerConnection} between two devices and start capturin
  \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/onetooneWiFiConMon.pdf}
-      \caption[Point-to-point WebRTC video stream throughput graph using ConMon over public WiFi at the network layer]{Point-to-point WebRTC video stream throughput graph using ConMon over public WiFi at the network layer.}
+      \caption[Point-to-point WebRTC video stream throughput graph using ConMon at the network layer]{Point-to-point WebRTC video stream throughput graph using ConMon at the network layer.}
 	\label{fig:onetooneWifiRTCConMon}
 \end{figure}
 
@@ -40,6 +54,8 @@ The capture from {\it ConMon} is very accurate as it analyzes all the packets th
 %This process might output some fluctuations on the graph that could distort the reality in some cases..
 
 Furthermore, {\it ConMon} is used to provide OWD and RTT calculations for our tests, in order to do this we assure a proper synchronization between local clocks in all the peers. This is done by using the sequence number of all RTP packets captured and subtracting the timestamp stored from both sides, no RTCP data is used in this analysis.
+
+{\it ConMon} provides us with higher accuracy by subtracting the timestamps from both endpoints of the same stream, to obtain a good result in this test we have to reduce the internal clock drift of both peers using systems such as Network Time Protocol daemon (NTPd) \nomenclature{NTPd}{Network Time Protocol daemon}.
 
 \subsubsection{Stats API}
 
@@ -94,15 +110,13 @@ A second problem that we could face is the time it takes to the OS to process th
 
 \begin{figure}[h]
         \centering
-        \begin{subfigure}[b]{0.5\textwidth}
+        \begin{subfigure}[b]{1\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/p2p_incomming_cable_sample.pdf}
                \caption[Incomming stream]{Incomming stream.}
 			\label{fig:p2pincommingStatsConmonWifi}
-        \end{subfigure}%
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-          %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{0.5\textwidth}
+        \end{subfigure}
+        \begin{subfigure}[b]{1\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/p2p_outgoing_cable_sample.pdf}
                \caption[Outgoing stream]{Outgoing stream.}
@@ -114,7 +128,7 @@ A second problem that we could face is the time it takes to the OS to process th
 
 Figure~\ref{fig:p2pStatsConmon} represents the incoming media stream from the other peer, we can see the little overhead that is not captured by the {\it Stats API} interface, as it just reads the bytes inside the payload of the packet. All the overhead is not considered when calculating the rate though {\it Stats API}. We can conclude that the real rate that WebRTC use is going to be defined by the result of {\it ConMon} instead of {\it Stats API}, but {\it Stats API} is going to be an accurate approach.
 
-\subsection{Automated testing}
+\subsubsection{Automated testing}
 
 For our test scenario we have considered two options, manual and automated testing. The first test environment does not give as much accuracy due to the impossibility to iterate the test many times for the same configuration, if the second option is available the results can be averaged between all the iterations resulting in an accurate result.
 
@@ -227,11 +241,13 @@ Some problems arise when using {\it Dummynet} in our scenario, we will use {\it 
 
 \subsection{Application Server}
 
-Our application server runs the Node.js instance to handle the WebRTC signaling part, this machine uses Ubuntu with a domain name specified as {\it dialogue.io}. 
+Our application server runs the Node.js~\footnote{http://nodejs.org/} instance to handle the WebRTC signaling part, this machine uses Ubuntu with a domain name specified as {\it dialogue.io}. 
 
 This app is a common group working application that allow people to chat and video call at the same time in their own private chat rooms, we have modified it to build an specific room for our tests, this instance simply allow two users that access the page to automatically call each other and start running the JavaScript code with the built-in {\it Stats API}.
 
-Most of this application is coded with JavaScript and uses WebSocket protocol to handle the signaling messages from peer to peer.
+Most of this application is coded using JavaScript APIs and uses WebSocket~\footnote{http://socket.io/} protocol to handle the signaling messages from peer to peer. 
+
+The web browsers in our clients stablish an HTTPS connection between the Application Server to download the web page that contain the {\it call.js} file that executes the WebRTC features.
 
 \subsection{Summary of tools}
 
