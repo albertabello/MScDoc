@@ -3,15 +3,13 @@
 
 \thispagestyle{empty}
 
-In this chapter we study how WebRTC performs in different network environments using topologies previously described in chapter~\ref{sec:topologies}. 
+In this chapter we study how WebRTC performs in different network environments using topologies previously described in chapter~\ref{sec:topologies}. All tests are deployed using the testbed described in chapter~\ref{sec:testingEnv} and Figure~\ref{fig:evaluation_arch}. We have each component running in individual virtual machines, such as the clients, the TURN server and the application server that establishes the negotiation between calls. To introduce different impairments in the bottleneck we force some of the sessions to run through the TURN server and we use {\it Dummynet} to emulate the variation in link capacity, latency, intermediate router queue length. We also use the {\it Gilbert-Elliott Model} to model packet loss~\cite{gilbert1}~\cite{elliott1}. 
 
-All tests are deployed using the testbed described in chapter~\ref{sec:testingEnv} and Figure~\ref{fig:evaluation_arch}. We have each component running in individual virtual machines, such as the clients, the TURN server and the application server that establishes the negotiation between calls.
+\subsection{Congestion Control for WebRTC}
 
-To introduce different impairments in the bottleneck we force some of the sessions to run through the TURN server and we use {\it Dummynet} to emulate the variation in link capacity, latency, intermediate router queue length. We also use the {\it Gilbert-Elliott Model} to model packet loss~\cite{gilbert1}~\cite{elliott1}.
+Several congestion control mechanisms have been proposed with the goal to match the rate with available capacity while maintaining a good user experience. Instead of just relaying in RTT and loss, Garudadri {\it et al.}~\cite{garudadri} also use the receiver play out buffer to detect the utilization of the link. Singh {\it et al.}~\cite{singhPaper} uses frame inter-arrival time and play out buffer size to adjust the rate to the link capacity. Zhu {\it et al.}~\cite{zhu} use ECN and loss rate to get a more accurate metric on the loss during the path and adjust the rate control based on the result. O'Hanlon {\it et al.}~\cite{hanlon} proposes a congestion mechanism for cross-traffic environments, using a delay-based estimation it should adapt the rate when having similar traffic on the network. In case off TCP cross-traffic, it uses a windowed-approach to adapt the rate. They switch the operational modes by using a threshold on the observed end-to-end delay. While those congestion control mechanisms have been proposed, they have not been implemented yet in any WebRTC browser.
 
-WebRTC-enabled browsers implement a congestion control algorithm proposed by {\it Google} called {\it Receiver-side Real-time Congestion Control (RRTCC)} \nomenclature{RRTCC}{Receiver-side Real-time Congestion Control}~\cite{alvestrandCongestion2012}.
-
-In order to properly adapt the rate to the link conditions, RRTCC need to use two components: sender-side and receiver-side.
+WebRTC-enabled browsers implement a congestion control algorithm proposed by {\it Google} called {\it Receiver-side Real-time Congestion Control (RRTCC)} \nomenclature{RRTCC}{Receiver-side Real-time Congestion Control}~\cite{alvestrandCongestion2012}. In order to properly adapt the rate to the link conditions, RRTCC need to use two components: sender-side and receiver-side.
 
 This protocol enables congestion control from the receiver side, in the following sub-sections we will discuss which important features RRTCC enable. The receiver estimates the usage of the link based on inter-arrival time (IAT) of the incoming packets. Three different states can be given in a link: overuse, stable and under-use. The current receiver estimate, $A_r(i)$ is calculated as follows:
 
@@ -40,10 +38,6 @@ Once the feedback message is received, the sender side uses the TCP Friendly Rat
 
 Furthermore, the $A_s(i)$ calculated should be between the rate estimated by the TFRC equation and the pervious REMB value received from the receiver report. This algorithm does not react to losses under 10\% and increases the rate by 5\% when having losses between 2-10\%. Alongside with this mechanism, WebRTC also includes Forward Error Correction (FEC) \nomenclature{FEC}{Forward Error Correction} mechanism, this technique generates FEC packets to protect the media stream when losses appear on the path.
 
-Other congestion control mechanisms have been proposed with the goal to match the rate with available capacity while maintaining a good user experience. Instead of just relaying in RTT and loss, Garudadri {\it et al.}~\cite{garudadri} also use the receiver play out buffer to detect the utilization of the link. Singh {\it et al.}~\cite{singhPaper} uses frame inter-arrival time and play out buffer size to adjust the rate to the link capacity. Zhu {\it et al.}~\cite{zhu} use ECN and loss rate to get a more accurate metric on the loss during the path and adjust the rate control based on the result. O'Hanlon {\it et al.}~\cite{hanlon} proposes a congestion mechanism for cross-traffic environments, using a delay-based estimation it should adapt the rate when having similar traffic on the network. In case off TCP cross-traffic, it uses a windowed-approach to adapt the rate. They switch the operational modes by using a threshold on the observed end-to-end delay.
-
-While those congestion control mechanisms have been proposed, they have not been implemented yet in any WebRTC browser.
-
 \subsection{Experimental Methodology}
 
 In the following sub-sections we evaluate different scenarios for WebRTC:
@@ -63,72 +57,6 @@ Each scenario is evaluated by running multiple benchmarks of tests, most of the 
 \subsection{Effects of Varying Bottleneck Link Characteristics}
 
 We have performed different tests in a bidirectional RTP scenario to study how the WebRTC applications handles different bottleneck conditions. We vary network characteristics and observe the RRTCC performance. 
-
-\subsubsection{Non-constrained link}
-
-Firstly, we are going to proceed with a sample test in a non-constrained link to check the performance of WebRTC.
- 
- \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/no_ipfw.pdf}
-      \caption[Rate average and deviation for non-constrained link in each iteration]{Rate average and deviation for non-constrained link in each iteration.}
-	\label{fig:no_ipfw}
-\end{figure}
-
-Figure~\ref{fig:no_ipfw} represents the average rate of every iteration of the test in a wired network without any link constraint, the average rate obtained in the test is 1949.7$\pm233$ Kbit/s, we can conclude that a standard rate for a video call in a non-constrained link using WebRTC is approximately 2 Mbit/s. Furthermore, obtained delay is 5.1$\pm1.5$ ms and RTT is approximately 9.5 ms, those results can be taken as standard for a non-conditioned WebRTC call. 
-
-A summary of results is available in Table~\ref{fig:p2p_no_ipfw}, besides the network performance we are also tracking the call failure rate, considering all those calls go through the bottleneck TURN server we might be able to approximate the success rate when establishing calls in WebRTC. 
-
-Setup time is evaluated with the time it takes since the creation of the {\it PeerConnection} object until the media stream from the other peer arrives, this value defines the time it takes for the user to start the communication, in an optimal environment it takes approximately 1.5 seconds to start the call. We also had zero packet losses and two calls that failed to succeed using TURN in the standard environment.
-
-\begin{table}[h]
-\begin{center}
-	\begin{tabular}{| l | c | c | c |}
-	\hline
-    	 & Machine A & Machine B & Overall \\ \hline
-	%\textbf{CPU (\%)} & 48.76$\pm2.76$ & 48.83 ,2.78 & 48.79 ,2.77\\
-	%\textbf{Memory (\%)} & 35.98 ,0.3 & 36.43 ,0.29 & 36.21 ,0.29\\
-	\textbf{Rate (Kbit/s)} & 1947.61$\pm232.75$ & 1951.76$\pm234.5$ & 1949.7$\pm233.62$\\\hline
-	\textbf{RTT (ms)} & 9.49$\pm2.11$ & 9.64$\pm2.71$ & 9.57$\pm2.41$\\\hline
-	\textbf{OWD (ms)} & 4.84$\pm1.5$ & 5.4$\pm1.53$ & 5.12$\pm1.52$\\\hline
-	\textbf{Residual Loss (\%)} & 0.012 & 0.01 & 0.011\\\hline
-	\textbf{Packet Loss (\%)} & 0.012 & 0.01 & 0.011\\\hline
-	\textbf{Setup time (ms)} & 1436.33$\pm25$ & 1447.44$\pm22.71$ & 1441.88$\pm24.04$\\
-	\hline
-	\end{tabular}
-    \caption[P2P metrics output for WebRTC call with no link restriction]{P2P metrics output for WebRTC call with no link restriction.}
-    \label{fig:p2p_no_ipfw}
-\end{center}
-\end{table}
-
-Delay values in Table~\ref{fig:p2p_no_ipfw} are averaged using all the {\it ConMon} data obtained for each stream in all iterations, thus it is an approximate delay value it might not be representative of the exact delay occurred during the call. Considering the example in Figure~\ref{fig:delay_116_646227} we can see that the delay can is variable, this means that the averaged OWD may not be the most appropriate metric to measure the time delay user experience. In order to evaluate the behavior of WebRTC in delay, we have two different approaches, the mean delay with deviation and delay distribution of all calls. 
-
- \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/total_delay_distribution_no_ipfw.pdf}
-      \caption[Delay distribution for each P2P iteration with no link constraints]{Delay distribution for each P2P iteration with no link constraints.}
-	\label{fig:total_delay_distribution_no_ipfw}
-\end{figure}
-
- \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/mean_deviation_delay_no_ipfw.pdf}
-      \caption[Mean and deviation for OWD in each P2P iteration with no link constraints]{Mean and deviation for OWD in each P2P iteration with no link constraints.}
-	\label{fig:mean_deviation_delay_no_ipfw}
-\end{figure}
-
-Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the mean and deviation for the delay calculated in each iteration, this delay is calculated by using the arrival timestamp for each packet with the capture done in both peers with {\it ConMon}. We run a NTPD daemon to adjust the drift on the clock and sync both machines. Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the delay output in a clearer way than the averaged result between all iterations, the difference in each iteration is small resulting in about 10ms difference between the best and worst case.
-
-In Figure~\ref{fig:total_delay_distribution_no_ipfw}, the distribution is given by the amount of packets whose delay is in a certain range of time, they are counted by batches of 10ms with an adaptable maximum range for each scenario. Most of the packets run with less than 25ms delay in all the iterations for the non-constrained test. The user experience with this small amount of delay that do not vary on time is barely negligible. Figures~\ref{fig:mean_deviation_delay_no_ipfw} and~\ref{fig:total_delay_distribution_no_ipfw} try to evaluate the delay response for a specific scenario, this can be difficult as the real time response changes in all iterations depending on the actual of the link, we use the delay distribution and OWD mean to evaluate the delay response.
-
- \begin{figure}[h]
-  \centering
-    \includegraphics[width=1\textwidth]{./figures/delay_2_116_111e8a13-delay_old.pdf}
-      \caption[OWD response during the call for one video stream for a non-constrained link call]{OWD response during the call for one video stream for a non-constrained link call.}
-	\label{fig:delay_stream_no_constraints}
-\end{figure}
-
-However, with the captures performed in {\it ConMon} and {\it Stats API} we can also evaluate one specific stream delay response if we need more information regarding a unique iteration. Figure~\ref{fig:delay_stream_no_constraints} represents the OWD response along the call of one specific video stream, is easy to see that there is some small variations that may affect the call but the overall delay value is stable.
 
 \subsubsection{Variable latency}
 
@@ -388,9 +316,7 @@ We calculate the queue size in function of time, being this the amount of time t
 	\label{eq:QueueSize}
 \end{equation}
 
-For example, when setting a throughput of 1Mbps and 1s queue depth, a router would be able to handle 83 packets as a total queue length. A queue length of 100ms represents a short queue meanwhile a 10s queue identifies a buffer-bloated queue. 
-
-Tables~\ref{fig:500kbit_queue},~\ref{fig:1mbit_queue} and~\ref{fig:5mbit_queue} show the result for the rates and queue sizes and bandwidth used for the tests.
+For example, when setting a throughput of 1Mbps and 1s queue depth, a router would be able to handle 83 packets as a total queue length. A queue length of 100ms represents a short queue meanwhile a 10s queue identifies a buffer-bloated queue. Tables~\ref{fig:500kbit_queue},~\ref{fig:1mbit_queue} and~\ref{fig:5mbit_queue} show the result for the rates and queue sizes and bandwidth used for the tests.
 
 After running the tests we can state that the overall Average Bandwidth Utilization (ABU) \nomenclature{ABU}{Average Bandwidth Utilization} for scenarios with 500 Kbit/s, 1 and 5 Mbit/s is $\approx$0.4 (40\%). Furthermore we can assure that varying the queue lengths does not directly affect the performance of RRTCC.
 
@@ -576,11 +502,77 @@ Studying the way the sender RRTCC takes decisions about rate adaptation we can o
 
 \clearpage
 \clearpage
+
+\subsubsection{Unconstrained link}
+
+In this section we are going to proceed with a sample test in a unconstrained link to check the performance of WebRTC.
+ 
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/no_ipfw.pdf}
+      \caption[Rate average and deviation for unconstrained link in each iteration]{Rate average and deviation for unconstrained link in each iteration.}
+	\label{fig:no_ipfw}
+\end{figure}
+
+Figure~\ref{fig:no_ipfw} represents the average rate of every iteration of the test in a wired network without any link constraint, the average rate obtained in the test is 1949.7$\pm233$ Kbit/s, we can conclude that a standard rate for a video call in a unconstrained link using WebRTC is approximately 2 Mbit/s. Furthermore, obtained delay is 5.1$\pm1.5$ ms and RTT is approximately 9.5 ms, those results can be taken as standard for a non-conditioned WebRTC call. 
+
+A summary of results is available in Table~\ref{fig:p2p_no_ipfw}, besides the network performance we also track the call failure rate, considering all those calls go through the bottleneck TURN server we might be able to approximate the success rate when establishing calls in WebRTC. 
+
+Setup time is evaluated with the time it takes since the creation of the {\it PeerConnection} object until the media stream from the other peer arrives, this value defines the time it takes for the user to start the communication, in an optimal environment it takes approximately 1.5 seconds to start the call. We also had zero packet losses and two calls that failed to succeed using TURN in the standard environment.
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{| l | c | c | c |}
+	\hline
+    	 & Machine A & Machine B & Overall \\ \hline
+	%\textbf{CPU (\%)} & 48.76$\pm2.76$ & 48.83 ,2.78 & 48.79 ,2.77\\
+	%\textbf{Memory (\%)} & 35.98 ,0.3 & 36.43 ,0.29 & 36.21 ,0.29\\
+	\textbf{Rate (Kbit/s)} & 1947.61$\pm232.75$ & 1951.76$\pm234.5$ & 1949.7$\pm233.62$\\\hline
+	\textbf{RTT (ms)} & 9.49$\pm2.11$ & 9.64$\pm2.71$ & 9.57$\pm2.41$\\\hline
+	\textbf{OWD (ms)} & 4.84$\pm1.5$ & 5.4$\pm1.53$ & 5.12$\pm1.52$\\\hline
+	\textbf{Residual Loss (\%)} & 0.012 & 0.01 & 0.011\\\hline
+	\textbf{Packet Loss (\%)} & 0.012 & 0.01 & 0.011\\\hline
+	\textbf{Setup time (ms)} & 1436.33$\pm25$ & 1447.44$\pm22.71$ & 1441.88$\pm24.04$\\
+	\hline
+	\end{tabular}
+    \caption[P2P metrics output for WebRTC call with no link restriction]{P2P metrics output for WebRTC call with no link restriction.}
+    \label{fig:p2p_no_ipfw}
+\end{center}
+\end{table}
+
+Delay values in Table~\ref{fig:p2p_no_ipfw} are averaged using all the {\it ConMon} data obtained for each stream in all iterations, thus it is an approximate delay value it might not be representative of the exact delay occurred during the call. Considering the example in Figure~\ref{fig:delay_116_646227} we can see that the delay can is variable, this means that the averaged OWD may not be the most appropriate metric to measure the time delay user experience. In order to evaluate the behavior of WebRTC in delay, we have two different approaches, the mean delay with deviation and delay distribution of all calls. 
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/total_delay_distribution_no_ipfw.pdf}
+      \caption[Delay distribution for each P2P iteration with no link constraints]{Delay distribution for each P2P iteration with no link constraints.}
+	\label{fig:total_delay_distribution_no_ipfw}
+\end{figure}
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/mean_deviation_delay_no_ipfw.pdf}
+      \caption[Mean and deviation for OWD in each P2P iteration with no link constraints]{Mean and deviation for OWD in each P2P iteration with no link constraints.}
+	\label{fig:mean_deviation_delay_no_ipfw}
+\end{figure}
+
+Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the mean and deviation for the delay calculated in each iteration, this delay is calculated by using the arrival timestamp for each packet with the capture done in both peers with {\it ConMon}. We run a Network Time Protocol daemon (NTPd) \nomenclature{NTPd}{Network Time Protocol daemon} daemon to adjust the drift on the clock and sync both machines. Figure~\ref{fig:mean_deviation_delay_no_ipfw} represents the delay output in a clearer way than the averaged result between all iterations, the difference in each iteration is small resulting in about 10ms difference between the best and worst case.
+
+In Figure~\ref{fig:total_delay_distribution_no_ipfw}, CDF delay distribution is given by the amount of packets whose delay is in a certain range of time, they are counted by batches of 10ms with an adaptable maximum range for each scenario. Most of the packets run with less than 25ms delay in all the iterations for the unconstrained test. The user experience with this small amount of delay that do not vary on time is barely negligible. Figures~\ref{fig:mean_deviation_delay_no_ipfw} and~\ref{fig:total_delay_distribution_no_ipfw} try to evaluate the delay response for a specific scenario, this can be difficult as the real time response changes in all iterations depending on the actual of the link, we use the delay distribution and OWD mean to evaluate the delay response.
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/delay_2_116_111e8a13-delay.pdf}
+      \caption[OWD response during the call for one video stream for a unconstrained link call]{OWD response during the call for one video stream for a unconstrained link call.}
+	\label{fig:delay_stream_no_constraints}
+\end{figure}
+
+%However, with the captures performed in {\it ConMon} and {\it Stats API} we can also evaluate one specific stream delay response if we need more information regarding a unique iteration. 
+Figure~\ref{fig:delay_stream_no_constraints} represents the OWD response along the call of one specific video stream, is easy to see that there is some small variations that may affect the call but the overall delay value is stable.
+
 \subsection{Effects of TCP Cross Traffic}
 
-In this scenario, we are measuring the performance of WebRTC RTP flows when competing with TCP cross-traffic on the bottleneck with different path constraints. We use {\it Iperf} on the TURN server to emulate the TCP cross-traffic. On the other hand, {\it Iperf} clients will run on the peers that are performing the call. We use long TCP flows that represent large files being downloaded by the peers. Those flows run in parallel with the RTP media sessions stablished in WebRTC between the same clients.
-
-The scenario used is the one shown in Figure~\ref{fig:iperfTest} with the clients running {\it Dummynet} instead of the relay to simulate the path conditions.
+In this scenario, we are measuring the performance of WebRTC RTP flows when competing with TCP cross-traffic on the bottleneck with different path constraints. We use {\it Iperf} on the TURN server to emulate the TCP cross-traffic. On the other hand, {\it Iperf} clients will run on the peers that are performing the call. We use long TCP flows that represent large files being downloaded by the peers. Those flows run in parallel with the RTP media sessions stablished in WebRTC between the same clients. The scenario used is the one shown in Figure~\ref{fig:iperfTest} with the clients running {\it Dummynet} instead of the relay to simulate the path conditions.
 
  \begin{figure}[h]
   \centering
@@ -603,7 +595,7 @@ In the next step, {\it Iperf} sends TCP packets, to do so we will run:
 # iperf -c XXXX -t 300
 \end{verbatim}
 
-In the previous command, {\it -t} is the amount of time the test length and {\it -c} is the feature that sets the process to operate as a client to the recipient address.
+In the previous command, {\it -t} is the amount of time the test length and {\it -c} is the feature that sets the process to operate as a client to the recipient address. 
 
 The first test is configured with a RRTCC flow competing with two TCP flows on the bottleneck. The capacity on the bottleneck is set to 1 Mbit/s upstream and 10 Mbit/s downstream. Considering the amount of data required by a RRTCC media stream, the 10 Mbit/s should be shared by the TCP and the remote stream. However, the 1 Mbit/s upstream could be used only with the local RTP media.
 
@@ -650,25 +642,39 @@ During the second test we set the bottleneck bandwidth to 10 Mbit/s upstream and
 %	\label{fig:iperfTestStd}
 %\end{figure}
 
-To analyze how RRTCC performs during a call we can observe Figure~\ref{fig:iperf_plots}, both graphs represent the same stream in the duration of a call. During the whole period, TCP keeps on increasing its congestion window and, at the same time, filling the queues of the middle routers. This action produces delay on the path triggering a reaction in the RRTCC algorithm that reduces the rate on the ongoing stream. This is the reason to have the ramp in Figure~\ref{fig:iperf_rate} increasing slowly until timeouts appear, at that time RRTCC reduces the rate by half trying to adapt to the new conditions. We can also observe that the rate increase and delay decrease is related in Figures~\ref{fig:iperf_rate} and~\ref{fig:iperf_delay}.
+To analyze how RRTCC performs during a call we can observe Figure~\ref{fig:iperf_rate} and~\ref{fig:iperf_delay}, both graphs represent the same stream in the duration of a call. During the whole period, TCP keeps on increasing its congestion window and, at the same time, filling the queues of the middle routers. This action produces delay on the path triggering a reaction in the RRTCC algorithm that reduces the rate on the ongoing stream. This is the reason to have the ramp in Figure~\ref{fig:iperf_rate} increasing slowly until timeouts appear, at that time RRTCC reduces the rate by half trying to adapt to the new conditions. We can also observe that the rate increase and delay decrease is related in Figures~\ref{fig:iperf_rate} and~\ref{fig:iperf_delay}.
 
-\begin{figure}[h]
-        \centering
-        \begin{subfigure}[h]{1\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{./figures/iperf_rate.pdf}
-      \caption[Instantaneous receiver rate]{Instantaneous receiver rate.}
+%\begin{figure}[h]
+%        \centering
+%        \begin{subfigure}[h]{1\textwidth}
+%                \centering
+%                \includegraphics[width=\textwidth]{./figures/iperf_rate.pdf}
+%      \caption[Instantaneous receiver rate]{Instantaneous receiver rate.}
+%	\label{fig:iperf_rate}
+%        \end{subfigure}
+%        
+%        \begin{subfigure}[h]{1\textwidth}
+%                \centering
+%                \includegraphics[width=\textwidth]{./figures/iperf_delay.pdf}
+%      \caption[Instantaneous delay during the call]{Instantaneous delay during the call.}
+%	\label{fig:iperf_delay}
+%        \end{subfigure}
+%        \caption[Impact of TCP traffic on the performance of RRTCC during one call, bottleneck capacity set to 10/10 Mbit/s]{Impact of TCP traffic on the performance of RRTCC during one call, bottleneck capacity set to 10/10 Mbit/s.}
+%        \label{fig:iperf_plots}
+%\end{figure}
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/iperf_rate.pdf}
+      \caption[Instantaneous receiver rate during one call, bottleneck capacity set to 10/10 Mbit/s]{Instantaneous receiver rate during one call, bottleneck capacity set to 10/10 Mbit/s.}
 	\label{fig:iperf_rate}
-        \end{subfigure}
-        
-        \begin{subfigure}[h]{1\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{./figures/iperf_delay.pdf}
-      \caption[Instantaneous delay during the call]{Instantaneous delay during the call.}
+\end{figure}
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/iperf_delay_opt.pdf}
+      \caption[Instantaneous delay during one call, bottleneck capacity set to 10/10 Mbit/s]{Instantaneous delay during one call, bottleneck capacity set to 10/10 Mbit/s.}
 	\label{fig:iperf_delay}
-        \end{subfigure}
-        \caption[Impact of TCP traffic on the performance of RRTCC during one call, bottleneck capacity set to 10/10 Mbit/s]{Impact of TCP traffic on the performance of RRTCC during one call, bottleneck capacity set to 10/10 Mbit/s.}
-        \label{fig:iperf_plots}
 \end{figure}
 
 The delay decrease seen in Figure~\ref{fig:iperf_delay} could be given by the routers queues exceeding the limit and dropping incoming packets, this causes the TCP to go into slow-start triggering RRTCC mechanisms to increasing the rate value.
@@ -682,6 +688,14 @@ We can observe some interesting behavior in all three iterations when looking at
 	\label{fig:iperfTestStdDelay}
 \end{figure}
 
+Lastly, Figure~\ref{fig:iperf_10_1} shows the rate output for the 10/1 Mbit/s scenario. We can observe that RRTCC lowers the rate to adapt to the path conditions, due to the TCP cross-traffic, the throughput lowers to about 400 Kbps which is far from the maximum possible media stream rate. 
+
+ \begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/iperf_10_1.pdf}
+      \caption[Instantaneous receiver rate during a call with TCP cross-traffic, bottleneck capacity set to 10/1 Mbit/s]{Instantaneous receiver rate during a call with TCP cross-traffic, bottleneck capacity set to 10/1 Mbit/s.}
+	\label{fig:iperf_10_1}
+\end{figure}
 %Now we will test the behavior when sending those 10 Mbit/s with UDP and TCP in a constrained link of 100/10 (downlink/uplink), in this test {\it Dummynet} scripts have been executed on the client side instead of in the Relay. Table~\ref{fig:tcp_iperf_100in_10out} shows the different bandwidth responses between TCP and UDP traffic, in both cases the link constraint have been the same but the result varies. We will se an increase of rate with TCP flooded packets but also an increase of delay, this delay might be produced due the need of processing more packets with TCP than the simple mechanism of UDP.
 
 %\begin{table}[h]
@@ -777,6 +791,8 @@ We can observe some interesting behavior in all three iterations when looking at
 %\end{figure}
 %
 %In general, the response of WebRTC congestion mechanisms with ongoing link traffic should be better as this environment will be common for all users. The bandwidth mechanism produces an acceptable call rate but should produce delays smaller than one second which are acceptable from the usability perspective, the delay distribution for the standard case with an ongoing traffic of 10 Mbit/s is not as good as expected but it might be due to the high capacity on the path and the way {\it Iperf} simulates the traffic.
+
+\FloatBarrier
 
 \subsection{Effects of RTP Cross Traffic}
 
@@ -927,6 +943,8 @@ Figure~\ref{fig:three_parallel_async} shows the first call temporarily starving 
 
 Figure~\ref{fig:delayThreeCallsAsync} represents the CDF delay distribution for the time shifted test, similar to the previous example (Figure~\ref{fig:delayThreeCalls}) but with a worst delay response. Delay will affect to the user experience in the same way with more random variable delays.
 
+\FloatBarrier
+
 \subsection{Multiparty Calls: Full-Mesh}
 
 A common setup in real-time communications is video conferencing. We try to determine if RRTCC algorithm is able to cope with the requirements of a multiparty call. For this environment we setup a group call between three participants in a full-mesh topology. With this, we have each participant sending the media to the other two participants and also receiving the individual media from them.
@@ -981,25 +999,24 @@ The CDF delay distribution response is good compared to previous scenarios, we c
 
 \begin{figure}[h]
         \centering
-        \begin{subfigure}[b]{1\textwidth}
+        \begin{subfigure}[b]{0.4\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/nodeA.pdf}
                 \caption{At peer A}
                 \label{fig:meshA}
         \end{subfigure}
-        
-        %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+        ~%add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{1\textwidth}
+        \begin{subfigure}[b]{0.4\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/nodeB.pdf}
                 \caption{At peer B}
                 \label{fig:meshB}
         \end{subfigure} 
-               
-         %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+         \quad      
+         ~%add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{1\textwidth}
+        \begin{subfigure}[b]{0.4\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/nodeC.pdf}
                 \caption{At peer C}
@@ -1043,9 +1060,7 @@ We group a call of three peers using a centralized conferencing server operating
 	\label{fig:meshTopologyMCU}
 \end{figure}
 
-As result, even though an endpoint sends one media stream ,it receives back feedback reports for two participants. With this type of behavior the sender might get some conflict when taking decisions about the rate adaptation, as it might get two different reports stating to increase and decrease the rate. There is no specific solution for this issue in the RRTCC algorithm and it takes the best decision for each case.
-
-Table~\ref{fig:mesh_results} shows the results for the this scenario. We can see that the rate has doubled but the deviation has also increased.
+As result, even though an endpoint sends one media stream ,it receives back feedback reports for two participants. With this type of behavior the sender might get some conflict when taking decisions about the rate adaptation, as it might get two different reports stating to increase and decrease the rate. There is no specific solution for this issue in the RRTCC algorithm and it takes the best decision for each case. Table~\ref{fig:mesh_results} shows the results for the this scenario. We can see that the rate has doubled but the deviation has also increased.
 
 \begin{figure}[h]
   \centering
@@ -1054,31 +1069,29 @@ Table~\ref{fig:mesh_results} shows the results for the this scenario. We can see
 	\label{fig:delayThreeMeshNOTURN}
 \end{figure}
 
-Observing Figure~\ref{fig:meshTurn} we can study the instantaneous rate at each endpoint. In some specific cases the link is unable to carry all the three media streams at a constant rate, as result one stream suffers from low rate. Stream C is suffering from this issue in Figure~\ref{fig:meshA_turn} and starves at both endpoints.
-
-We can see a comparison between the previous scenario delay (no MCU) and the actual test in Figure~\ref{fig:delayThreeMeshNOTURN}.
+Observing Figure~\ref{fig:meshTurn} we can study the instantaneous rate at each endpoint. In some specific cases the link is unable to carry all the three media streams at a constant rate, as result one stream suffers from low rate. Stream C is suffering from this issue in Figure~\ref{fig:meshA_turn} and starves at both endpoints. We can obeserve a comparison between the previous scenario delay (no MCU) and the actual test in Figure~\ref{fig:delayThreeMeshNOTURN}.
 
 \begin{figure}[h]
         \centering
-        \begin{subfigure}[b]{1\textwidth}
+        \begin{subfigure}[b]{0.4\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/nodeA_turn.pdf}
                 \caption{At peer A}
                 \label{fig:meshA_turn}
         \end{subfigure}
-        
+        ~
         %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{1\textwidth}
+        \begin{subfigure}[b]{0.4\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/nodeB_turn.pdf}
                 \caption{At peer B}
                 \label{fig:meshB_turn}
         \end{subfigure} 
-               
+         ~  
          %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{1\textwidth}
+        \begin{subfigure}[b]{0.4\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{./figures/nodeC_turn.pdf}
                 \caption{At peer C}
@@ -1091,6 +1104,8 @@ We can see a comparison between the previous scenario delay (no MCU) and the act
 Figure~\ref{fig:delayThreeMeshNOTURN} represents the averaged delay result for the three iterations in both tests. Results are slightly better with the TURN, this might be due to the fixed path for routing the packets that produce smaller deviation, the averaged delay is similar in both scenarios.
 
 \FloatBarrier
+
+
 
 %NOT NEEDED
 %\subsection{Wireless scenario}
@@ -1235,12 +1250,50 @@ We can observe that the average rate for the cable stream is about 2 Mbps which 
 
 \begin{figure}[h]
   \centering
-    \includegraphics[width=1\textwidth]{./figures/delay_3g.pdf}
+    \includegraphics[width=1\textwidth]{./figures/delay_3g_opt.pdf}
       \caption[Delay response for the 3G stream in Figure~\ref{fig:3gcable}]{Delay response for the 3G stream in Figure~\ref{fig:3gcable}.}
 	\label{fig:3gcable_delay}
 \end{figure}
 
 Another important fact in this scenario is to observe the delay response. Figure~\ref{fig:3gcable_delay} shows the delay produced in the 3G stream of Figure~\ref{fig:3gcable}, we can observe large delay of over a second in some periods of the call. After the period of big delay there is a sudden drop to 200ms. RRTCC is not able to cope with the delay produced when using 3G environment.
+
+\subsection{Session Establishment Time}
+
+Another sensible factor in a WebRTC call is to analyze the setup time required for each scenario. Setup time is defined as the time required since the local video access is accepted until the remote stream starts to play. Figure~\ref{fig:setup_time} show the average time that each scenario requires to start a call.
+
+We can see that the scenario that takes longer to succeed is the one with cross traffic on it. This can be problematic as the existence of cross traffic in the same environment is something common for most internet applications. We also have to consider that in our tests the devices used for the cross-traffic test had to acquire the same local media multiple times which leads to an increase of time in the session setup.
+
+Furthermore, another interesting fact is the time difference required for the multiparty calls. The usage of MCU increases the time required to setup the call by half a second due to the need to relay the packets.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1\textwidth]{./figures/setup_time.pdf}
+      \caption[Average setup time (in seconds) required for each different scenario, Parallel2 or 3 indicates the amount of peers in the test]{Average setup time (in seconds) required for each different scenario, Parallel2 or 3 indicates the amount of peers in the test.}
+	\label{fig:setup_time}
+\end{figure}
+
+\subsection{Call Failure Rate}
+
+During the process of all the tests we have stored the amount of calls that succeeded to establish the session between the peers. This information can be helpful in order to determine the amount of failed calls and the success rate with the existing API. Table~\ref{fig:mesh_results} show the success rate obtained in each scenario.
+
+\begin{table}[h]
+\begin{center}
+    \begin{tabular}{| l | l |}
+    \hline
+     & Rate (\%) \\ \hline
+    P2P & 12.5  \\ \hline
+    Cross traffic & 8.3 \\ \hline
+    Parallel & 6.2 \\ \hline
+    Mesh & 0 \\ \hline
+    \textbf{Global} & \textbf{11.7} \\
+    \hline
+    \end{tabular}
+     \caption[Call failure rate for WebRTC]{Call failure rate for WebRTC.}
+    \label{fig:mesh_results}
+\end{center}
+\end{table}
+
+After running more than 300 calls we can conclude that the call failure rate is around $\approx$11\%. In those calls, the remote media failed to reach the receiver, this can happen either for a network problem or a browser internal issue.
 
 \subsection{Resource Analysis}
 
@@ -1249,13 +1302,11 @@ Lastly, we study which is the impact of WebRTC in terms of performance in a stan
 \begin{figure}[h]
   \centering
     \includegraphics[width=1\textwidth]{./figures/perf.pdf}
-      \caption[CPU and Memory usage in all the different executed tests]{CPU and Memory usage in all the different executed tests.}
+      \caption[CPU and Memory usage in all the different executed tests, Parallel2 or 3 indicates the amount of peers in the test]{CPU and Memory usage in all the different executed tests, Parallel2 or 3 indicates the amount of peers in the test.}
 	\label{fig:global_tests}
 \end{figure}
 
-We can see that, in overall, WebRTC consumes a large amount of resources. Furthermore, when more than one stream is being handled the amount of CPU usage increases. As a consideration, the amount of CPU used in the three parallel calls test compared with the mesh might be studied. CPU usage in both scenarios is $\approx$90\%, the consumption in the three parallel calls is still greater as there are three different local streams being accessed and played on the test, meanwhile in the case of mesh there is only one local stream captured and sent to the rest of peers.
-
-When the CPU usage hits the maximum value, the quality of the call might be affected due to encoding limitations.
+We can see that, in overall, WebRTC consumes a large amount of resources. Furthermore, when more than one stream is being handled the amount of CPU usage increases. As a consideration, the amount of CPU used in the three parallel calls test compared with the mesh might be studied. CPU usage in both scenarios is $\approx$90\%, the consumption in the three parallel calls is still greater as there are three different local streams being accessed and played on the test, meanwhile in the case of mesh there is only one local stream captured and sent to the rest of peers. When the CPU usage hits the maximum value, the quality of the call might be affected due to encoding limitations.
 
 \subsection{Summary of results}
 
@@ -1271,4 +1322,4 @@ We can summarize that RRTCC works well in low delay networks and can tolerate tr
 
 Meanwhile APIs are cross-compatible, we can state that WebRTC does not perform well when using different browser providers as the congestion control mechanisms haven't been fully implemented in all platforms.
 
-Furthermore, superficial analysis suggest that RRTCC is still not ready to be used in mobile environments due the high delay produced by the network. 
+Furthermore, superficial analysis suggest that RRTCC is still not ready to be used in mobile environments due the high delay produced by the network. Other analysis related to setup time, performance and failure rate state that WebRTC has to improve its performance to deliver a better user-experience.
