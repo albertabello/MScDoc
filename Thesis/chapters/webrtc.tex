@@ -211,6 +211,7 @@ function gotRemoteStream(e){
 Listing~\ref{lst:listing2} represents a simple example on how to use the {\it PeerConnection} API to perform a P2P connection and start transferring media, this code works in conjunction with the code in section~\ref{sec:gum}. When building the new {\it PeerConnection} object we need to pass the JSON object {\it server} with the stun configuration for the NAT transversal process: {\it var pc\_config = \{"iceServers": [\{"url": "stun:XXXX"\}]\};}. 
 
 \subsubsection{Control and Monitoring}
+\label{sec:constraints}
 
 Control and monitoring is an important part of all RTC protocols, this part is usually handled by the JavaScript API.
 
