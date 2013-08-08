@@ -5,9 +5,9 @@
 %% Leave first page empty
 \thispagestyle{empty}
 
-To address the issue in the video that is transferred from our automated devices we have built a fake input device on the virtual machines that will be fed with a RAW YUV video of different resolutions and quality. This device will be added by using a hacked version of the {\it V4L2Loopback} which derives from the {\it V4L} driver for Linux, the modified version of the {\it V4L2Loopback} builds two extra devices as Chrome is unable to read from the same reading/writing device for security reasons, one of them will be used to fed the video and the other one to read it~\cite{chromiumIssue142568}. 
+To address the issue of the video transferred from our automated devices we have built a fake input device on the virtual machines that is fed with a RAW YUV file. This device is configured using a hacked version of the {\it V4L2Loopback} code which is originated from the {\it V4L} driver in Linux. The modified version of the {\it V4L2Loopback} builds two extra devices in the Linux interface mapping. This is done as Chrome is unable to read from the same reading/writing device for security reasons. The first device is used to fed the video and the other one to read it~\cite{chromiumIssue142568} in an input/output configuration. 
 
-Differences between standard driver and modified version:
+The following additions have been done in the {\it V4L2Loopback} code:
 
 \begin{itemize}
 	\item Need to write a non-null value into the the bus information of the device, this is required as Chrome input needs to be named as a real device. When using Firefox this is not required but works as well.
@@ -26,14 +26,14 @@ strlcpy(cap->bus_info, "virtual", sizeof(cap->bus_info));
 cap->capabilities |= V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_VIDEO_CAPTURE;
 \end{lstlisting}
 
-We used the code provided by Patrik Hšglund~\cite{chromiumIssue142568} for the {\it V4L2Loopback} hacked version. 
+We used the code provided by Patrik H\"ošglund~\cite{chromiumIssue142568} for the {\it V4L2Loopback} hacked version. 
 
 \begin{verbatim}
 # make && sudo make install
 # sudo modprobe v4l2loopback devices=2
 \end{verbatim}
 
-Now we should be able to see both devices in our system, next step is feeding the {\it /dev/video1} with a YUV file. In order to do this we will use the {\it V4l2 File Player}~\cite{v4l2fileplayer}, this player executes on top of {\it Gstreamer} but adds a loop functionality to the file allowing long calls to succeed. Sample videos can be obtained from a Network Systems Lab.\footnote{http://nsl.cs.sfu.ca/wiki/index.php/Video\_Library\_and\_Tools}
+Now we should see two extra video devices in our system. The following step is to fed the {\it /dev/video1} with a YUV file. In order to do this, we use the {\it V4l2 File Player}~\cite{v4l2fileplayer}, this player executes on top of {\it Gstreamer} but adds a loop functionality to the file allowing long calls to succeed by looping the video multiple times. YUV sample videos can be obtained from the Network Systems Lab page.\footnote{http://nsl.cs.sfu.ca/wiki/index.php/Video\_Library\_and\_Tools}
 
 \begin{verbatim}
 # sudo apt-get install gstreamer0.10-plugins-bad libgstreamer0.10-dev

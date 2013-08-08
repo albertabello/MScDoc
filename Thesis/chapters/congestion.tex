@@ -15,7 +15,7 @@ The usage of metrics for congestion control is crucial. Congestion control mecha
  
 \subsection{Simple Feedback Loop}
 
-Traditionally, real time media communication uses inelastic traffic, this type of traffic has some tolerance to error as packets can be discarded but media playback won't be seriously affected, this do not require to have 100\% packet delivery rate. Elastic traffic is common in applications that do not require real time data to be sent, it requires high packet delivery rate but is tolerant to delays.
+Traditionally, real time media communication uses inelastic traffic, this type of traffic has some tolerance to error as packets can be discarded but media playback won't be seriously affected, this does not require having 100\% packet delivery rate. Elastic traffic is common in applications that do not require real time data to be sent, it requires high packet delivery rate but is tolerant to delays.
 
 %With real time media applications, congestion directly affects in traffic delivery rate and performance, if the media generation rate is lower than the available channel capacity there is no need for rate adaption. However, losses and available capacity of the link can vary on time requiring adaptation from the sender side. This adaptation is done by analyzing the receiver feedback packets sent to the sender, this technique is called simple feedback loop.
 
@@ -71,7 +71,7 @@ Three global factors are considered when analyzing network links: {\it loss}, {\
 
 \subsubsection{Losses}
 
-Loss rate indicates packet losses during the transmission over the path. Usually packet losses affect directly the quality of a call. In WebRTC, packet loss is an indicator of the playback quality in the ongoing WebRTC transmission. In the case of huge packet loss in real-time media, the quality of the stream can be degraded producing artifacts on the playback.
+Loss rate indicates packet losses during the transmission over the path. Usually packet losses directly affect the quality of a call. In WebRTC, packet loss is an indicator of the playback quality in the ongoing WebRTC transmission. In the case of huge packet loss in real-time media, the quality of the stream can be degraded producing artifacts on the playback.
 
 When monitoring WebRTC calls we use packet loss as an indicator to adapt the media constraints. This indicator can be processed to be used along with the {\it GetUserMedia} constraints described in Section~\ref{sec:constraints} to adequate the media acquisition to the path condition. For example, an increase of packet loss could trigger some JavaScript mechanism that monitors the call quality and takes decisions based on the reported metrics. Those decisions may affect the video size and frames per second used to acquire the media. This allows a better adaptation for the ongoing session with the conditions on the path.
 
@@ -95,7 +95,7 @@ The delay on a path can be measured in two different forms. One-Way Delay (OWD) 
 	\label{eq:owd}
 \end{equation}
 
-In WebRTC applications, one of the most important delays that we have to measure is the processing delay. WebRTC applications usually run in a multiple layer structure. Running on top of the browser can affect the performance compared to other technologies that run directly over the OS. In the case of native mobile WebRTC applications, this delay is simnifically lower than in browser applications. 
+In WebRTC applications, one of the most important delays that we have to measure is the processing delay. WebRTC applications usually run in a multiple layer structure. Running on top of the browser can affect the performance compared to other technologies that run directly over the OS. In the case of native mobile WebRTC applications, this delay is significantly lower than in browser applications. 
 
 %Delays in our case are symmetric as we are continuously sending and receiving media, low delay is important in order to reproduce the streams in the best quality possible and avoid uncomfortable communication. 
 
@@ -113,7 +113,7 @@ Round-Trip Time (RTT) \nomenclature{RTT}{Round-Trip Time} measurements are inclu
 
 We can calculate the RTT using the data given by the {\it Stats API} in WebRTC. This metric is important to be monitored as it indicates the time delay along the path and the playback quality on the endpoints.
 
-Calculating OWD requires both machines clock to be accurately synchronized and can be complicated. Assuming that delay is symmetric we can define OWD as $\frac{RTT}{2}$. 
+Calculating OWD requires both machines' clocks to be accurately synchronized and can be complicated. Assuming that delay is symmetric we can define OWD as $\frac{RTT}{2}$. 
 
 \subsubsection{Throughput}
 
@@ -121,7 +121,7 @@ Throughput is a key metric for measuring the performance of WebRTC applications.
 
 Furthermore, throughput can be divided into sending rate ($BR_S$), receiver rate ($BR_R$) and goodput ($GP$). From the technical point of view, sender rate is defined as the number of packets that are injected into the network by the sender. Receiver rate is the ratio at which packets arrive at the receiver. Goodput is the result of discarding all the lost packets from the total number along the path, only packets that have been received are counted, goodput is a good metric to measure performance. 
 
-Typically, throughput is calculated by extracting the information from RTCP packets, in our case, we also rely on the Stats API included in WebRTC specification to calculate the rate. Taking into account the number of bytes received in the previous and actual period and the amount of time elapsed, we are able to calculate the throughput.
+Typically, throughput is calculated by extracting the information from RTCP packets, in our case, we also rely on the Stats API included in WebRTC specification to calculate the rate. Taking into account the number of bytes received in the previous and current period and the amount of time elapsed, we are able to calculate the throughput.
 
 \begin{equation}
 	\frac{\bigtriangleup Bytes_{received}}{\bigtriangleup Time_{host}}
@@ -167,7 +167,7 @@ d(i) = \frac{Size(i) - Size(i-1)}{Capacity} + w(i)
 \end{split}
 \end{equation}
 
-Here, $w(i)$ is a sample $i$ from a stochastic process $W$ which is given in function of $C$, the current cross traffic $X(i)$ and the send bit rate $R(i)$. If the channel congestion is high $w(i)$ will increase, otherwise $w(i)$ it is going to decrease. Alternatively we can consider $w(i)$ equal to zero. IAT is usually calculated in the receiver and reported to the sender to enable sender-driven rate control.
+Here, $w(i)$ is a sample $i$ from a stochastic process $W$ which is given in function of $C$, the current cross traffic $X(i)$ and the send bit rate $R(i)$. If the channel congestion is high $w(i)$ will increase, otherwise $w(i)$ is going to decrease. Alternatively we can consider $w(i)$ equal to zero. IAT is usually calculated in the receiver and reported to the sender to enable sender-driven rate control.
 %\subsubsection{Jitter}
 %
 %WebRTC streams are sent over the link in RTP format, those packets are generated sequentially. Due congestion on the path those packets may arrive in different order than in the source. Jitter is defined as the estimate of the statistical variance mean of the RTP packet inter-arrival time~\cite{rtcpIETF}.
@@ -190,23 +190,23 @@ Host metrics are measurements made locally by the host that affect the behavior 
 
 \subsubsection{Resources}
 
-In WebRTC, we measure the local resource usage in the peers participating on a call, this metric is going to be very important for multiple peer topologies and resource demanding encoding.
+In WebRTC, we measure the local resource usage in the peers participating on a call, this metric is going to be very important for multiple peer topologies and resources demanding encoding.
 
-CPU usage in WebRTC is critical. The web browser is the one in charge of the encoding and decoding process. This internal engine produces a huge load on the CPU. The amount of streams to handle will determine the status of the CPU. Having a normal load in the CPU helps WebRTC to perform better.
+CPU usage in WebRTC is critical. The web browser is the one in charge of the encoding and decoding process. This internal engine produces a huge load on the CPU. The number of streams to handle will determine the status of the CPU. Having a normal load in the CPU helps WebRTC to perform better.
 
-On the other side, RAM usage is also considered a constraint in any mobile or old device. The amount of RAM used in each WebRTC call relies in the encoding process and the network activity of the device. 
+On the other hand, RAM usage is also considered a constraint in any mobile or old device. The amount of RAM used in each WebRTC call relies on the encoding process and the network activity of the device. 
 
 CPU/RAM usage is observed in order to calculate the stress on the host in WebRTC scenario. This information is crucial for the success of WebRTC in some topologies that demand large amount of resources.
 
 \subsubsection{Setup time}
 
-We also measure the setup time required for every topology, with this we can possibly determine an average setup time for WebRTC sessions. The setup time is calculated using local timestamps when building the {\it PeerConnection} object. WebRTC calls are divided into three processes, media acquisition, stream transfer over the network and remote video playback. The protocol itself is only based in the network transfer. However, the total time to establish the session is obtained once the playback of the remote stream starts. 
+We also measure the setup time required for each topology, with this we can possibly determine an average setup time for WebRTC sessions. The setup time is calculated using local timestamps when building the {\it PeerConnection} object. WebRTC calls are divided into three processes, media acquisition, stream transfer over the network and remote video playback. The protocol itself is only based on the network transfer. However, the total time to establish the session is obtained once the playback of the remote stream starts. 
 
 Once the media from the remote peer arrives, we can subtract both timestamps, start of the {\it PeerConnection} object and stream arrival, to check the elapsed time. This procedure is in the JavaScript layer.
 
 \subsubsection{Call failure}
 
-Call failure is an important metric that measures the software quality of a WebRTC application. Compared with the previous metrics, this indicator do not relate with topology issues. This also fully depend on NAT situations and we are going to calculate the average failed calls with STUN and TURN NAT technologies. This indicator can define the success ratio for establishing WebRTC calls.
+Call failure is an important metric that measures the software quality of a WebRTC application. Compared with the previous metrics, this indicator do not relate to topology issues. This also fully depends on NAT situations and we will calculate the average failed calls with STUN and TURN NAT technologies. This indicator can define the success ratio for establishing WebRTC calls.
 
 %\subsubsection{Encoding and decoding}
 
@@ -214,10 +214,10 @@ Call failure is an important metric that measures the software quality of a WebR
 
 \subsection{Summary of metrics}
 
-Performance metrics allow us to determine the behavior of the path. Those metrics are obtained by using the information provided in the RTCP messages and statistical APIs. We use them to evaluate each different scenarios and reach a conclusion about the performance of WebRTC.
+Performance metrics allow us to determine the behavior of the path. Those metrics are obtained by using the information provided in the RTCP messages and statistical APIs. We use them to evaluate each different scenario and reach a conclusion about the performance of WebRTC.
 
 Throughput, delay and loss are important metrics in WebRTC. They will assist congestion control mechanisms when adapting the sender rate for the media. Those metrics also define the quality of the media session and are important in order to improve the user experience when using WebRTC applications.
 
-From the monitoring perspective, we care about characterizing the performance and congestion control algorithm of WebRTC. We study how those mechanisms behave and try to reach a consensus whether is a good alternative to use WebRTC or not. Lastly, some other metrics related to host help us to define which devices might be ready to hold WebRTC applications. 
+From the monitoring perspective, we care about characterizing the performance and congestion control algorithm of WebRTC. We study how those mechanisms behave and try to reach a consensus whether it is a good alternative to use WebRTC or not. Lastly, some other metrics related to the host help us to define which devices might be ready to hold WebRTC applications. 
 
 %Based on the results we obtain for those indicators we can determine wether the congestion mechanisms are working as defined in the specs or should be improved for future versions of WebRTC.

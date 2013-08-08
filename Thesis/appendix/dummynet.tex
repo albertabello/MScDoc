@@ -5,15 +5,15 @@
 %% Leave first page empty
 \thispagestyle{empty}
 
-{\it Dummynet} is the tool used to add constraints and simulate network conditions in our tests. 
+{\it Dummynet} is the tool used to add constraints and simulate different path conditions in our tests. 
 
-Besides this, {\it Dummynet} has been natively developed for {\it FreeBSD} platforms and the setup for {\it Linux} environments is sometimes not fully compatible. Our system runs with Ubuntu Server 12.10 with a 3.5.0 kernel version on top of VirtualBox, this system requires to modify some variables and code in order to achieve good test results.
+However, {\it Dummynet} has been natively developed for {\it FreeBSD} platforms and the setup for {\it Linux} environments is sometimes not successful. Our devices run with Ubuntu Server 12.10 with a 3.5.0 kernel version inside VirtualBox, this setup requires us to modify some code in {\it Dummynet} in order to achieve good test results.
 
-The accuracy of an emulator is given by the level of detail in the model of the system and how closely the hardware and software can reproduce the timing computed by the model~\cite{dummynetRevisited}. Considering that we are using standard Ubuntu images for our virtual machines we will need to modify the internal timer resolution of the kernel in order to get a closer approximation to reality, the default timer in a Linux kernel  2.6.13 and above is 250Hz~\cite{linuxKernelTime}, this value must be changed to 1000Hz in all machines that we intend to run {\it Dummynet}. The change of timing for the kernel requires a full recompile of itself. This change will reduce the timing error from 4ms (default) to 1ms. This change requires the kernel to be recompiled and might take some hours to complete.
+The accuracy of a network emulator is given by the level of detail in the model of the system and how closely the hardware and software can reproduce the timing computed by the model~\cite{dummynetRevisited}. Considering that we are using standard Ubuntu images for our virtual machines we will need to modify the internal timer resolution of the kernel in order to get a closer approximation to reality, the default internal clock in a Linux kernel  2.6.13 and above is 250Hz~\cite{linuxKernelTime}. The previous value must be changed to 1000Hz in all machines that we intend to run {\it Dummynet}. The change of timing for the kernel requires a full recompilation of itself. This change will reduce the timing error from 4ms (default) to 1ms.
 
-Once the kernel timing is done we will need to compile the {\it Dummynet} code, the version we are using in our tests is 20120812, that can be obtained form the {\it Dummynet} project site~\cite{dummynetTool}.
+Once the kernel timing is done we need to compile the {\it Dummynet} code, the version we are using in our tests is 20120812. {\it Dummynet} can be downloaded form the {\it Dummynet} project site~\cite{dummynetTool}.
 
-We should try the code first and check if we are able to set queues to our defined pipes, this part is the one that might crash due to system incompatibilities with FreeBSD and old kernel versions of Linux.  If we are unable we should then modify the following code in the {\it ./ipfw/dummynet.c} and {\it ./ipfw/glue.c}.
+We should try the code first and check if we are able to set defined queues to our network pipes, this procedure might crash due to system incompatibilities with FreeBSD and old kernel versions of Linux.  If we are unable we should then modify the following code in {\it ./ipfw/dummynet.c} and {\it ./ipfw/glue.c} files.
 
 \lstset{language=C}
 \begin{lstlisting}
@@ -43,7 +43,7 @@ if (fs->flags & DN_QSIZE_BYTES) {
 }
 \end{lstlisting}
 
-The problem arises from a the misassumption of {\it sizeof(long) == 4} in 64-bit architectures which is false. By changing those two files we are modifying the system in order to accept higher values than 100 for the queue length.
+This issue arise from the misassumption of {\it sizeof(long) == 4} in 64-bit architectures which is false. By changing those two files we are modifying the system in order to accept higher values than 100 for the queue length.
 
 \lstset{language=C}
 \begin{lstlisting}
@@ -93,14 +93,10 @@ fclose(fp);
 
 \end{lstlisting}
 
-When doing this we are making the file compatible with systems that have compatibility problems with the {\it sysctlbyname} function, XXX should be the value of the queue maximum length in slots and Bytes. Slots are defined considering a maximum MTU size of 1500 Bytes.
+When doing this we are making the file compatible with systems that have compatibility problems with the {\it sysctlbyname} function, {\it limit = XXX} should determine the value of the queue maximum length in slots and Bytes. Slots in for this thesis are defined considering a maximum MTU size of 1500 Bytes.
 
-By default, maximum queue size is set to 100 slots, this amount of slots is not designed for bandwidth demanding tests such as 10Mbit/s or similar. In order to modify this we will need to set a higher value according to the maximum we require. Once this is set we need to recompile {\it Dummynet} form the root directory of the download source code and follow the install instructions in the README file attached to the code.
+By default, maximum queue size is set to 100 slots, this setup is not designed for large bandwidth tests over 10Mbit/s. In order to modify this we will need to set a higher value according to the maximum required for our setup. Once this is set we need to recompile {\it Dummynet} form the root directory of the download source code and follow the install instructions in the README file.
 
-Even we have allowed {\it Dummynet} to accept more than 100 slots we won't be able to configure them into the pipe even the shell does not complain with error. The next step is to modify the module variables set in the {\it /sys/module/ipfw\_mod/parameters} folder, this folder simulates the {\it sysctl} global variables that we would have running {\it FreeBSD} instead of Linux. 
+Furthermore, once we have allowed {\it Dummynet} to accept more than 100 slots we might not be able to configure them into the network pipe. The last step is to modify the module variables set in the {\it /sys/module/ipfw\_mod/parameters} folder, this folder simulates the {\it sysctl} global variables that we would have in {\it FreeBSD} instead of Linux. 
 
-We need to modify the files {\it pipe\_byte\_limit} and {\it pipe\_slot\_limit} according to the values set in the {\it dummynet.c} previously modified.
-
-Last convenient step is to add ipfw\_mod to the end of {\it /etc/modules} file so {\it Dummynet} module will be loaded even time the system starts. 
-
-We can now set large queues according to our needs.
+We need to modify files {\it pipe\_byte\_limit} and {\it pipe\_slot\_limit} according to the values set in the {\it dummynet.c} previously modified. Last convenient step is to add ipfw\_mod to the end of {\it /etc/modules} file so {\it Dummynet} module will be loaded every time the system starts. Finally, we can now set large queues according to our needs.

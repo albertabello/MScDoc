@@ -30,17 +30,17 @@ With the testbed described in Figure~\ref{fig:evaluation_arch} we are able to co
 
 WebRTC clients are virtual machines that run a lightweight version of Ubuntu (Lubuntu\footnote{https://wiki.ubuntu.com/Lubuntu}) with 2GB of RAM and one CPU. This light version removes graphic acceleration providing better results in performance than compared with other distributions due to the virtualization of the graphic card. 
 
-Clients run Chrome Dev version 27.01453.12 as a WebRTC capable browser. To avoid unexpected results due to a bug in the {\it Pulse Audio} module of Ubuntu that controls audio input in WebRTC\footnote{https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1170313}, calls are done with video only, the amount of audio transferred due to the echo cancelation systems can be neglected.
+Clients run Chrome Dev version 27.01453.12 as a WebRTC capable browser. We have disabled audio in our tests in order to avoid unexpected performance results due to a bug in the {\it Pulse Audio} module that controls audio input in WebRTC\footnote{https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1170313}. The amount of audio data transferred due to the echo cancelation systems can be neglected.
 
 This client will load the web that runs on the Application Server to handle the WebRTC calls.
 
 \subsubsection{Connection Monitor}
 
-Connection Monitor [{\it ConMon}] is a command line utility that relies on the transport layer and uses {\it libpcap}\footnote{http://www.tcpdump.org/} to sniff all the packets that to go a certain interface and port~\cite{singhConMon}. This utility is designed specifically to detect and capture RTP/UDP packets. {\it ConMon} detects and saves the header but discards the payload of the packet keeping the information we need for calculating our performance indicators.
+Connection Monitor [{\it ConMon}] is a command line utility that works on the transport layer and uses {\it libpcap}\footnote{http://www.tcpdump.org/} to sniff all the packets that go to a certain interface and port~\cite{singhConMon}. This utility is designed specifically to detect and capture RTP/UDP packets. {\it ConMon} detects and saves the header but discards the payload of each packet keeping the information we need for calculating our performance indicators.
 
-Typically we run the {\it PeerConnection} between two devices and start capturing those packets using {\it ConMon} at each endpoint. The {\it PeerConnection} carries real media so the environment for testing is going to be a precise approach to a real scenario of WebRTC usage.
+Typically we run the {\it PeerConnection} between two devices and start capturing those packets using {\it ConMon} at each endpoint. The {\it PeerConnection} carries real media so the testing environment is a real scenario of WebRTC usage.
 
-{\it ConMon} captures are be saved into different files allowing us to plot separate different stream rates and calculate other parameters such as delay with post processing. {\it ConMon} allows us to compare network layer and JavaScript API monitoring tools, as {\it ConMon} is working directly over the network interface and avoids all the processing that the browser internals do to send the stats to the JavaScript statistical API. Figure~\ref{fig:onetooneWifiRTCConMon} represents one video stream from the same call as Figure~\ref{fig:onetooneWifiRTC} captured from the {\it ConMon} application.
+{\it ConMon} captures are be saved into different files allowing us to plot separately different stream rates and calculate other parameters such as delay with post processing. {\it ConMon} allows us to compare network layer and JavaScript API monitoring tools, as {\it ConMon} is working directly over the network interface and avoids all the processing that the browser internals do to send the stats to the JavaScript statistical API. Figure~\ref{fig:onetooneWifiRTCConMon} represents one video stream from the same call as Figure~\ref{fig:onetooneWifiRTC} captured from the {\it ConMon} application.
 
  \begin{figure}[h]
   \centering
@@ -49,7 +49,7 @@ Typically we run the {\it PeerConnection} between two devices and start capturin
 	\label{fig:onetooneWifiRTCConMon}
 \end{figure}
 
-The capture from {\it ConMon} is very accurate as it analyzes all the packets that go through an interface, this data is processed and averaged for a each period of one second. 
+The capture from {\it ConMon} is very accurate as it analyzes all the packets that go through an interface, this data is processed and averaged for each period of one second. 
 
 %This process might output some fluctuations on the graph that could distort the reality in some cases..
 
@@ -59,15 +59,15 @@ Furthermore, {\it ConMon} is used to provide OWD and RTT calculations for our te
 
 \subsubsection{Stats API}
 
-WebRTC statistical API provides methods to help developers access the lower layer network information at the receiver, those methods return all different types of statistics and performance indicators that we use to build high level JavaScript {\it Stats API}. When using those statistics we process all the output data to obtain the metrics for WebRTC.
+WebRTC statistical API provides methods to help developers access the lower layer network information at the receiver, those methods return the information required to calculate the performance indicators used to build the high level JavaScript {\it Stats API}. When using those statistics we process all the output data to obtain the metrics for WebRTC.
 
-This system works in parallel with {\it ConMon}, both of them can provide similar results of some metrics and the comparison might be interesting to check the differences between the browser API and an interface layer capture. By communing both methods we can verify the results and accuracy of the metrics.
+This system works in parallel with {\it ConMon}, both of them can provide similar results of some metrics and the comparison of both it interesting in order to check the differences between the browser API and an interface layer capture. By combining both methods we can verify the results and accuracy of the metrics.
 
 The method used for {\it Stats API} is the {\it RTCStatsCallback} that returns a JSON object that has to be parsed and manipulated to get the correct indicators, this object returns as many arrays as streams available in a {\it PeerConnection}, two audio and video~\cite{editorWebRTCdraft} objects per {\it PeerConnection} when having a point-to-point call. This data is provided by the lower layers of the network channel extracting the information from the RTCP packets that come multiplexed in the same network port~\cite{rtpusageIETF}.
 
-{\it RTCStatsCallback} is the mechanism of WebRTC that allows the developer to access different metrics, as this is still in an ongoing discussion, the stats report object has not been totally defined and can slightly change in the following versions of the WebRTC API, methods involved in the {\it RTCStatsCallback} are available on the W3C editors draft~\cite{editorWebRTCdraft}. 
+{\it RTCStatsCallback} is the mechanism of WebRTC that allows the developer to access different metrics, as this is still in an ongoing discussion the stats report object has not been totally defined and can change slightly in the following versions of the WebRTC API. Methods involved in the {\it RTCStatsCallback} are available on the W3C editors draft~\cite{editorWebRTCdraft}. 
 
-We have built a high level {\it Stats API} that use those statistics from the {\it RTCStatsCallback} to calculate the RTT, throughput, loss rate and encoding/decoding rate for the different streams that are being processed. Those stats are saved into a file or sent as a JSON object to a centralized monitoring system. Our JavaScript API grabs any {\it PeerConnection} passed through the variable and starts looping a periodical iteration to collect those stats and, either plot them or save them into an array for post-processing. 
+We have built a high level {\it Stats API} that uses those statistics from the {\it RTCStatsCallback} to calculate the RTT, throughput and loss rate for the different streams that are sent over the {\it PeerConnection} during the call. Those stats can be saved into a file at the end of the call for further process. Our JavaScript API grabs any {\it PeerConnection} passed through the variable and starts a periodic iteration to collect those stats and, either plot them or save them for post-processing. 
 
 Figure~\ref{fig:onetooneWifiRTC} represents an example of a captured call between two browsers in two different machines, Mac and Ubuntu, the call was made over Wifi network with no firewall but with unknown cross traffic on it. The measures were directly obtained from the {\it Stats API} we built and post-processed using {\it gnuplot}\footnote{http://www.gnuplot.info/}.
 
@@ -78,7 +78,7 @@ Figure~\ref{fig:onetooneWifiRTC} represents an example of a captured call betwee
 	\label{fig:onetooneWifiRTC}
 \end{figure}
 
-Figure~\ref{fig:onetooneWifiRTC} plots the overall bandwidth of the call, this means that the input/output video and audio are measured together to check how much total bandwidth is being consumed over the duration of the call, as it is using RTCP packets to deliver the metrics to the {\it Stats API}, it takes a while to reach the average rate value until congestion mechanisms adapt the used rate to the network conditions. We can then plot all the different streams together to get an idea of how much bandwidth the {\it PeerConnection} is consuming.
+Figure~\ref{fig:onetooneWifiRTC} plots the overall bandwidth of the call, this means that the input/output video and audio are measured together to check how much total bandwidth is being consumed in both directions over the duration of the call. As it is using RTCP packets to deliver the metrics to the {\it Stats API}, it takes a while to reach the average rate value until congestion mechanisms adapt the used rate to the network conditions. We can then plot all the different streams together to get an idea of how much bandwidth the {\it PeerConnection} is consuming.
 
 % \begin{figure}[h]
 %  \centering
@@ -102,11 +102,13 @@ Figure~\ref{fig:onetooneWifiRTC} plots the overall bandwidth of the call, this m
 
 \subsubsection{Analysis of tools}
 
-{\it Stats API} and {\it ConMon} measure the same metrics but from different layers of the operating system, this provides us some extra information in order to see how the our high level {\it Stats API} works and if it is reliable and accurate.
+{\it Stats API} and {\it ConMon} measure the same metrics but at different layers of the operating system, this provides us with some extra information in order to see how the high level {\it Stats API} works and if it is reliable and accurate.
 
-However, due to the periodical capture method, the output can produce strange plots as the information regarding to the next data period could be stored in the previous one when processing the averaged data on the system. This is an accuracy problem that cannot be easily solved, when looking at the graph, it is important to observe if two peaks (positive and negative) get compensated by each other, this would mean that the data has not been allocated to the correct period when plotted. This accuracy error is a problem that can be observed when comparing both {\it ConMon} and {\it Stats API} capture in Figure~\ref{fig:delay_mesh_peer1}. 
+However, due to the periodical capture method, the output can produce strange plots as the information regarding to the next data period could be stored in the previous one when processing the averaged data on the system. This is an accuracy problem that cannot be easily solved, when looking at the graph, it is important to observe if two peaks (positive and negative) get compensated by each other, this would mean that the data has not been allocated to the correct period when plotted. 
 
-A second problem that we could face is the time it takes to the OS to process the stats form the RTCP packet and send them to the upper browser layer, at the receiver some of the stats are based on the current measurement of the metrics not in the RTP Receiver Report. Figure~\ref{fig:p2pincommingStatsConmonWifi} and~\ref{fig:p2poutgoingStatsConmonWifi} plot two video streams being captured from Stats API and {\it ConMon}.
+%This accuracy error is a problem that can be observed when comparing both {\it ConMon} and {\it Stats API} capture in Figure~\ref{fig:delay_mesh_peer1}. 
+
+A second problem that we could face is the time it takes for the OS to process the stats from the RTCP packet and send them to the upper browser layer, at the receiver some of the stats are based on the current measurement of the metrics not in the RTP Receiver Report. Figure~\ref{fig:p2pincommingStatsConmonWifi} and~\ref{fig:p2poutgoingStatsConmonWifi} plot two video streams being captured from Stats API and {\it ConMon}.
 
 \begin{figure}[h]
         \centering
@@ -126,15 +128,15 @@ A second problem that we could face is the time it takes to the OS to process th
         \label{fig:p2pStatsConmon}
 \end{figure}
 
-Figure~\ref{fig:p2pStatsConmon} represents the incoming media stream from the other peer, we can see the little overhead that is not captured by the {\it Stats API} interface, as it just reads the bytes inside the payload of the packet. All the overhead is not considered when calculating the rate though {\it Stats API}. We can conclude that the real rate that WebRTC use is going to be defined by the result of {\it ConMon} instead of {\it Stats API}, but {\it Stats API} is going to be an accurate approach.
+Figure~\ref{fig:p2pStatsConmon} represents the incoming media stream from the other peer, we can see the little overhead that is not captured by the {\it Stats API} interface, as it just reads the bytes inside the payload of the packet. All the overhead is not considered when calculating the rate through {\it Stats API}. We can conclude that the real rate that WebRTC use is the one outputted by the result of {\it ConMon} instead of {\it Stats API}, but {\it Stats API} is going to be an accurate approach.
 
 \subsubsection{Automated testing}
 
-For our test scenario we have considered two options, manual and automated testing. The first test environment does not give as much accuracy due to the impossibility to iterate the test many times for the same configuration, if the second option is available the results can be averaged between all the iterations resulting in an accurate result.
+For our test scenario we considered two options, manual and automated testing. The first test environment does not give as much accuracy due to the difficulty to iterate the test many times for the same configuration, if the second option is available the results can be averaged between all the iterations resulting in an accurate output. We try to automate the process in most of the tests.
 
-In some environments, we won't be able to perform automated testing, when this happens the results won't be as accurate but they can provide a good approximation to the averaged value.
+In some environments, we won't be able to perform automated testing, when this happens the averaged results after the iterations will not show a leveraged value that defines the behavior. This help us to deal with outliers that can provide false values due unexpected conditions.
 
-One of the main issues when building a test scenario is the media provided to the {\it GetUserMedia} input, this media must be as close to reality as possible without using a real webcam. Google Chrome provides a fake video flag that can be activated by adding {\it --use-fake-device-for-media-stream}\footnote{http://peter.sh/experiments/chromium-command-line-switches/} parameter, this video though, does not produce enough rate for our purposes.
+One of the main issues when building a test scenario is the media provided to the {\it GetUserMedia} input, this media must be as close to reality as possible without using a real webcam. Google Chrome provides a fake video flag that can be activated by adding {\it --use-fake-device-for-media-stream}\footnote{http://peter.sh/experiments/chromium-command-line-switches/} parameter, this video though, does not produce rate high enough for our purposes.
 
 %\begin{figure}[h]
 %	\begin{minipage}{.5\textwidth}
@@ -162,13 +164,13 @@ One of the main issues when building a test scenario is the media provided to th
 	\label{fig:automatedVideoChrome}
 \end{figure}
 
-Figure~\ref{fig:realVideoChrome} represents the approximate bandwidth that a real video call uses when sending media to another peer, that capture shows the same stream captured from the origin and receiver {\it StatsAPI} perspective. The adequate rate rises to 2000 Kbps. On the other hand, Figure~\ref{fig:automatedVideoChrome} represents the scenario but using the built-in fake video in both clients, the rate for this case drops to an average of 250 Kbps. 
+Figure~\ref{fig:realVideoChrome} represents the approximate bandwidth that a real video call uses when receives media from another peer, that capture shows the same stream captured from the receiver {\it StatsAPI} perspective. The maximum rate increases up to 2000 Kbps. On the other hand, Figure~\ref{fig:automatedVideoChrome} represents the scenario but using the built-in fake video in both clients, the rate for this case drops to an average of 250 Kbps. 
 
-Both figures (\ref{fig:realVideoChrome} and~\ref{fig:automatedVideoChrome}) print one unique stream, identified with the Synchronization Source identifier (SSRC) \nomenclature{SSRC}{Synchronization Source identifier}, but from the sender and receiver perspective, {\it LV} identifies the source capture and {\it RV} the receiver stream rate. 
+Both figures (\ref{fig:realVideoChrome} and~\ref{fig:automatedVideoChrome}) show one single video stream, identified with the Synchronization Source identifier (SSRC) \nomenclature{SSRC}{Synchronization Source identifier}, but from the sender and receiver perspective, {\it LV} identifies the source capture and {\it RV} the receiver stream rate. 
 
-Comparing global output from Figures ~\ref{fig:realVideoChrome} and ~\ref{fig:automatedVideoChrome}, we can see that the obtained rate is very different concluding that we cannot use {\it --use-fake-device-for-media-stream} flag for our testing environment. The reason is that Google Chrome uses a bitmap system to draw the figures and components that will be rendered in the video tag and sent over the {\it PeerConnection}, this means that the amount of encoding and bandwidth used will be low compared to a real webcam as the media sent over with fake video is minimum.
+Comparing global output from Figures ~\ref{fig:realVideoChrome} and ~\ref{fig:automatedVideoChrome}, we can see that the obtained rate is very different concluding that we cannot use {\it --use-fake-device-for-media-stream} flag for our testing environment. The reason is that Google Chrome uses an internal bitmap engine to draw the figures that are rendered in the video tag and sent over the {\it PeerConnection}, this means that the amount of encoding and bandwidth used will be low compared to a real webcam as the media sent over with fake video is not representative.
 
-To address this issue of the media streaming for our automated devices, we have built a fake input device on the peers, the procedure is described in Appendix~\ref{sec:fakeVideo}.
+To address this issue of the media streaming for our automated devices, we have built a fake input device on the peers, the procedure is described in Appendix~\ref{sec:fakeVideo}. This technique utilizes a modified version of the {\it V4L2loopback} linux driver to create two extra video devices that play a selected YUV file.  
 
  \begin{figure}[h]
   \centering
@@ -199,41 +201,41 @@ md5_printf(ha1, "\%s:\%s:\%s", "XXX", "myrealm", "YYY");
 Furthermore, in order to force WebRTC to use TURN candidates we need to replace the WebRTC API server identification with our TURN machine by doing:
 
 \lstset{language=JavaScript}
-\begin{lstlisting}[caption=Configuring our TURN server in WebRTC]
+\begin{lstlisting}[caption=Configuring our TURN server in WebRTC,label={lst:listingICE}]
 var pc_config = {
 	"iceServers": [{url: "turn:XXX@192.168.1.106:3478", credential:"YYY"}]
 };
 \end{lstlisting}
 
-The previous object is provided to the {\it PeerConnection} object enabling the use of TURN.
+Listing~\ref{lst:listingICE} object is provided to the {\it PeerConnection} object enabling the use of TURN.
 
 The IP address points to our TURN server and the desired port (3478 by default), now all candidates are obtained through our TURN. This does not mean that the connection will run through the relay as WebRTC will try to find the best path which may override TURN, to force the usage of TURN candidates we need to drop all candidates that do not force the use of the relay.
 
 \lstset{language=JavaScript}
 \begin{lstlisting}[caption=Dropping all candidates except relay]
 function onIceCandidate(event) {
-	if ((event.candidate) && (event.candidate.candidate.toLowerCase().indexOf('relay')) !== -1) {
+  if ((event.candidate) && (event.candidate.candidate.toLowerCase().indexOf('relay')) !== -1) {
 		sendMessage({
                		type: 'candidate',
                		label: event.candidate.sdpMLineIndex,
                		id: event.candidate.sdpMid,
                		candidate: event.candidate.candidate
           	 },receiver,from);
-       	} else {
+  } else {
            	console.log("End of candidates.");
-       	}
+  }
 }
 \end{lstlisting}
 
-Function {\it onIceCandidate} is fired every time we get a new candidate form our STUN/TURN or WebRTC API, those candidates need to be forwarded to the other peer by using our own method {\it sendMessage} through {\it WebSockets} or similar polling methods. In this code, we are dropping all candidates except the ones containing the option {\it relay} on it, those are the candidates that force the {\it PeerConnection} to go through our TURN machine.
+Function {\it onIceCandidate} is called every time we get a new candidate from our STUN/TURN or WebRTC API, those candidates need to be forwarded to the other peer by using our own method {\it sendMessage} through {\it WebSockets} or similar polling methods. In this code, we are dropping all candidates except the ones containing the option {\it relay} on it, those are the candidates that force the {\it PeerConnection} to go through our TURN machine.
 
 This part is important as it allow us to set the constraints in a middle point without affecting the WebRTC peers.
 
 \subsubsection{Dummynet}
 
-To evaluate the performance of WebRTC we may modify the conditions of the network path to imitate some specific environments. This is achieved using {\it Dummynet}, a command line network simulator that allow us to add bandwidth limitations, delays, packet losses and other distortions to the ongoing link~\cite{dummynetTool}.
+To evaluate the performance of WebRTC we may modify the conditions of the network path to imitate some specific environments. This is achieved using {\it Dummynet}, a command line network simulator that allows us to add bandwidth limitations, delays, packet losses and other distortions to the ongoing link~\cite{dummynetTool}.
 
-{\it Dummynet} is an standard tool for some Linux distributions and OSX~\cite{dummynetTool}. In order to get appropriate results we need to apply the {\it Dummynet} rules in the TURN server, this machine will forward all the WebRTC traffic from one peer to the other being transparent for both ends. 
+{\it Dummynet} is a standard tool for some Linux distributions and OSX~\cite{dummynetTool}. In order to get appropriate results we need to apply the {\it Dummynet} rules in the TURN server, this machine will forward all the WebRTC traffic from one peer to the other being transparent for both ends. 
 
 The real goal of using TURN in WebRTC is to bypass some restrictive Firewalls that could block the connection, in our case, this works as a way to centralize the traffic flow through one unique path that we can monitor and modify. From the performance perspective, when not adding any rules to the TURN, the traffic and response of WebRTC is normal without the user noticing any difference.
 
@@ -243,12 +245,12 @@ Some problems arise when using {\it Dummynet} in our scenario, we will use {\it 
 
 Our application server runs the Node.js~\footnote{http://nodejs.org/} instance to handle the WebRTC signaling part, this machine uses Ubuntu with a domain name specified as {\it dialogue.io}. 
 
-This app is a common group working application that allow people to chat and video call at the same time in their own private chat rooms, we have modified it to build an specific room for our tests, this instance simply allow two users that access the page to automatically call each other and start running the JavaScript code with the built-in {\it Stats API}.
+This app is a common working group application that allows people to chat and video call at the same time in their own private chat rooms, we have modified it to build a specific room for our tests, this instance simply allows two users that access the page to automatically call each other and start running the JavaScript code with the built-in {\it Stats API}.
 
 Most of this application is coded using JavaScript APIs and uses WebSocket~\footnote{http://socket.io/} protocol to handle the signaling messages from peer to peer. 
 
-The web browsers in our clients stablish an HTTPS connection between the Application Server to download the web page that contain the {\it call.js} file that executes the WebRTC features.
+The web browsers in our clients establish an HTTPS connection between the Application Server to download the web page that contain the {\it call.js} file that executes the WebRTC features.
 
 \subsection{Summary of tools}
 
-Using all the previous mentioned tools together we are able to measure how WebRTC performs in a real environment, some tools have been modified according to our requirements of bandwidth and security. To process the data obtained by all those tools we use some special scripts that measure and extract the information we require form the captures, some of them are explained in Appendix~\ref{sec:scriptsWebRTC}.
+Using all the previous mentioned tools together we are able to measure how WebRTC performs in a real environment, similar to Figure~\ref{fig:evaluation_arch}, some tools have been modified according to our requirements of bandwidth and security. To process the data obtained by all those tools we use some special scripts that measure and extract the information we require from the captures, some of them are explained in Appendix~\ref{sec:scriptsWebRTC}.
